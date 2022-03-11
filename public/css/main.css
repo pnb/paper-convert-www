@@ -2,6 +2,10 @@ div#content {
     margin: 2em 4em 2em 4em;
 }
 
+div#content p {
+    max-width: 50em;
+}
+
 ol.doc-warning {
     padding: 0;
 }
