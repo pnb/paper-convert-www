@@ -1,5 +1,5 @@
 {
-    "name": "docx-html-convert",
+    "name": "paper-convert-www",
     "type": "module",
     "dependencies": {
         "cluster": "^0.7.7",
