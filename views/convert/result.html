@@ -1,0 +1,41 @@
+<% title = 'Conversion results' -%>
+<%- include ('../header.html') %>
+<h1>Document conversion results</h1>
+<%_ if (!started) { _%>
+    <p>Status: Conversion not yet started</p>
+    <p>Refresh page to update status.</p>
+<%_ } else if (!conversion_log.length) { _%>
+    <p>Status: Conversion in progress</p>
+    <p>Refresh page to update status.</p>
+<%_ } else { _%>
+    <p>Status: Conversion complete</p>
+    <p><a href="../view/<%= doc_id %>" target="_blank" rel="noopener noreferrer">View converted document</a></p>
+
+<%_ if (warnings.length) { _%>
+    <h2>Conversion warnings</h2>
+    <ol class="doc-warning">
+    <%_ warnings.forEach((warning) => { _%>
+        <li>
+            <span class="doc-warning-message"><%= warning.message %></span>
+        <%_ if (warning.extra_info) { _%>
+            <span class="doc-warning-extra"><%= warning.extra_info %></span>
+        <%_ } _%>
+            <button class="doc-warning-showhelp">Show help</button>
+            <span class="doc-warning-help hidden"><%- warning.help.replace('\n', '<br /><br />') %></span>
+        </li>
+    <%_ }); _%>
+    </ol>
+<%_ } else { _%>
+    <p>No issues detected during conversion!</p>
+<%_ } _%>
+
+    <h2>Full conversion log</h2>
+    <pre>
+    <%_ for (let i in conversion_log) { _%>
+<%= conversion_log[i] %>
+    <%_ } _%>
+    </pre>
+<%_ } _%>
+
+<script type="text/javascript" src="/js/result.js"></script>
+<%- include ('../footer.html') _%>

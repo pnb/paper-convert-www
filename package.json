@@ -1,0 +1,20 @@
+{
+    "name": "docx-html-convert",
+    "type": "module",
+    "dependencies": {
+        "cluster": "^0.7.7",
+        "connect-slashes": "^1.4.0",
+        "csv-parse": "^5.0.4",
+        "ejs": "^3.1.6",
+        "express": "^4.17.1",
+        "express-fileupload": "^1.2.1",
+        "nanoid": "^3.1.30"
+    },
+    "config": {
+        "conversion_scripts_dir": "../paper-convert-scripts",
+        "conversion_monitor_dir": "./papers"
+    },
+    "scripts": {
+        "start": "node index.js"
+    }
+}

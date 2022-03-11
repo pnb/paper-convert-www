@@ -1,0 +1,46 @@
+div#content {
+    margin: 2em 4em 2em 4em;
+}
+
+ol.doc-warning {
+    padding: 0;
+}
+
+ol.doc-warning li {
+    background-color: #ffb;
+    margin: .25em 0 .25em 0;
+    padding: .5em;
+    border: 1px solid #eeb;
+    list-style: none;
+}
+
+span.doc-warning-message {
+    font-style: oblique;
+}
+
+span.doc-warning-extra {
+    margin-left: 2em;
+    font-weight: bold;
+}
+
+span.doc-warning-extra::before {
+    content: '\2014';
+    position: relative;
+    left: -1em;
+    font-weight: normal;
+}
+
+button.doc-warning-showhelp {
+    float: right;
+    font-size: .75em;
+    padding: .25em .5em .25em .5em;
+}
+
+span.doc-warning-help {
+    margin-top: 1.4em;
+    display: block;
+}
+
+button#btn-upload {
+    margin-top: 2em;
+}

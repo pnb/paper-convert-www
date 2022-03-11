@@ -1,0 +1,13 @@
+<% title = 'HTML conversion' -%>
+<%- include ('../header.html') %>
+<h1>Upload document for conversion to HTML</h1>
+<form method="POST" action="./convert/upload" enctype="multipart/form-data">
+    <fieldset>
+        <legend>Drag and drop file or click Browse</legend>
+        <input type=file name="doc_file" />
+    </fieldset>
+    <br />
+    <button id="btn-upload">Upload and convert</button>
+</form>
+<script type="text/javascript" src="/js/start_new.js"></script>
+<%- include ('../footer.html') _%>
