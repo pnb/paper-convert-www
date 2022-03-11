@@ -60,8 +60,12 @@ router.get('/view/:doc_id', (req, res) => {
     res.redirect(req.baseUrl + req.url + '/index.html');
 });
 
-router.get('/view/:doc_id/:filename', (req, res) => {
-    res.sendFile(path.join(router.docs_dir, req.params.doc_id, req.params.filename));
+router.get('/view/:doc_id/:filename*', (req, res) => {
+    let fname = req.params.filename;
+    if (req.params[0] && !req.params[0].includes('..') && !req.params[0].includes('//')) {
+        fname += req.params[0];
+    }
+    res.sendFile(path.join(router.docs_dir, req.params.doc_id, fname));
 });
 
 router.get('/process/:doc_id', (req, res) => {
