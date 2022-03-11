@@ -70,6 +70,6 @@ if (cluster.isPrimary) {
     routes_convert.docs_dir = path.join(__dirname, 'papers');
     app.use('/', routes_convert);
 
-    app.listen(80);  // TODO: SSL
+    app.listen(80);
     console.log('Listening on port 80');
 }
