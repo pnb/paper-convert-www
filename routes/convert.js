@@ -99,7 +99,6 @@ router.get('/process/:doc_id', (req, res) => {
         });
     }
 
-    // TODO: Maybe show the images lacking alt text to help find them (probably a task for the view)
     res.render('convert/result', {
         'started': !fs.existsSync(path.join(router.docs_dir, req.params.doc_id + '.todo')),
         'conversion_log': conversion_log,
