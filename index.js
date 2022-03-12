@@ -1,5 +1,6 @@
 import cluster from 'cluster';
 import { exit } from 'process';
+import { execSync } from 'child_process';
 import os from 'os';
 import { fileURLToPath } from 'url';
 import express from 'express';
@@ -32,6 +33,21 @@ if (cluster.isPrimary) {
         console.error('Must be started with `npm start`');
         exit(1);
     }
+    // Check some environment things
+    const node_version = execSync('node --version').toString();
+    if (!node_version.startsWith('v17.')) {
+        console.error('NodeJS version 17 is required');
+        exit(1);
+    }
+    try {
+        execSync('pdf2svg');
+    } catch (err) {
+        if (err.status === 127) {
+            console.error('pdf2svg not found; are you using the paper_convert conda environment?');
+            exit(1);
+        }
+    }
+
     // Create a worker for all CPU cores but 1, to be used for document conversion
     const num_workers = Math.max(1, os.cpus().length - 1);
     for (let i = 0; i < num_workers; ++i) {
