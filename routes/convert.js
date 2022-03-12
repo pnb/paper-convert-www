@@ -12,8 +12,8 @@ router.docs_dir = false;
 
 // Load warning definitions from scripts config
 const scripts_dir = process.env.npm_package_config_conversion_scripts_dir;
-const scripts_config = fs.readFileSync(path.join(scripts_dir, 'config.json'), 'utf8');
-const warning_defs = JSON.parse(scripts_config)['warnings'];
+const messages_txt = fs.readFileSync(path.join(scripts_dir, 'warnings.json'), 'utf8');
+const warning_defs = JSON.parse(messages_txt)['warnings'];
 
 
 router.get('/', (req, res) => {
@@ -77,7 +77,7 @@ router.get('/process/:doc_id', (req, res) => {
         conversion_log = conversion_log.split(/\n+/);
     } catch {}  // Not yet finished converting
 
-    // Get full information about warnings from conversion's config.json
+    // Get full information about warnings from conversion's messages.json
     const warnings = [];
     if (conversion_log.length) {
         let log_lines = [];
