@@ -1,4 +1,4 @@
-div.paper-contents {
+.paper-contents {
     line-height: 1.4;
     max-width: 50em;
     padding: 2em;
@@ -7,12 +7,12 @@ div.paper-contents {
     counter-reset: headingnum;
 }
 
-div.paper-contents figure {
+.paper-contents figure {
     margin: 2em 0 1em 0;
     text-align: center;
 }
 
-div.paper-contents figure.has-subfigures {
+.paper-contents figure.has-subfigures {
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -21,38 +21,38 @@ div.paper-contents figure.has-subfigures {
     row-gap: 2em;
 }
 
-div.paper-contents figure.subfigure {
+.paper-contents figure.subfigure {
     margin: 0;
 }
 
-div.paper-contents figcaption {
+.paper-contents figcaption {
     margin-top: .5em;
     font-weight: bold;
 }
 
-div.paper-contents figure.has-subfigures > figcaption {
+.paper-contents figure.has-subfigures > figcaption {
     width: 100%;
     margin-top: -.5em;
 }
 
-div.paper-contents img {
+.paper-contents img {
     max-width: 50em;
     margin: .1em;
 }
 
-div.paper-contents img.img-small {
+.paper-contents img.img-small {
     width: 12em;
 }
 
-div.paper-contents img.img-medium {
+.paper-contents img.img-medium {
     width: 25em;
 }
 
-div.paper-contents img.img-large {
+.paper-contents img.img-large {
     width: 100%;
 }
 
-div.paper-contents table {
+.paper-contents table {
     border-collapse: collapse;
     border-top: 2px solid #000;
     border-bottom: 2px solid #000;
@@ -60,34 +60,34 @@ div.paper-contents table {
     min-width: 25em;
 }
 
-div.paper-contents caption {
+.paper-contents caption {
     font-weight: bold;
 }
 
-div.paper-contents figure+table {
+.paper-contents figure+table {
     margin-top: 4em;  /* Additional space for tables preceded by figures (consecutive captions) */
 }
 
-div.paper-contents thead tr {
+.paper-contents thead tr {
     border-bottom: 1px solid #000;
 }
 
-div.paper-contents th,
-div.paper-contents td {
+.paper-contents th,
+.paper-contents td {
     padding: .2em .5em .2em .5em;
     text-align: center;
 }
 
-div.paper-contents pre {
+.paper-contents pre {
     text-align: left;
 }
 
-div.paper-contents div.CopyrightBlock,
-div.paper-contents .hidden {
+.paper-contents div.CopyrightBlock,
+.paper-contents .hidden {
     display: none;
 }
 
-div.paper-contents div.Paper-Title {
+.paper-contents div.Paper-Title {
     font-family: Helvetica,Arial,sans-serif;
     font-size: 2em;
     font-weight: bold;
@@ -96,89 +96,89 @@ div.paper-contents div.Paper-Title {
     text-align: center;
 }
 
-div.paper-contents div.Author {
+.paper-contents div.Author {
     margin-top: 1em;
 }
 
-div.paper-contents div.Affiliations p {
+.paper-contents div.Affiliations p {
     margin: 0;
 }
 
-div.paper-contents h1,
-div.paper-contents h2,
-div.paper-contents h3,
-div.paper-contents h4,
-div.paper-contents h5,
-div.paper-contents h6 {
+.paper-contents h1,
+.paper-contents h2,
+.paper-contents h3,
+.paper-contents h4,
+.paper-contents h5,
+.paper-contents h6 {
     font-family: Helvetica,Arial,sans-serif;
     margin: .5em 0 .5em 0;
 }
 
-div.paper-contents h1 {
+.paper-contents h1 {
     font-size: 1.5em;
     text-transform: uppercase;
 }
 
-div.paper-contents h1:not(.not-numbered) {
+.paper-contents h1:not(.not-numbered) {
     counter-increment: h1counter;
     counter-reset: h2counter h3counter h4counter h5counter h6counter;
 }
 
-div.paper-contents h2 {
+.paper-contents h2 {
     font-size: 1.25em;
 }
 
-div.paper-contents h2:not(.not-numbered) {
+.paper-contents h2:not(.not-numbered) {
     counter-increment: h2counter;
     counter-reset: h3counter h4counter h5counter h6counter;
 }
 
-div.paper-contents h3 {
+.paper-contents h3 {
     font-size: 1.25em;
     font-weight: normal;
     font-style: italic;
 }
 
-div.paper-contents h3:not(.not-numbered) {
+.paper-contents h3:not(.not-numbered) {
     counter-increment: h3counter;
     counter-reset: h4counter h5counter h6counter;
 }
 
-div.paper-contents h4:not(.not-numbered) {
+.paper-contents h4:not(.not-numbered) {
     counter-increment: h4counter;
     counter-reset: h5counter h6counter;
 }
 
-div.paper-contents h5:not(.not-numbered) {
+.paper-contents h5:not(.not-numbered) {
     counter-increment: h5counter;
     counter-reset: h6counter;
 }
 
-div.paper-contents h6:not(.not-numbered) {
+.paper-contents h6:not(.not-numbered) {
     counter-increment: h6counter;
 }
 
-div.paper-contents h1:not(.not-numbered):before {
+.paper-contents h1:not(.not-numbered):before {
     content: counter(h1counter)". ";
 }
 
-div.paper-contents h2:not(.not-numbered):before {
+.paper-contents h2:not(.not-numbered):before {
     content: counter(h1counter)"." counter(h2counter)" ";
 }
 
-div.paper-contents h3:not(.not-numbered):before {
+.paper-contents h3:not(.not-numbered):before {
     content: counter(h1counter)"." counter(h2counter)"." counter(h3counter)" ";
 }
 
-div.paper-contents h4:not(.not-numbered):before {
+.paper-contents h4:not(.not-numbered):before {
     content: counter(h1counter)"." counter(h2counter)"." counter(h3counter)"." counter(h4counter)" ";
 }
 
-div.paper-contents h5:not(.not-numbered):before {
+.paper-contents h5:not(.not-numbered):before {
     content: counter(h1counter)"." counter(h2counter)"." counter(h3counter)"." counter(h4counter)"." counter(h5counter)" ";
 }
 
-div.paper-contents h6:not(.not-numbered):before {
+.paper-contents h6:not(.not-numbered):before {
     content: counter(h1counter)"." counter(h2counter)"." counter(h3counter)"." counter(h4counter)"." counter(h5counter)"." counter(h6counter)" ";
 }
 
@@ -192,17 +192,17 @@ div.footnotes {
 
 /******** LaTeX-specific styles ********/
 
-div.paper-contents span.math.display {
+.paper-contents span.math.display {
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
-div.paper-contents span.math.display mjx-container {
+.paper-contents span.math.display mjx-container {
     margin-left: auto;
     margin-right: auto;
 }
 
-div.paper-contents span.equation-number {
+.paper-contents span.equation-number {
     display: block;
 }
