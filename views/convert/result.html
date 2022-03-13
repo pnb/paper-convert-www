@@ -12,6 +12,10 @@
     <p><a href="../view/<%= doc_id %>" target="_blank" rel="noopener noreferrer">View converted document</a></p>
 
 <%_ if (warnings.length) { _%>
+    <p>
+        Please try to fix any problems using the help provided.
+        If there are issues you cannot resolve, or the converted document seems to have problems even after fixing warnings, please pnb@illinois.edu and provide the URL of this page.
+    </p>
     <h2>Conversion warnings</h2>
     <ol class="doc-warning">
     <%_ warnings.forEach((warning) => { _%>
@@ -27,6 +31,7 @@
     </ol>
 <%_ } else { _%>
     <p>No issues detected during conversion!</p>
+    <p>If the converted document seems to have problems anyway, please contact pnb@illinois.edu and provide the URL of this page.<p>
 <%_ } _%>
 
     <h2>Full conversion log</h2>
