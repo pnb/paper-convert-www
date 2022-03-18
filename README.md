@@ -16,12 +16,13 @@ Now install a new version of TexLive, since the version (as of Ubuntu 21.10) is 
     cd install-tl-20210324
     sudo ./install-tl  # It may be necessary to add "-repository https://ftp.math.utah.edu/pub/tex/historic/systems/texlive/2021" to avoid getting a newer TexLive though I am not surre if this will work
 
-Create an unprivileged *nodewww* user to run the server process (optional):
+Create a relatively unprivileged *nodewww* user to run the server process:
 
     sudo useradd -m nodewww
     sudo passwd nodewww
+    sudo usermod -aG sudo nodewww
 
-Add the new TexLive installation to the user's PATH by adding this line to the end of `~/.bashrc`:
+Add the new TexLive installation to the user's PATH by adding this line to the end of `/home/nodewww/.bashrc`:
 
     export PATH="/usr/local/texlive/2021/bin/x86_64-linux:$PATH"
 
@@ -41,12 +42,6 @@ Close and reopen the terminal or run `bash` to start a new one and get conda and
 Then install the correct version of NodeJS:
 
     nvm install 17
-
-And allow NodeJS to run on any port (such as 80):
-
-    nvm use 17
-    readlink -f `which node`  # Get path to node (paste into next line for NODE_PATH)
-    sudo setcap cap_net_bind_service=+ep NODE_PATH
 
 Set up SSL certificates:
 
@@ -82,8 +77,8 @@ From the *paper-convert-www* directory, as your unprivileged user, run:
 
     nvm use 17
     conda activate paper_convert
-    npm start
+    sudo npm start
 
-You might want to keep it running after logging out. In that case, replace `npm start` with `nohup npm start >> stdout.txt &`. Then if you want to stop it, run:
+You might want to keep it running after logging out. In that case, replace `sudo npm start` with `sudo nohup npm start >> stdout.txt &`. Then if you want to stop it, run:
 
     killall node
