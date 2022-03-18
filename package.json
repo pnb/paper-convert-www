@@ -12,7 +12,9 @@
     },
     "config": {
         "conversion_scripts_dir": "../paper-convert-scripts",
-        "conversion_monitor_dir": "./papers"
+        "conversion_monitor_dir": "./papers",
+        "ssl_cert": "/etc/letsencrypt/live/SOMEWHERE/fullchain.pem",
+        "ssl_private_key": "/etc/letsencrypt/live/SOMEWHERE/privkey.pem"
     },
     "scripts": {
         "start": "node index.js"

@@ -46,13 +46,25 @@ And allow NodeJS to run on any port (such as 80):
 
     nvm use 17
     readlink -f `which node`  # Get path to node (paste into next line for NODE_PATH)
-    setcap cap_net_bind_service=+ep NODE_PATH
+    sudo setcap cap_net_bind_service=+ep NODE_PATH
+
+Set up SSL certificates:
+
+    sudo snap install core
+    sudo snap refresh core
+    sudo snap install --classic certbot
+    killall node  # Just make sure the server is not running
+    sudo certbot certonly --standalone
+
+Note in the output where the key and certificate are saved, so you can tell the server where to find them during installation.
 
 ## Installation
 
 Clone this repository onto the server, e.g., into the home directory of the user that will run the server.
 
-Also clone the *paper-convert-scripts* repository and complete the setup for that.
+Also clone the *paper-convert-scripts* repository and complete the setup for that. If you installed it somewhere other than alongside this repository, you will need to edit `package.json` (for this repository, not that one) to point `conversion_scripts_dir` to the correct place.
+
+Edit `package.json` to set the `ssl_cert` and `ssl_private_key` paths to where your certificates were installed.
 
 Then install the exact version of everything from `package-lock.json` by running:
 

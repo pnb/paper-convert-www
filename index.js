@@ -2,6 +2,9 @@ import cluster from 'cluster';
 import { exit } from 'process';
 import { execSync } from 'child_process';
 import os from 'os';
+import http from 'http';
+import https from 'http';
+import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import express from 'express';
 import path from 'path';
@@ -58,7 +61,7 @@ if (cluster.isPrimary) {
     console.log('Started converter');
     converter = new DocConverter();
 } else {
-    const app = express();
+    var app = express();
 
     // Use EJS for template rendering
     app.set('views', path.join(__dirname, 'views'));
@@ -86,6 +89,25 @@ if (cluster.isPrimary) {
     routes_convert.docs_dir = path.join(__dirname, 'papers');
     app.use('/', routes_convert);
 
-    app.listen(80);
-    console.log('Listening on port 80');
+    try {
+        var https_server = https.createServer({
+            key: readFileSync(process.env.npm_package_config_ssl_private_key),
+            cert: readFileSync(process.env.npm_package_config_ssl_cert)
+        }, app);
+        https_server.listen(443);
+        var http_server = express();
+        http_server.get("*", function(request, response){
+            response.redirect("https://" + request.headers.host + request.url);
+        });
+        http_server.listen(80);
+        console.log('Listening on port 443, redirecting :80 -> :443')
+    } catch (err) {  // Probably couldn't load SSL certificates
+        if (err.code === 'ENOENT') {
+            console.error('Could not load SSL certificate, falling back to HTTP');
+            app.listen(80);
+            console.log('Listening on port 80');
+        } else {
+            console.error('Unexpected error:', err);
+        }
+    }
 }
