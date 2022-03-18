@@ -117,6 +117,8 @@ if (cluster.isPrimary) {
             console.error('Could not load SSL certificate, falling back to HTTP');
             app.listen(80);
             console.log('Listening on port 80');
+        } else if (err.code == 'EACCES') {
+            console.error('Denied access to SSL certificates; did you start with sudo?');
         } else {
             console.error('Unexpected error:', err);
         }
