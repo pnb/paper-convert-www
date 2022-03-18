@@ -28,6 +28,17 @@ function add_fork(env = {}) {
     });
 }
 
+function drop_root() {
+    // Drop root privileges
+    try {
+        process.setuid(process.env.npm_package_config_unprivileged_user);
+        process.setgid(process.env.npm_package_config_unprivileged_user);
+    } catch (err) {
+        console.error('Failed to switch to unprivileged user:', err);
+        exit(1);
+    }
+}
+
 
 if (cluster.isPrimary) {
     // Check that the server was started in the expected way (it matters for env variables)
@@ -57,6 +68,7 @@ if (cluster.isPrimary) {
     }
     add_fork({'is_converter': true});
 } else if (process.env.is_converter) {
+    drop_root();
     console.log('Started converter');
     converter = new DocConverter();
 } else {
@@ -109,4 +121,5 @@ if (cluster.isPrimary) {
             console.error('Unexpected error:', err);
         }
     }
+    drop_root();
 }

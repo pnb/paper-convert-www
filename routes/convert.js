@@ -12,6 +12,9 @@ router.docs_dir = false;
 
 // Load warning definitions from scripts config
 const scripts_dir = process.env.npm_package_config_conversion_scripts_dir;
+if (!scripts_dir) {
+    console.error('Must be started with `npm start`');
+}
 const messages_txt = fs.readFileSync(path.join(scripts_dir, 'messages.json'), 'utf8');
 const warning_defs = JSON.parse(messages_txt)['warnings'];
 
