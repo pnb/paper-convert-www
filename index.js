@@ -32,7 +32,7 @@ function drop_root() {
     // Drop root privileges
     try {
         process.setuid(process.env.npm_package_config_unprivileged_user);
-        process.setgid(process.env.npm_package_config_unprivileged_user);
+        process.setgid(process.env.npm_package_config_unprivileged_group);
     } catch (err) {
         console.error('Failed to switch to unprivileged user:', err);
         exit(1);
