@@ -75,9 +75,10 @@ At this point you should probably install security updates and restart your serv
 From the *paper-convert-www* directory, as your unprivileged user, run:
 
     conda activate paper_convert
-    sudo env "PATH=$PATH" npm start
+    npm start
 
 You might want to keep it running after logging out. In that case, instead of the `npm start` line, run:
 
-    sudo nohup env "PATH=$PATH" npm start >> stdout.txt &
-    # Then if you want to stop it, run: killall node
+    nohup npm start >> stdout.txt &
+
+Then if you want to stop it, run: `killall node`
