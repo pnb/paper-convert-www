@@ -2,8 +2,6 @@ import cluster from 'cluster';
 import { exit } from 'process';
 import { execSync } from 'child_process';
 import os from 'os';
-import https from 'https';
-import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import express from 'express';
 import path from 'path';
@@ -26,17 +24,6 @@ function add_fork(env = {}) {
         console.error('Cluster worker crashed, starting a new one: env =', env);
         add_fork(env);
     });
-}
-
-function drop_root() {
-    // Drop root privileges
-    try {
-        process.setuid(process.env.npm_package_config_unprivileged_user);
-        process.setgid(process.env.npm_package_config_unprivileged_group);
-    } catch (err) {
-        console.error('Failed to switch to unprivileged user:', err);
-        exit(1);
-    }
 }
 
 
@@ -68,7 +55,6 @@ if (cluster.isPrimary) {
     }
     add_fork({'is_converter': true});
 } else if (process.env.is_converter) {
-    drop_root();
     console.log('Started converter');
     converter = new DocConverter();
 } else {
@@ -100,28 +86,6 @@ if (cluster.isPrimary) {
     routes_convert.docs_dir = path.join(__dirname, 'papers');
     app.use('/', routes_convert);
 
-    try {
-        var https_server = https.createServer({
-            key: readFileSync(process.env.npm_package_config_ssl_private_key),
-            cert: readFileSync(process.env.npm_package_config_ssl_cert)
-        }, app);
-        https_server.listen(443);
-        var http_server = express();
-        http_server.get("*", function(request, response){
-            response.redirect("https://" + request.headers.host + request.url);
-        });
-        http_server.listen(80);
-        console.log('Listening on port 443, redirecting :80 -> :443')
-    } catch (err) {  // Probably couldn't load SSL certificates
-        if (err.code === 'ENOENT') {
-            console.error('Could not load SSL certificate, falling back to HTTP');
-            app.listen(80);
-            console.log('Listening on port 80');
-        } else if (err.code == 'EACCES') {
-            console.error('Denied access to SSL certificates; did you start with sudo?');
-        } else {
-            console.error('Unexpected error:', err);
-        }
-    }
-    drop_root();
+    app.listen(3000);
+    console.log('Listening on port 3000');
 }

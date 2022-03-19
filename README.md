@@ -6,7 +6,8 @@ Assuming you are running an Ubuntu/Debian-like server, install the required pack
 
     sudo apt install libreoffice-nogui
     sudo apt install inkscape
-    sudo apt install libcap2-bin
+    sudo apt install npm
+    sudo apt install nginx
     sudo apt install perl-tk  # Needed for manual installation of TexLive
 
 Now install a new version of TexLive, since the version (as of Ubuntu 21.10) is not new enough. In particular, `make4ht` versions 0.3g and 0.3k are known to work, but 0.3f does not support subfigures properly. Hopefully this will change in the future since it is currently difficult to install a specific version of TexLive and it is clearly a source of possible problems. Install TexLive 2021 like this:
@@ -20,7 +21,6 @@ Create a relatively unprivileged *nodewww* user to run the server process:
 
     sudo useradd -m nodewww
     sudo passwd nodewww
-    sudo usermod -aG sudo nodewww
 
 Add the new TexLive installation to the user's PATH by adding this line to the end of `/home/nodewww/.bashrc`:
 
@@ -33,25 +33,25 @@ Then install conda (as the user that will run NodeJS) if you don't already have 
     wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
     sh Miniconda3-latest-Linux-x86_64.sh
 
-Likewise install NVM, the NodeJS version manager, as that same user. NVM allows you to run a specific version of NodeJS, and as an unprivileged user:
+Likewise install `n`, a NodeJS version manager, as that same user. `n` allows you to run a specific version of NodeJS:
 
-    wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+    sudo npm install -g n
+    sudo n 17  # Install NodeJS version 17.x
 
-Close and reopen the terminal or run `bash` to start a new one and get conda and NVM in the path. If the `nvm` command does not work, look for lines in the bottom of `~/.profile` related to NVM and copy them to `~/.bashrc`.
-
-Then install the correct version of NodeJS:
-
-    nvm install 17
+Close and reopen the terminal or run `bash` to start a new one and get everything in the path.
 
 Set up SSL certificates:
 
+    sudo cp paper_nginx /etc/nginx/sites-available/
+    sudo ln -s /etc/nginx/sites-available/paper_nginx /etc/nginx/sites-enabled/
+    # Now replace the REPLACE_WITH_DOMAIN part with your domain, e.g., papers.example.com
+    sudo vim /etc/nginx/sites-available/paper_nginx
+    sudo rm /etc/nginx/sites-enabled/default  # Remove default config
+    sudo systemctl restart nginx
     sudo snap install core
     sudo snap refresh core
     sudo snap install --classic certbot
-    killall node  # Just make sure the server is not running
-    sudo certbot certonly --standalone
-
-Note in the output where the key and certificate are saved, so you can tell the server where to find them during installation.
+    sudo certbot --nginx
 
 ## Installation
 
@@ -63,7 +63,6 @@ Edit `package.json` to set the `ssl_cert` and `ssl_private_key` paths to where y
 
 Then install the exact version of everything from `package-lock.json` by running:
 
-    nvm use 17  # Make sure we're using the right version of NodeJS
     npm ci
 
 At this point you should probably install security updates and restart your server:
@@ -75,10 +74,10 @@ At this point you should probably install security updates and restart your serv
 
 From the *paper-convert-www* directory, as your unprivileged user, run:
 
-    nvm use 17
     conda activate paper_convert
-    sudo npm start
+    sudo env "PATH=$PATH" npm start
 
-You might want to keep it running after logging out. In that case, replace `sudo npm start` with `sudo nohup npm start >> stdout.txt &`. Then if you want to stop it, run:
+You might want to keep it running after logging out. In that case, instead of the `npm start` line, run:
 
-    killall node
+    sudo nohup env "PATH=$PATH" npm start >> stdout.txt &
+    # Then if you want to stop it, run: killall node
