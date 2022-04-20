@@ -105,6 +105,12 @@
     margin-top: 1em;
 }
 
+.all-authors {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
+
 .paper-contents div.Affiliations p {
     margin: 0;
 }
