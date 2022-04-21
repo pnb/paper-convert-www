@@ -60,6 +60,10 @@
     min-width: 25em;
 }
 
+.paper-contents table p {
+    margin: 0;
+}
+
 .paper-contents table table {
     border: none;
     margin: 0 auto 0 auto;
