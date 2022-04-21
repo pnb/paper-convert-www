@@ -97,6 +97,19 @@
     text-align: left;
 }
 
+.paper-contents dl {
+    margin: 0 0 0 1em;
+}
+
+.paper-contents dl dt {
+    float: left;
+    margin: 0;
+}
+
+.paper-contents dl dd {
+    margin: 0 0 0 1.5em;
+}
+
 .paper-contents div.CopyrightBlock,
 .paper-contents .hidden {
     display: none;
