@@ -60,6 +60,12 @@
     min-width: 25em;
 }
 
+.paper-contents table table {
+    border: none;
+    margin: 0 auto 0 auto;
+    min-width: 0;
+}
+
 .paper-contents caption {
     font-weight: bold;
 }
