@@ -21,6 +21,11 @@ router.get('/submitted-papers', (req, res) => {
                 submitted_time = Math.round(dir_stats.birthtimeMs);
             } catch (_) {}
 
+            let source_ext = '.docx';
+            if (fs.existsSync(path.join(router.docs_dir, entry.name, entry.name + '.zip'))) {
+                source_ext = '.zip'
+            }
+
             try {
                 const html = fs.readFileSync(path.join(router.docs_dir, entry.name, 'index.html'));
                 const doc = new JSDOM(html).window.document;
@@ -30,12 +35,14 @@ router.get('/submitted-papers', (req, res) => {
                     // Make key sortable by title, then submitted time
                     paper_info[paper_title + submitted_time + entry.name] = {
                         id: entry.name,
+                        source_ext: source_ext,
                         time: submitted_time,
                         title: paper_title,
                     }
                 } else {
                     paper_info[submitted_time + entry.name] = {
                         id: entry.name,
+                        source_ext: source_ext,
                         time: submitted_time,
                         title: '*No title!',
                     }
@@ -44,6 +51,7 @@ router.get('/submitted-papers', (req, res) => {
                 if (err.code == 'ENOENT') {
                     paper_info[submitted_time + entry.name] = {
                         id: entry.name,
+                        source_ext: source_ext,
                         time: submitted_time,
                         title: '**No index.html (conversion probably failed)',
                     }

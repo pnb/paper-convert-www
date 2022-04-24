@@ -14,6 +14,7 @@
     <thead>
         <tr>
             <th>id</th>
+            <th>src</th>
             <th>submitted</th>
             <th>title</th>
         </tr>
@@ -22,6 +23,7 @@
     <%_ Object.keys(papers).sort().forEach((id) => { _%>
         <tr>
             <td class="id"><a href="/process/<%= papers[id].id %>"><%= papers[id].id %></a></td>
+            <td><a href="/view/<%= papers[id].id %>/<%= papers[id].id + papers[id].source_ext %>"><%= papers[id].source_ext %></a></td>
             <td class="time"><%= papers[id].time %></td>
             <td class="title"><%= papers[id].title %></td>
         </tr>
