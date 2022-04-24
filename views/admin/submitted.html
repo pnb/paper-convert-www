@@ -1,0 +1,33 @@
+<% title = 'Papers submitted' -%>
+<%- include ('../header.html') %>
+<h1>Papers submitted</h1>
+
+<p>
+    This table is sorted by paper title and by submitted time within title.
+    Presumably authors' best conversion results will be their most recent.
+    This ordering assumes that paper titles are unique.
+</p>
+
+<label><input type=checkbox id="chk-only-latest" />Show only most recent version of each paper</label>
+
+<table class="submitted-papers">
+    <thead>
+        <tr>
+            <th>id</th>
+            <th>submitted</th>
+            <th>title</th>
+        </tr>
+    </thead>
+    <tbody>
+    <%_ Object.keys(papers).sort().forEach((id) => { _%>
+        <tr>
+            <td class="id"><a href="/process/<%= papers[id].id %>"><%= papers[id].id %></a></td>
+            <td class="time"><%= papers[id].time %></td>
+            <td class="title"><%= papers[id].title %></td>
+        </tr>
+    <%_ }) _%>
+    </tbody>
+</table>
+
+<script type="text/javascript" src="/js/submitted.js"></script>
+<%- include ('../footer.html') _%>

@@ -48,3 +48,23 @@ span.doc-warning-help {
 button#btn-upload {
     margin-top: 2em;
 }
+
+table.submitted-papers td.id,
+table.submitted-papers td.time {
+    font-family: 'Courier New', Courier, monospace;
+}
+
+table.submitted-papers td.id,
+table.submitted-papers td.time {
+    font-family: 'Courier New', Courier, monospace;
+}
+
+table.submitted-papers th,
+table.submitted-papers td {
+    padding: .1em .4em .1em .4em;
+}
+
+table.submitted-papers th {
+    text-align: left;
+    border-bottom: 1px solid #222;
+}
