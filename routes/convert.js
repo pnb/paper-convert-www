@@ -78,7 +78,7 @@ router.get('/process/:doc_id', (req, res) => {
         let log_fname = path.join(router.docs_dir, req.params.doc_id, 'converter-output.txt');
         conversion_log = fs.readFileSync(log_fname, {encoding: 'utf8'});
         conversion_log = conversion_log.split(/\n+/);
-    } catch {}  // Not yet finished converting
+    } catch (_) {}  // Not yet finished converting
 
     // Get full information about warnings from conversion's messages.json
     const warnings = [];
