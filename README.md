@@ -9,6 +9,8 @@ Assuming you are running an Ubuntu/Debian-like server, install the required pack
     sudo apt install npm
     sudo apt install nginx
     sudo apt install perl-tk  # Needed for manual installation of TexLive
+    sudo apt install ruby-dev  # Needed for anystyle-cli
+    sudo gem install anystyle-cli
 
 Now install a new version of TexLive, since the version (as of Ubuntu 21.10) is not new enough. In particular, `make4ht` versions 0.3g and 0.3k are known to work, but 0.3f does not support subfigures properly. Hopefully this will change in the future since it is currently difficult to install a specific version of TexLive and it is clearly a source of possible problems. Install TexLive 2021 like this:
 
