@@ -82,6 +82,10 @@
     border-bottom: 1px solid #000;
 }
 
+.paper-contents .border-above {
+    border-top: .01em solid #000;
+}
+
 .paper-contents th,
 .paper-contents td {
     padding: .2em .5em .2em .5em;
