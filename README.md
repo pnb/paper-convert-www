@@ -42,6 +42,11 @@ Likewise install `n`, a NodeJS version manager, as that same user. `n` allows yo
 
 Close and reopen the terminal or run `bash` to start a new one and get everything in the path.
 
+Fix problem with ImageMagick refusing to convert PDFs because of an old security problem:
+
+    sudo vim /etc/ImageMagick-6/policy.xml
+    # Look for <!-- disable ghostscript format types --> and delete all of those restrictions
+
 Set up SSL certificates:
 
     sudo cp paper_nginx /etc/nginx/sites-available/
