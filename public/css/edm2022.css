@@ -93,8 +93,8 @@
 }
 
 .paper-contents td.has-rowspan {
-    border-top: .01em dashed #000;
-    border-bottom: .01em dashed #000;
+    border-top: .01em solid #000;
+    border-bottom: .01em solid #000;
 }
 
 .paper-contents pre {
