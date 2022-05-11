@@ -44,6 +44,11 @@
     width: 12em;
 }
 
+.paper-contents .subfigure img.img-small {
+    height: 12em;
+    object-fit: contain;
+}
+
 .paper-contents img.img-medium {
     width: 25em;
 }
