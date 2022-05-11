@@ -9,8 +9,12 @@ import { parse as csv_parse } from 'csv-parse/sync';
 export function get_warnings(doc_id) {
     // Parse the CSV list of conversion warnings for a document
     const doc_dir = path.join(process.env.npm_package_config_conversion_monitor_dir, doc_id);
-    const csv_content = fs.readFileSync(path.join(doc_dir, 'conversion_warnings.csv'), 'utf8');
-    return csv_parse(csv_content, {columns: true});
+    try {
+        const csv_content = fs.readFileSync(path.join(doc_dir, 'conversion_warnings.csv'), 'utf8');
+        return csv_parse(csv_content, {columns: true});
+    } catch (_) {
+        return [];  // No warnings!
+    }
 }
 
 
@@ -55,15 +59,22 @@ export class DocConverter {
         const out_dir = path.join(this.monitor_dir, doc_id);
         let doc_fname = path.join(out_dir, doc_id);
         let cmd = this.python_path + ' ' + this.scripts_dir;
+        let is_tex = 0;
         if (fs.existsSync(doc_fname + '.docx')) {
             cmd = path.join(cmd, 'main_docx.py') + ' ' + doc_fname + '.docx ' + out_dir;
         } else {
+            is_tex = 1;
             cmd = path.join(cmd, 'main_latex.py') + ' ' + doc_fname + '.zip ' + out_dir;
         }
         try {
             var stdout = execSync(cmd, {encoding: 'utf8'}).toString();
         } catch (sys_err) {
             var stdout = sys_err.stdout + '\n' + sys_err.stderr;
+            let new_warning = 'unexpected,,' + is_tex + '\n';
+            if (!get_warnings(doc_id).length) {
+                new_warning = 'warning_name,extra_info,is_tex\n' + new_warning;
+            }
+            fs.appendFileSync(path.join(out_dir, 'conversion_warnings.csv'), new_warning, 'utf8');
         }
         fs.writeFileSync(path.join(out_dir, 'converter-output.txt'), stdout, 'utf8');
 

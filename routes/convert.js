@@ -83,10 +83,7 @@ router.get('/process/:doc_id', (req, res) => {
     // Get full information about warnings from conversion's messages.json
     const warnings = [];
     if (conversion_log.length) {
-        let log_lines = [];
-        try {
-            log_lines = get_warnings(req.params.doc_id);
-        } catch {}  // No warnings!
+        let log_lines = get_warnings(req.params.doc_id);
         log_lines.forEach((warning) => {
             const def = structuredClone(warning_defs[warning.warning_name]);
             if (parseInt(warning.is_tex) && def.tex) {
