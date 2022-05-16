@@ -75,6 +75,10 @@
     min-width: 0;
 }
 
+.paper-contents table[role="presentation"] {
+    border: none;
+}
+
 .paper-contents caption {
     font-weight: bold;
 }
