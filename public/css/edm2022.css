@@ -258,3 +258,9 @@ div.footnotes {
 .paper-contents span.equation-number {
     display: block;
 }
+
+.paper-contents span.fbox {
+    border: 1px solid black;
+    display: block;
+    padding: .25em;
+}
