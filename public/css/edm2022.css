@@ -112,15 +112,19 @@
 
 .paper-contents dl {
     margin: 0 0 0 1em;
+    display: grid;
+    column-gap: .5em;
+    row-gap: 0em;
+    grid-template-columns: auto 1fr;
 }
 
 .paper-contents dl dt {
-    float: left;
+    white-space: nowrap;
     margin: 0;
 }
 
 .paper-contents dl dd {
-    margin: 0 0 0 1.5em;
+    margin: 0;
 }
 
 .paper-contents div.CopyrightBlock,
