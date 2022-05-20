@@ -57,7 +57,7 @@ export class DocConverter {
     _convert(dibs_fname, doc_id) {
         console.log('DocConverter: Started document', doc_id);
         const out_dir = path.join(this.monitor_dir, doc_id);
-        let doc_fname = path.join(out_dir, doc_id);
+        const doc_fname = path.join(out_dir, doc_id);
         let cmd = this.python_path + ' ' + this.scripts_dir;
         let is_tex = 0;
         if (fs.existsSync(doc_fname + '.docx')) {
@@ -65,6 +65,10 @@ export class DocConverter {
         } else {
             is_tex = 1;
             cmd = path.join(cmd, 'main_latex.py') + ' ' + doc_fname + '.zip ' + out_dir;
+        }
+        const metadata = JSON.parse(fs.readFileSync(doc_fname + '.json', 'utf8'));
+        if (metadata.original_filename.includes('--no-mathml')) {
+            cmd += ' --no-mathml';  // Bit of a hack
         }
         try {
             var stdout = execSync(cmd, {encoding: 'utf8'}).toString();
