@@ -46,6 +46,11 @@ function read_paper_data(dir) {
         cur_paper.time = Math.round(dir_stats.birthtimeMs);
     } catch (_) {}
 
+    if (!fs.existsSync(path.join(router.docs_dir, dir, 'converter-output.txt'))) {
+        cur_paper.title = '***Conversion in progress';
+        return cur_paper;  // Skip caching info because result may be incomplete
+    }
+
     try {
         const html = fs.readFileSync(path.join(router.docs_dir, dir, 'index.html'));
         const doc = new JSDOM(html).window.document;
