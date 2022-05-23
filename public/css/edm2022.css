@@ -145,11 +145,15 @@
     margin-top: 1em;
 }
 
-.all-authors {
+.paper-contents .all-authors {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-evenly;
     gap: 1em;
+}
+
+.paper-contents .author-chunk {
+    text-align: center;
 }
 
 .paper-contents div.Affiliations p {
