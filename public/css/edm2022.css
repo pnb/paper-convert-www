@@ -264,3 +264,7 @@ div.footnotes {
     display: block;
     padding: .25em;
 }
+
+.paper-contents span.ALIndent {  /* Algorithm indent */
+    display: inline-block;
+}
