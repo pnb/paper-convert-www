@@ -56,7 +56,7 @@ function read_paper_data(dir) {
         const doc = new JSDOM(html).window.document;
         const titles = doc.getElementsByClassName('Paper-Title');
         if (titles.length > 0) {
-            cur_paper.title = titles.item(0).textContent;
+            cur_paper.title = titles.item(0).textContent.trim();
         } else {
             cur_paper.title = '*No title!';
         }
