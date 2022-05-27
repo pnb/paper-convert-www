@@ -160,6 +160,14 @@
     margin: 0;
 }
 
+.paper-contents ol ol {
+    list-style-type: lower-roman;
+}
+
+.paper-contents ol ol ol {
+    list-style-type: lower-alpha;
+}
+
 .paper-contents h1,
 .paper-contents h2,
 .paper-contents h3,
