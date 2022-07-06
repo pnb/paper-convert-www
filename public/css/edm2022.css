@@ -7,6 +7,22 @@
     counter-reset: headingnum;
 }
 
+header.paper-header {
+    background: #fff;
+    font-family: Helvetica,Arial,sans-serif;
+    text-align: center;
+    padding: .25em 1em 1em 1em;
+    border-bottom: .01em solid #000;
+    position: sticky;
+    top: 0;
+}
+
+header.paper-header a {
+    color: #338;
+    margin: 0 2em 0 2em;
+    text-decoration-thickness: 1px;
+}
+
 .paper-contents figure {
     margin: 2em 0 1em 0;
     text-align: center;
