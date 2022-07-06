@@ -10,6 +10,7 @@
 header.paper-header {
     background: #fff;
     font-family: Helvetica,Arial,sans-serif;
+    line-height: 1.4;
     text-align: center;
     padding: .25em 1em 1em 1em;
     border-bottom: .01em solid #000;
@@ -18,10 +19,34 @@ header.paper-header {
     z-index: 1;
 }
 
-header.paper-header a {
+header.paper-header a:not([class]), a[class=""],
+header.paper-header a:not([class]), a[class=""] {
     color: #338;
-    margin: 0 2em 0 2em;
+    margin: 0 2em 0 0;
     text-decoration-thickness: 1px;
+}
+
+a.pdf-link,
+a.bib-link {
+    display: inline-block;
+    background: #66f;
+    border: 1px solid #338;
+    border-radius: .2em;
+    color: #fff;
+    text-decoration: none;
+    font-size: .75rem;
+    padding: 0 .3em 0 .3em;
+    margin: .1em;
+}
+
+a.pdf-link:hover,
+a.bib-link:hover {
+    box-shadow: 0 0 .125em #000;
+}
+
+a.bib-link {
+    background: #666;
+    border-color: #333;
 }
 
 .paper-contents figure {
