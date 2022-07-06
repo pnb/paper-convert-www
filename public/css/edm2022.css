@@ -15,6 +15,7 @@ header.paper-header {
     border-bottom: .01em solid #000;
     position: sticky;
     top: 0;
+    z-index: 1;
 }
 
 header.paper-header a {
