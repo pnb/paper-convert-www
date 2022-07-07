@@ -59,6 +59,10 @@ router.get('/view/edm2022.css', (req, res) => {
     res.redirect('/css/edm2022.css');
 });
 
+router.get('/view/table_sizer.js', (req, res) => {
+    res.redirect('/js/table_sizer.js');
+});
+
 router.get('/view/:doc_id', (req, res) => {
     res.redirect(req.baseUrl + req.url + '/index.html');
 });
