@@ -27,7 +27,8 @@ header.paper-header a:not([class]), a[class=""] {
 }
 
 a.pdf-link,
-a.bib-link {
+a.bib-link,
+a.doi-link {
     display: inline-block;
     background: #66f;
     border: 1px solid #338;
@@ -40,13 +41,19 @@ a.bib-link {
 }
 
 a.pdf-link:hover,
-a.bib-link:hover {
+a.bib-link:hover,
+a.doi-link:hover {
     box-shadow: 0 0 .125em #000;
 }
 
 a.bib-link {
     background: #666;
     border-color: #333;
+}
+
+a.doi-link {
+    background: #686;
+    border-color: #343;
 }
 
 .paper-contents figure {
