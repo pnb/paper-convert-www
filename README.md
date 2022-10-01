@@ -66,8 +66,6 @@ Clone this repository onto the server, e.g., into the home directory of the user
 
 Also clone the *paper-convert-scripts* repository and complete the setup for that. If you installed it somewhere other than alongside this repository, you will need to edit `package.json` (for this repository, not that one) to point `conversion_scripts_dir` to the correct place.
 
-Edit `package.json` to set the `ssl_cert` and `ssl_private_key` paths to where your certificates were installed.
-
 Then install the exact version of everything from `package-lock.json` by running:
 
     npm ci
