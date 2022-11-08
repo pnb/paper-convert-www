@@ -38,7 +38,7 @@ Then install conda (as the user that will run NodeJS) if you don't already have 
 Likewise install `n`, a NodeJS version manager, as that same user. `n` allows you to run a specific version of NodeJS:
 
     sudo npm install -g n
-    sudo n 17  # Install NodeJS version 17.x
+    sudo n 18  # Install NodeJS version 18.x
 
 Close and reopen the terminal or run `bash` to start a new one and get everything in the path.
 

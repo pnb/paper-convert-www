@@ -36,8 +36,8 @@ if (cluster.isPrimary) {
     }
     // Check some environment things
     const node_version = execSync('node --version').toString();
-    if (!node_version.startsWith('v17.')) {
-        console.error('NodeJS version 17 is required');
+    if (!node_version.startsWith('v17.') && !node_version.startsWith('v18.')) {
+        console.error('NodeJS version 17 or 18 is required');
         exit(1);
     }
     try {
