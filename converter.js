@@ -67,8 +67,8 @@ export class DocConverter {
             cmd = path.join(cmd, 'main_latex.py') + ' ' + doc_fname + '.zip ' + out_dir;
         }
         const metadata = JSON.parse(fs.readFileSync(doc_fname + '.json', 'utf8'));
-        if (metadata.original_filename.includes('--no-mathml')) {
-            cmd += ' --no-mathml';  // Bit of a hack
+        if (metadata.original_filename.includes('--mathml')) {
+            cmd += ' --mathml';  // Bit of a hack
         }
         try {
             var stdout = execSync(cmd, {encoding: 'utf8'}).toString();
