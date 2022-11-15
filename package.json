@@ -5,11 +5,11 @@
         "cluster": "^0.7.7",
         "connect-slashes": "^1.4.0",
         "csv-parse": "^5.0.4",
-        "ejs": "^3.1.7",
-        "express": "^4.17.1",
-        "express-fileupload": "^1.2.1",
+        "ejs": "^3.1.8",
+        "express": "^4.18.2",
+        "express-fileupload": "^1.4.0",
         "jsdom": "^19.0.0",
-        "nanoid": "^3.1.30"
+        "nanoid": "^3.3.1"
     },
     "config": {
         "conversion_scripts_dir": "../paper-convert-scripts",
