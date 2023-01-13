@@ -70,11 +70,16 @@ export class DocConverter {
         if (metadata.original_filename.includes('--mathml')) {
             cmd += ' --mathml';  // Bit of a hack
         }
+        const timeout_ms = parseInt(process.env.npm_package_config_conversion_time_limit_ms)
+        const start_time = Date.now()
         try {
-            var stdout = execSync(cmd, {encoding: 'utf8'}).toString();
+            var stdout = execSync(cmd, {encoding: 'utf8', timeout: timeout_ms}).toString()
         } catch (sys_err) {
             var stdout = sys_err.stdout + '\n' + sys_err.stderr;
             let new_warning = 'unexpected,,' + is_tex + '\n';
+            if (Date.now() - start_time >= timeout_ms) {
+                new_warning = 'timeout,,' + is_tex + '\n'
+            }
             if (!get_warnings(doc_id).length) {
                 new_warning = 'warning_name,extra_info,is_tex\n' + new_warning;
             }
