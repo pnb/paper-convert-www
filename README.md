@@ -13,7 +13,7 @@ sudo apt install ruby-dev  # Needed for anystyle-cli
 sudo gem install anystyle-cli
 ```
 
-Now install a new version of TexLive, at least 2022 or newer. This may require an OS upgrade or [manual install](https://ftp.math.utah.edu/pub/tex/historic/systems/texlive) since the version is very important. In particular, `make4ht`, the LaTeX HTML compiler, is rapidly evolving and has many quirks. Run `make4ht --version` to make sure you have version 0.3l or newer. This is still a source of problems since much of the conversion scripts in this repository are dedicated to post-processing the idiosyncrasies of make4ht (though it gets better all the time!).
+Now install a new, full version of TexLive, at least 2022 or newer (e.g., `apt install texlive-full`). This may require an OS upgrade or [manual install](https://ftp.math.utah.edu/pub/tex/historic/systems/texlive) since the version is very important. In particular, `make4ht`, the LaTeX HTML compiler, is rapidly evolving and has many quirks. Run `make4ht --version` to make sure you have version 0.3l or newer. This is still a source of problems since much of the conversion scripts in this repository are dedicated to post-processing the idiosyncrasies of make4ht (though it gets better all the time!).
 
 Create a relatively unprivileged *nodewww* user to run the server process:
 
