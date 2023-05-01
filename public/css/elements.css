@@ -8,7 +8,8 @@ h1,h2,h3,h4,h5,h6 {
     font-weight: normal;
 }
 
-button {
+button,
+input[type="submit"] {
     padding: .5em 1em .5em 1em;
     border: .01em solid #222;
     border-bottom: .2em solid #222;
@@ -18,14 +19,22 @@ button {
     font-weight: bold;
 }
 
-button:hover {
+button:hover,
+input[type="submit"]:hover {
     box-shadow: 0 .3em .7em -.4em #222;
 }
 
-button:disabled {
+button:disabled,
+input[type="submit"]:disabled {
     box-shadow: none;
     border-color: #666;
     cursor: default;
+}
+
+input[type="text"],
+input[type="password"] {
+    padding: .5em;
+    border: .01em solid #222;
 }
 
 input[type=file] {

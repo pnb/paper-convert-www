@@ -14,7 +14,8 @@
     "config": {
         "conversion_scripts_dir": "../paper-convert-scripts",
         "conversion_monitor_dir": "./papers",
-        "conversion_time_limit_ms": 300000
+        "conversion_time_limit_ms": 300000,
+        "admin_page_password": "change-me"
     },
     "scripts": {
         "start": "node index.js"

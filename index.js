@@ -48,6 +48,10 @@ if (cluster.isPrimary) {
             exit(1);
         }
     }
+    if (process.env.npm_package_config_admin_page_password === 'change-me') {
+        console.error('Admin page password not set in package.json')
+        exit(1)
+    }
 
     // Create a worker for all CPU cores but 1, to be used for document conversion
     const num_workers = Math.max(1, os.cpus().length - 1);

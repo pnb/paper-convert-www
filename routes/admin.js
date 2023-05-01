@@ -8,9 +8,16 @@ export const router = Router();
 
 router.docs_dir = false;
 
-router.get('/submitted-papers', (req, res) => {
+router.get('/password', (req, res) => {
+    res.render('admin/password')
+})
+
+router.post('/submitted-papers', (req, res) => {
     if (!router.docs_dir) {
         throw Error('`docs_dir` is not set in the admin.js router');
+    }
+    if (req.body.pw !== process.env.npm_package_config_admin_page_password) {
+        return res.status(503).send('Incorrect password')
     }
     const paper_info = {};
     fs.readdirSync(router.docs_dir, {withFileTypes: true}).forEach((entry) => {

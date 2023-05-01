@@ -52,7 +52,7 @@ sudo vim /etc/ImageMagick-6/policy.xml
 
 Clone this repository onto the server, e.g., into the home directory of the user that will run the server.
 
-Also clone the *paper-convert-scripts* repository and complete the setup for that. If you installed it somewhere other than alongside this repository, you will need to edit `package.json` (for this repository, not that one) to point `conversion_scripts_dir` to the correct place.
+Also clone the *paper-convert-scripts* repository and complete the setup for that. If you installed it somewhere other than alongside this repository, you will need to edit `package.json` (for this repository, not that one) to point `conversion_scripts_dir` to the correct place. Also set `admin_page_password` to something memorable (security provisions are super basic, and not intended to defend against malicious parties so much as inquisitive ones).
 
 Then install the exact version of everything from `package-lock.json` by running:
 
@@ -88,13 +88,5 @@ From the *paper-convert-www* directory, as your unprivileged user, run:
 
 ```bash
 conda activate paper_convert
-npm start
+./restart.sh
 ```
-
-You might want to keep it running after logging out. In that case, instead of the `npm start` line, run:
-
-```bash
-nohup npm start >> stdout.txt &
-```
-
-Then if you want to stop it, run: `killall node`
