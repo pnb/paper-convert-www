@@ -12,6 +12,10 @@ router.get('/password', (req, res) => {
     res.render('admin/password')
 })
 
+router.get('/submitted-papers', (req, res) => {
+    res.redirect('/admin/password')
+})
+
 router.post('/submitted-papers', (req, res) => {
     if (!router.docs_dir) {
         throw Error('`docs_dir` is not set in the admin.js router');
