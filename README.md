@@ -90,3 +90,19 @@ From the *paper-convert-www* directory, as your unprivileged user, run:
 conda activate paper_convert
 ./restart.sh
 ```
+
+## Backing up/downloading papers
+
+Note the trailing slashes are important!
+
+```bash
+rsync -rtuvm --include="*/" --include="*.zip" --exclude="*" nodewww@SERVER:paper-convert-www/papers/ ~/Downloads/pcpapers
+
+# --include/--exclude stuff can be dropped to get everything (not only zip files)
+# r = recursive
+# t = send timestamps?
+# u = only update files with newer timestamps
+# v = verbose (show files sent)
+# m = avoid creating empty directories in the destination
+# Add --dry-run if needed to see what would be transferred
+```
