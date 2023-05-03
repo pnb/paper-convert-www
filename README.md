@@ -96,7 +96,7 @@ conda activate paper_convert
 Note the trailing slashes are important!
 
 ```bash
-rsync -rtuvm --include="*/" --include="*.zip" --exclude="*" nodewww@SERVER:paper-convert-www/papers/ ~/Downloads/pcpapers
+rsync -rtuvm --include="*/" --include="*.zip" --exclude="*tmp.docx" --include="*.docx" --exclude="*" nodewww@SERVER:paper-convert-www/papers/ ~/Downloads/pcpapers
 
 # --include/--exclude stuff can be dropped to get everything (not only zip files)
 # r = recursive
