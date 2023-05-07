@@ -303,6 +303,11 @@ div.footnotes {
     border-top: 2px solid #222;
 }
 
+mjx-container {  /* For long MathJax equations; in future versions they will better support line breaks */
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
 /******** LaTeX-specific styles ********/
 
 .paper-contents span.math.display {
