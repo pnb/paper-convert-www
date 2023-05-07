@@ -209,6 +209,12 @@ a.doi-link {
     margin: 0;
 }
 
+.paper-contents span.author-footnote-content:before {
+    content: ' ';
+    clear: right;
+    display: block;
+}
+
 .paper-contents ol ol {
     list-style-type: lower-roman;
 }
