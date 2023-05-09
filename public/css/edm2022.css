@@ -159,7 +159,7 @@ a.doi-link {
     text-align: left;
 }
 
-.paper-contents dl {
+.paper-contents dl:not(.description-env) {
     margin: 0 0 0 1em;
     display: grid;
     column-gap: .5em;
@@ -167,13 +167,17 @@ a.doi-link {
     grid-template-columns: auto 1fr;
 }
 
-.paper-contents dl dt {
+.paper-contents dl:not(.description-env) dt {
     white-space: nowrap;
     margin: 0;
 }
 
-.paper-contents dl dd {
+.paper-contents dl:not(.description-env) dd {
     margin: 0;
+}
+
+.paper-contents dl.description-env dt {
+    font-weight: bold;
 }
 
 .paper-contents div.CopyrightBlock,
