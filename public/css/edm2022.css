@@ -118,10 +118,20 @@ a.doi-link {
     margin: 0;
 }
 
+.paper-contents table tfoot {
+    font-size: .75em;
+    border-top: 1px solid #000;
+}
+
 .paper-contents table table {
     border: none;
     margin: 0 auto 0 auto;
     min-width: 0;
+}
+
+.paper-contents .tablenotes {
+    font-size: .75em;
+    text-align: center;
 }
 
 .paper-contents table[role="presentation"] {
