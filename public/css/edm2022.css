@@ -129,11 +129,6 @@ a.doi-link {
     min-width: 0;
 }
 
-.paper-contents .tablenotes {
-    font-size: .75em;
-    text-align: center;
-}
-
 .paper-contents table[role="presentation"] {
     border: none;
 }
