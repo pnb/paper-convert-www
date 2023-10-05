@@ -348,6 +348,11 @@ mjx-container {  /* For long MathJax equations; in future versions they will bet
 
 .paper-contents figure span.fbox {
     display: inline-block;
+    padding: 0;
+}
+
+.paper-contents figure span.fbox img {
+    margin: 0;
 }
 
 .paper-contents span.ALIndent {  /* Algorithm indent */
