@@ -55,8 +55,8 @@ router.post('/upload', (req, res) => {
     });
 });
 
-router.get('/view/edm2022.css', (req, res) => {
-    res.redirect('/css/edm2022.css');
+router.get('/view/iedms.css', (req, res) => {
+    res.redirect('/css/iedms.css');
 });
 
 router.get('/view/table_sizer.js', (req, res) => {
