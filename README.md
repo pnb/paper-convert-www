@@ -9,7 +9,7 @@ sudo apt install libreoffice-nogui
 sudo apt install inkscape
 sudo apt install npm
 sudo apt install nginx
-sudo apt install ruby-dev  # Needed for anystyle-cli
+sudo apt install gcc make ruby-dev  # Needed for anystyle-cli
 sudo gem install anystyle-cli
 ```
 
