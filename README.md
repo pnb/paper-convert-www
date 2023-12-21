@@ -8,20 +8,34 @@ Create a relatively unprivileged *nodewww* user to run the server process:
 sudo useradd -m nodewww
 sudo passwd nodewww
 sudo usermod -a -G sudo nodewww
+sudo usermod -s /bin/bash nodewww
+```
+
+Enable key-based SSH login for that user:
+
+```bash
+sudo su nodewww
+mkdir ~/.ssh
+vim ~/.ssh/authorized_keys  # And paste in your public key here
+chmod 700 ~/.ssh
+chmod 600 ~/.ssh/authorized_keys
+```
+
+Disable password-based SSH login for security (make sure a key is working first!):
+
+```bash
+sudo vim /etc/ssh/sshd_config  # And set: PasswordAuthentication no
+systemctl restart ssh
 ```
 
 Assuming you are running an Ubuntu/Debian-like server, install the required packages like this:
 
 ```bash
-sudo apt install libreoffice-nogui
-sudo apt install inkscape
-sudo apt install npm
-sudo apt install nginx
-sudo apt install gcc make ruby-dev  # Needed for anystyle-cli
+sudo apt install libreoffice-nogui inkscape npm nginx gcc make ruby-dev
 sudo gem install anystyle-cli
 ```
 
-Now install a new, full version of TexLive, at least 2023 or newer, which may not be available via the package manager. It is easier to take a more manual approach. Get the `install-tl-unx.tar.gz` file from a [recent version](https://ftp.math.utah.edu/pub/tex/historic/systems/texlive). Then run:
+Now install a new, full version of TexLive, at least 2023 or newer, which may not be available via the package manager. It is easier to take a more manual approach. Get the `install-tl-unx.tar.gz` file from a [recent version](https://ftp.math.utah.edu/pub/tex/historic/systems/texlive). Then run (with adjustments for "2023" as needed):
 
 ```bash
 tar xf install-tl-unx.tar.gz
@@ -48,14 +62,14 @@ sudo npm install -g n
 sudo n 19  # Install NodeJS version 19.x
 ```
 
-Close and reopen the terminal or run `bash` to start a new one and get everything in the path.
-
 Fix problem with ImageMagick refusing to convert PDFs because of an old security problem:
 
 ```bash
 sudo vim /etc/ImageMagick-6/policy.xml
 # Look for <!-- disable ghostscript format types --> and delete all of those restrictions
 ```
+
+Close and reopen the terminal or run `bash` to start a new one and get everything in the path.
 
 ## Installation
 
