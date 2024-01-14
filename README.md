@@ -114,6 +114,8 @@ conda activate paper_convert
 ./restart.sh
 ```
 
+If it does not say "Listening on port 3000", something probably did not work. Check `ps aux | grep 'node index'` to see if it is running, and, if not, `npm start` to get all possible error output.
+
 ## Backing up/downloading papers
 
 Note the trailing slashes are important!
