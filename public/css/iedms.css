@@ -114,6 +114,10 @@ a.doi-link {
     width: 25em;
 }
 
+.paper-contents .subfigure img.img-medium {
+    width: 24em;
+}
+
 .paper-contents img.img-large {
     width: 100%;
 }
