@@ -90,7 +90,7 @@ router.get('/process/:doc_id', (req, res) => {
         let log_lines = get_warnings(req.params.doc_id);
         log_lines.forEach((warning) => {
             const def = structuredClone(warning_defs[warning.warning_name]);
-            if (parseInt(warning.is_tex) && def.tex) {
+            if (parseInt(warning.is_tex) && def?.tex) {
                 for (let key in def.tex) {
                     def[key] = def.tex[key];
                 }
