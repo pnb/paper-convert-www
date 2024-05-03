@@ -57,26 +57,8 @@
  Standard LaTeX document class]
 
 
-%% Nigel Bosch: Code for alt text, adapted from ACM single-column template version 1.80 (Oct 11, 2021)
-\newif\if@Description@present
-\@Description@presenttrue
-\newif\if@undescribed@images
-\@undescribed@imagesfalse
-\newcommand\Description[2][]{\global\@Description@presenttrue\ignorespaces}
-\AtEndDocument{\if@undescribed@images
-  \@warning{Some images may lack descriptions}\fi}
-\AtBeginEnvironment{figure}{\@Description@presentfalse
-  \let\@vspace\@vspace@orig
-  \let\@vspacer\@vspacer@orig}
-\AtBeginEnvironment{figure*}{\@Description@presentfalse
-  \let\@vspace\@vspace@orig
-  \let\@vspacer\@vspacer@orig}
-\AtEndEnvironment{figure}{\if@Description@present\else
-  \global\@undescribed@imagestrue
-  \@warning{A possible image without description}\fi}
-\AtEndEnvironment{figure*}{\if@Description@present\else
-  \global\@undescribed@imagestrue
-  \@warning{A possible image without description}\fi}
+%% Nigel Bosch: Code for alt text: just a NOP to later process in HTML conversion
+\newcommand{\Description}[1]{}
 %% END CHANGES
 
 
