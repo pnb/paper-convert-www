@@ -326,6 +326,14 @@ a.doi-link {
     content: counter(h1counter)"." counter(h2counter)"." counter(h3counter)"." counter(h4counter)"." counter(h5counter)"." counter(h6counter)" ";
 }
 
+span.paragraph {
+    font-family: Helvetica,Arial,sans-serif;
+}
+
+span.subparagraph {
+    font-weight: bold;
+}
+
 .small-caps {
     font-variant: small-caps;
 }
