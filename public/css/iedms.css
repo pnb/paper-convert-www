@@ -347,6 +347,10 @@ mjx-container {  /* For long MathJax equations; in future versions they will bet
     overflow-y: hidden;
 }
 
+span.underline {
+    text-decoration: underline;
+}
+
 /******** LaTeX-specific styles ********/
 
 .paper-contents span.math.display {
