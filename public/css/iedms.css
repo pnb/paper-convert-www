@@ -351,6 +351,11 @@ span.underline {
     text-decoration: underline;
 }
 
+span.uwave {
+    text-decoration-line: underline;
+    text-decoration-style: wavy;
+}
+
 /******** LaTeX-specific styles ********/
 
 .paper-contents span.math.display {
