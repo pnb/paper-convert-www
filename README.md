@@ -131,3 +131,14 @@ rsync -rtuvm --include="*/" --include="*.zip" --exclude="*tmp.docx" --include="*
 # m = avoid creating empty directories in the destination
 # Add --dry-run if needed to see what would be transferred
 ```
+
+## Deleting old papers
+
+*After* backing up papers, it might be wise to free up disk space by deleting old papers. You can do do this from the *paper-convert-www/papers* directory:
+
+```bash
+# See what will be deleted (older than 60 days, for example)
+find . -maxdepth 1 -type d -mtime +60 -print
+# Delete, only after being sure it is a good idea
+find . -maxdepth 1 -type d -mtime +60 -exec rm -rf {} \;
+```
