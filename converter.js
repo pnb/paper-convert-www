@@ -58,6 +58,7 @@ export class DocConverter {
         console.log('DocConverter: Started document', doc_id);
         const out_dir = path.join(this.monitor_dir, doc_id);
         const doc_fname = path.join(out_dir, doc_id);
+        const timeout_ms = parseInt(process.env.npm_package_config_conversion_time_limit_ms)
         let cmd = this.python_path + ' ' + this.scripts_dir;
         let is_tex = 0;
         if (fs.existsSync(doc_fname + '.docx')) {
@@ -65,12 +66,15 @@ export class DocConverter {
         } else {
             is_tex = 1;
             cmd = path.join(cmd, 'main_latex.py') + ' ' + doc_fname + '.zip ' + out_dir;
+            // It is also necessary to run python with its own time limit or its child
+            // processes will not respect any kill signal; we add 1 second to ensure
+            // that the converter timeout triggers first and we get the error message
+            cmd += ' --timeout-ms ' + (timeout_ms + 1000)
         }
         const metadata = JSON.parse(fs.readFileSync(doc_fname + '.json', 'utf8'));
         if (metadata.original_filename.includes('--mathml')) {
             cmd += ' --mathml';  // Bit of a hack
         }
-        const timeout_ms = parseInt(process.env.npm_package_config_conversion_time_limit_ms)
         const start_time = Date.now()
         try {
             var stdout = execSync(cmd, {encoding: 'utf8', timeout: timeout_ms}).toString()
