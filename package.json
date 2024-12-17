@@ -9,7 +9,7 @@
         "express": "^4.21.1",
         "express-fileupload": "^1.4.0",
         "jsdom": "^19.0.0",
-        "nanoid": "^3.3.1"
+        "nanoid": "^3.3.8"
     },
     "config": {
         "conversion_scripts_dir": "../paper-convert-scripts",
