@@ -49,6 +49,7 @@ button#btn-upload {
     margin-top: 2em;
 }
 
+/******** Admin ********/
 table.submitted-papers td.id,
 table.submitted-papers td.time {
     font-family: 'Courier New', Courier, monospace;
@@ -67,4 +68,34 @@ table.submitted-papers td {
 table.submitted-papers th {
     text-align: left;
     border-bottom: 1px solid #222;
+}
+
+/******** Camera ready ********/
+div#import-data {
+    margin: 1em;
+    padding: 1em;
+    border: 1px solid #000;
+}
+
+div#import-data th,
+div#import-data td {
+    padding: .1em .4em .1em .4em;
+}
+
+div#import-data th {
+    text-align: left;
+    border-bottom: 1px solid #222;
+}
+
+div#import-settings div.item {
+    margin-top: 1em;
+}
+
+div#import-settings div.item label {
+    display: inline-block;
+    width: 15em;
+}
+
+div#import-settings input[type=submit] {
+    margin-top: 1em;
 }

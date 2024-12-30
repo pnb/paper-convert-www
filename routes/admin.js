@@ -9,11 +9,14 @@ export const router = Router();
 router.docs_dir = false;
 
 router.get('/password', (req, res) => {
-    res.render('admin/password')
+    if (!req.query.to) {
+        return res.status(503).send('Missing expected URL parameter "to".')
+    }
+    res.render('admin/password', {redirectTo: req.query.to})
 })
 
 router.get('/submitted-papers', (req, res) => {
-    res.redirect('/admin/password')
+    res.redirect('/admin/password?to=' + encodeURIComponent('/admin/submitted-papers'))
 })
 
 router.post('/submitted-papers', (req, res) => {

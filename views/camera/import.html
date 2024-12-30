@@ -1,0 +1,53 @@
+<% title = 'Camera-ready submission' -%>
+<%- include ('../header.html') %>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.js" defer></script>
+<h1>Import list of accepted papers for camera-ready submission</h1>
+
+<p>Import file needs to have corresponding author emails, paper title, nothing else really? Or lots else because of what I wrote in the other file?
+-- I guess much of the goal should be to make authors fill out some of that
+    -- abstract (it can change)
+    -- title (it can change); though not a lot
+-- Make importer very standalone in case the format turns out to be XLSX or unstructured txt or something.
+-- if XLSX, definitely use SheetJS which is used by Excel Online itself
+</p>
+
+<p>The import file should be a CSV with two or more columns, including a column of corresponding author email addresses (semicolon-separated) called <code>email</code> and the paper title column called <code>title</code>.</p>
+
+<fieldset>
+    <legend>Drag and drop file or click Browse</legend>
+    <input type=file id="import-file" aria-label="CSV file" />
+</fieldset>
+
+<h2>Data to import</h2>
+<div id="import-data">
+    <table>
+        <thead>
+            <tr><th>email</th><th>title</th><th></tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<h2>Import settings</h2>
+<div id="import-settings">
+    <form>
+        <div class="item">
+            <label>Path prefix (e.g., edm2020)</label>
+            <input type="text" name="path-prefix" />
+        </div>
+        <div class="item">
+            <label>Re-enter admin password</label>
+            <input type="password" placeholder="Password" name="pw" /> 
+        </div>
+        <input type="submit" value="Run import" />
+    </form>
+</div>
+
+<div id="import-results" class="hidden">
+    <h2>Import results</h2>
+    <div id="results-output">
+    </div>
+</div>
+
+<script type="module" src="/js/import.js"></script>
+<%- include ('../footer.html') _%>

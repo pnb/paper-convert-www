@@ -12,6 +12,7 @@ import connect_slashes from 'connect-slashes';
 
 import { router as routes_convert } from './routes/convert.js';
 import { router as routes_admin } from './routes/admin.js';
+import { router as routes_camera } from './routes/camera.js';
 import { DocConverter } from './converter.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -92,6 +93,7 @@ if (cluster.isPrimary) {
     app.use('/', routes_convert);
     routes_admin.docs_dir = routes_convert.docs_dir;
     app.use('/admin', routes_admin);
+    app.use('/camera', routes_camera);
 
     app.listen(3000);
     console.log('Listening on port 3000');
