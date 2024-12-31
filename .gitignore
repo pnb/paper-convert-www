@@ -1,6 +1,7 @@
 .DS_Store
 *.swp
 papers/
+venues/
 
 # Logs
 logs
