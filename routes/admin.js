@@ -10,7 +10,7 @@ router.docs_dir = false;
 
 router.get('/password', (req, res) => {
     if (!req.query.to) {
-        return res.status(503).send('Missing expected URL parameter "to".')
+        return res.status(400).send('Missing expected URL parameter "to".')
     }
     res.render('admin/password', {redirectTo: req.query.to})
 })
@@ -24,7 +24,7 @@ router.post('/submitted-papers', (req, res) => {
         throw Error('`docs_dir` is not set in the admin.js router');
     }
     if (req.body.pw !== process.env.npm_package_config_admin_page_password) {
-        return res.status(503).send('Incorrect password')
+        return res.status(401).send('Incorrect password')
     }
     const paper_info = {};
     fs.readdirSync(router.docs_dir, {withFileTypes: true}).forEach((entry) => {
