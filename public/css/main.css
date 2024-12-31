@@ -99,3 +99,8 @@ div#import-settings div.item label {
 div#import-settings input[type=submit] {
     margin-top: 1em;
 }
+
+div#results-output {
+    padding: 1em;
+    border: 1px solid #000;
+}

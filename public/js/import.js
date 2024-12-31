@@ -29,10 +29,10 @@ function validateSettings() {
     alert('You must load the import data first.')
     return false
   }
-  const pathPrefix = document.getElementsByName('path-prefix').item(0)
-  if (!/^[a-z0-9]+$/.test(pathPrefix.value)) {
-    alert('Path prefix must be only lowercase letters a-z and numbers.')
-    pathPrefix.focus()
+  const venue = document.getElementsByName('venue').item(0)
+  if (!/^[a-z0-9]+$/.test(venue.value)) {
+    alert('Venue name must be only lowercase letters a-z and numbers.')
+    venue.focus()
     return false
   }
   const password = document.getElementsByName('pw').item(0)
@@ -44,13 +44,43 @@ function validateSettings() {
   return true
 }
 
-document.querySelector('#import-settings form').onsubmit = function(e) {
+document.querySelector('#import-settings form').onsubmit = async function(e) {
   e.preventDefault()
   if (!validateSettings()) {
-    return false
+    return false  // Prevent form submit
   }
   document.querySelectorAll('#import-settings input').forEach((elem) => {
     elem.disabled = true
   })
-  return false
+  // Run the import
+  document.getElementById('import-results').classList.remove('hidden')
+  const outputElem = document.getElementById('results-output')
+  outputElem.innerHTML = ''
+  for (const row of document.querySelectorAll('#import-data tbody tr')) {
+    const paperTitle = row.querySelector('td:nth-child(2)').innerText
+    const result = await fetch('/camera/import/add-one', {
+      method: 'POST',
+      body: new URLSearchParams({
+        pw: document.getElementsByName('pw').item(0).value,
+        venue: document.getElementsByName('venue').item(0).value,
+        email: row.querySelector('td:nth-child(1)').innerText,
+        title: paperTitle,
+      }),
+    })
+    const message = await result.text()
+    if (result.status === 409 || result.status === 200) {
+      // 409 = already exists; 200 = added
+      if (!outputElem.innerHTML) {  // Scroll to bottom on first output
+        window.scrollTo(0, document.body.scrollHeight)
+      }
+      outputElem.innerText += message + ' → ' + paperTitle + '\n'
+    } else {
+      alert('Error running import: ' + message)
+      break
+    }
+  }
+  document.querySelectorAll('#import-settings input').forEach((elem) => {
+    elem.disabled = false
+  })
+  return false  // Prevent form submit
 }
