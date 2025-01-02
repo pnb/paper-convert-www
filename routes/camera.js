@@ -20,7 +20,7 @@ router.get('/metadata/:venue/:camera_id', (req, res) => {
   res.render('camera/metadata', {paper: paper})
 })
 
-// Update some metadata field of this paper
+// Update some aspect of this paper
 router.post('/metadata/:venue/:camera_id/update', (req, res) => {
   const venueDir = path.join(router.venues_dir, req.params.venue)
   if (!fs.existsSync(venueDir)) {
@@ -37,6 +37,11 @@ router.post('/metadata/:venue/:camera_id/update', (req, res) => {
   }
   if (req.body.abstract) {
     paper.abstract = req.body.abstract
+  }
+  if (req.files.pdf) {
+    paper.pdf_original_filename = req.files.pdf.name
+    fs.writeFileSync(path.join(paperDir, req.params.camera_id + '.pdf'),
+      req.files.pdf.data)
   }
   paper.lastUpdated = new Date().getTime()
   fs.writeFileSync(path.join(paperDir, 'metadata.json'), JSON.stringify(paper))

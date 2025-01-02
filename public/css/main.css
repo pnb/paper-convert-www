@@ -90,7 +90,7 @@ div#import-data th {
 form div.item {
     display: flex;
     align-items: baseline;
-    margin-top: 1em;
+    margin-top: 2em;
 }
 
 form div.item label {

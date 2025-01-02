@@ -18,9 +18,8 @@
 
 * Get list of corresponding authors' emails, paper title, paper num from EasyChair
 * Generate and send email w/unique unguessable URL for each paper
-  * also need to generate dir on server or something for each paper
   ^^^^^^^^^^^^^
-* On the submission page:
+* On the submission finalization/metadata page:
   * boxes for .bib metadata that we don't already know
     * including abstract + title because this always usually changes
     * show authors but not editable without TBD petition
@@ -33,6 +32,22 @@
 -->
 
 <form id="metadata-update">
+  <div class="item">
+    <label>PDF (not anonymized)</label>
+    <div class="upload">
+      <span class="current-file">Current version: <a>(none)</a></span>
+      <button>Replace</button>
+      <input type="file" name="pdf" accept=".pdf" class="hidden" />
+    </div>
+  </div>
+  <div class="item">
+    <label>Word or LaTeX source file <br />(not anonymized)</label>
+    <div class="upload">
+      <span class="current-file">Current version: <a>(none)</a></span>
+      <button>Replace</button>
+      <input class="hidden" type="file" name="source" accept=".docx,.zip" />
+    </div>
+  </div>
   <div class="item">
     <label>Title</label>
     <input type="text" name="title" value="<%= paper['title'] %>" />

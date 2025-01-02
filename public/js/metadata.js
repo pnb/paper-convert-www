@@ -4,6 +4,29 @@ document.getElementById('metadata-update').onsubmit = function(e) {
   return false
 }
 
+const pdfElem = document.getElementsByName('pdf').item(0)
+pdfElem.parentElement.querySelector('button').onclick = function(e) {
+  pdfElem.classList.remove('hidden')
+  this.classList.add('hidden')
+}
+pdfElem.onchange = async () => {
+  if (!pdfElem.files.length) {
+    return
+  }
+  const formData = new FormData()
+  formData.append('pdf', pdfElem.files[0])
+  const response = await fetch(window.location.pathname + '/update', {
+    method: 'POST',
+    body: formData,
+  })
+  if (response.ok) {
+    alert('PDF uploaded successfully')
+  } else {
+    alert('Error uploading PDF: ' + response.statusText)
+  }
+}
+
+
 const titleElem = document.getElementsByName('title').item(0)
 let currentTitle = titleElem.value.trim()
 titleElem.oninput = function() {
