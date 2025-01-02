@@ -87,20 +87,63 @@ div#import-data th {
     border-bottom: 1px solid #222;
 }
 
-div#import-settings div.item {
+form div.item {
+    display: flex;
+    align-items: baseline;
     margin-top: 1em;
 }
 
-div#import-settings div.item label {
+form div.item label {
     display: inline-block;
     width: 15em;
 }
 
-div#import-settings input[type=submit] {
+div#import-settings input[type="submit"] {
     margin-top: 1em;
 }
 
 div#results-output {
     padding: 1em;
     border: 1px solid #000;
+}
+
+table.submitted-papers td.corresponding-email {
+    max-width: 20em;
+}
+
+table.submitted-papers td.authors {
+    max-width: 20em;
+}
+
+table.submitted-papers td.actions label {
+    display: block;
+}
+
+table.submitted-papers input[type="checkbox"] {
+    width: 1em;
+    height: 2em;
+}
+
+form#metadata-update input[type="text"],
+form#metadata-update textarea {
+    width: 30em;
+}
+
+form#metadata-update .item button {
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+}
+
+form#metadata-update .success {
+    color: #090;
+    font-weight: bold;
+    margin-left: 0.5em;
+}
+
+div.author-list p {
+    margin: 0;
+}
+
+textarea[name="abstract"] {
+    height: 10em;
 }

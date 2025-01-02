@@ -22,7 +22,7 @@
   ^^^^^^^^^^^^^
 * On the submission page:
   * boxes for .bib metadata that we don't already know
-    * including abstract because this always usually changes
+    * including abstract + title because this always usually changes
     * show authors but not editable without TBD petition
   * PDF submission
   * HTML conversion
@@ -31,6 +31,29 @@
   * remind if they upload PDF after HTML
 
 -->
+
+<form id="metadata-update">
+  <div class="item">
+    <label>Title</label>
+    <input type="text" name="title" value="<%= paper['title'] %>" />
+    <button class="hidden">Save change</button>
+    <span class="success hidden">✓</span>
+  </div>
+  <div class="item">
+    <label>Abstract</label>
+    <textarea name="abstract"><%= paper['abstract'] %></textarea>
+    <button class="hidden">Save change</button>
+    <span class="success hidden">✓</span>
+  </div>
+  <div class="item author-list">
+    <label>Authors</label>
+    <div>
+      <%_ paper['authors'].forEach((author) => { _%>
+        <p><%= author %></p>
+      <%_ }) _%>
+    </div>
+  </div>
+</form>
 
 <script type="text/javascript" src="/js/metadata.js"></script>
 <%- include ('../footer.html') _%>

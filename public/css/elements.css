@@ -32,7 +32,8 @@ input[type="submit"]:disabled {
 }
 
 input[type="text"],
-input[type="password"] {
+input[type="password"],
+textarea {
     padding: .5em;
     border: .01em solid #222;
 }

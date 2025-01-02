@@ -3,15 +3,16 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.js" defer></script>
 <h1>Import list of accepted papers for camera-ready submission</h1>
 
-<p>Import file needs to have corresponding author emails, paper title, nothing else really? Or lots else because of what I wrote in the other file?
--- I guess much of the goal should be to make authors fill out some of that
-    -- abstract (it can change)
-    -- title (it can change); though not a lot
+<p>
 -- Make importer very standalone in case the format turns out to be XLSX or unstructured txt or something.
 -- if XLSX, definitely use SheetJS which is used by Excel Online itself
 </p>
 
-<p>The import file should be a CSV with two or more columns, including a column of corresponding author email addresses (semicolon-separated) called <code>email</code> and the paper title column called <code>title</code>.</p>
+<p>The import file should be a CSV with three or more columns, including a column of semicolon-separated author names called <code>authors</code>, semicolon-separated corresponding author email addresses called <code>corresponding_email</code>, and the paper title column called <code>title</code>. Special characters (e.g., commas, quotation marks) should be automatically escaped correctly if the CSV is saved from software such as Pandas, Excel, or Google Sheets.</p>
+
+<p>For example:</p>
+<pre>authors,corresponding_email,title
+First Author;Second B. Author;Third C. Author,fa@example.com;tc@example.com,My paper title</pre>
 
 <fieldset>
     <legend>Drag and drop file or click Browse</legend>
@@ -22,7 +23,7 @@
 <div id="import-data">
     <table>
         <thead>
-            <tr><th>email</th><th>title</th><th></tr>
+            <tr><th>authors</th><th>corresponding_email</th><th>title</th><th></tr>
         </thead>
         <tbody></tbody>
     </table>
@@ -46,6 +47,12 @@
 <div id="import-results" class="hidden">
     <h2>Import results</h2>
     <div id="results-output"></div>
+    <div id="manage-results-link">
+        <form action="" method=POST>
+            <input type="hidden" name="pw" />
+            <a href="javascript:;">Manage resulting papers</a>
+        </form>
+    </div>
 </div>
 
 <script type="module" src="/js/import.js"></script>

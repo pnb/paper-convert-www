@@ -1,6 +1,7 @@
 document.getElementById('import-file').onchange = function() {
-  // When the user selects a file, open it client side in JS and parse the `email` and
-  // `title` columns
+  // When the user selects a file, open it client side in JS and parse
+  const tbody = document.querySelector('#import-data tbody')
+  tbody.innerHTML = ''
   Papa.parse(this.files[0], {
     header: true,
     dynamicTyping: true,
@@ -10,10 +11,9 @@ document.getElementById('import-file').onchange = function() {
       if (result.errors.length) {
         alert('Parsing errors: ' + JSON.stringify(result.errors))
       }
-      const tbody = document.querySelector('#import-data tbody')
       result.data.forEach((row) => {
         const newRow = document.createElement('tr')
-        ;['email', 'title'].forEach((col) => {
+        ;['authors', 'corresponding_email', 'title'].forEach((col) => {
           const td = document.createElement('td')
           td.innerText = row[col]
           newRow.append(td)
@@ -56,14 +56,16 @@ document.querySelector('#import-settings form').onsubmit = async function(e) {
   document.getElementById('import-results').classList.remove('hidden')
   const outputElem = document.getElementById('results-output')
   outputElem.innerHTML = ''
+  const venue = document.getElementsByName('venue').item(0).value
   for (const row of document.querySelectorAll('#import-data tbody tr')) {
-    const paperTitle = row.querySelector('td:nth-child(2)').innerText
+    const paperTitle = row.querySelector('td:nth-child(3)').innerText
     const result = await fetch('/camera/import/add-one', {
       method: 'POST',
       body: new URLSearchParams({
         pw: document.getElementsByName('pw').item(0).value,
-        venue: document.getElementsByName('venue').item(0).value,
-        email: row.querySelector('td:nth-child(1)').innerText,
+        venue: venue,
+        authors: row.querySelector('td:nth-child(1)').innerText,
+        corresponding_email: row.querySelector('td:nth-child(2)').innerText,
         title: paperTitle,
       }),
     })
@@ -82,5 +84,12 @@ document.querySelector('#import-settings form').onsubmit = async function(e) {
   document.querySelectorAll('#import-settings input').forEach((elem) => {
     elem.disabled = false
   })
+  // Use a <form> to make a link that is actually a POST request
+  document.querySelector('#manage-results-link input[name=pw]').value =
+    document.getElementsByName('pw').item(0).value
+  document.querySelector('#manage-results-link form').action = './manage/' + venue
+  document.querySelector('#manage-results-link a').onclick = () => {
+    document.querySelector('#manage-results-link form').submit()
+  }
   return false  // Prevent form submit
 }
