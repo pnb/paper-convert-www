@@ -140,6 +140,11 @@ form#metadata-update .success {
     margin-left: 0.5em;
 }
 
+form#metadata-update .busy {
+    background: #eee;
+    margin-left: 0.5em;
+}
+
 div.author-list p {
     margin: 0;
 }

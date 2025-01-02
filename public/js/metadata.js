@@ -5,6 +5,7 @@ document.getElementById('metadata-update').onsubmit = function(e) {
 }
 
 const pdfElem = document.getElementsByName('pdf').item(0)
+const pdfLink = pdfElem.parentElement.querySelector('.current-file a')
 pdfElem.parentElement.querySelector('button').onclick = function(e) {
   pdfElem.classList.remove('hidden')
   this.classList.add('hidden')
@@ -13,6 +14,8 @@ pdfElem.onchange = async () => {
   if (!pdfElem.files.length) {
     return
   }
+  pdfElem.classList.add('hidden')
+  pdfElem.parentElement.querySelector('.busy').classList.remove('hidden')
   const formData = new FormData()
   formData.append('pdf', pdfElem.files[0])
   const response = await fetch(window.location.pathname + '/update', {
@@ -20,10 +23,18 @@ pdfElem.onchange = async () => {
     body: formData,
   })
   if (response.ok) {
-    alert('PDF uploaded successfully')
+    pdfElem.parentElement.querySelector('.success').classList.remove('hidden')
+    pdfLink.href = window.location.pathname + '/pdf'
+    pdfLink.innerText = window.location.pathname.split('/').pop() + '.pdf'
+    setTimeout(() => {
+      pdfElem.parentElement.querySelector('.success').classList.add('hidden')
+      pdfElem.parentElement.querySelector('button').classList.remove('hidden')
+    }, 3000)
   } else {
-    alert('Error uploading PDF: ' + response.statusText)
+    alert('Error uploading PDF: ' + await response.text())
+    pdfElem.parentElement.querySelector('button').classList.remove('hidden')
   }
+  pdfElem.parentElement.querySelector('.busy').classList.add('hidden')
 }
 
 

@@ -35,9 +35,18 @@
   <div class="item">
     <label>PDF (not anonymized)</label>
     <div class="upload">
-      <span class="current-file">Current version: <a>(none)</a></span>
+      <span class="current-file">
+        Current version:
+        <%_ if (paper['pdf_original_filename']) { _%>
+        <a href="/camera/metadata/<%= paper['venue'] %>/<%= paper['id'] %>/pdf"><%= paper['id'] %>.pdf</a>
+        <%_ } else { _%>
+        <a>(none)</a>
+        <%_ } _%>
+      </span>
       <button>Replace</button>
       <input type="file" name="pdf" accept=".pdf" class="hidden" />
+      <span class="busy hidden">Uploading...</span>
+      <span class="success hidden">✓</span>
     </div>
   </div>
   <div class="item">
