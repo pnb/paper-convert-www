@@ -63,6 +63,9 @@ router.post('/metadata/:venue/:camera_id/update', (req, res) => {
   } else if (req.body.source_original_filename) {
     paper.source_original_filename = req.body.source_original_filename
     paper.converted_id = req.body.converted_id
+    paper.conversion_certified = false  // New submission resets this
+  } else if (req.body.conversion_certified !== undefined) {
+    paper.conversion_certified = parseInt(req.body.conversion_certified) === 1
   } else {
     return res.status(400).send('No data to update')
   }

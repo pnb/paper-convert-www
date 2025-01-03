@@ -68,6 +68,7 @@ sourceElem.onchange = async () => {
     })
     sourceLink.href = response.url
     sourceLink.innerText = response.url.split('/').pop()
+    document.querySelector('#certify-conversion input').checked = false
     sourceElem.parentElement.querySelector('.success').classList.remove('hidden')
     setTimeout(() => {
       sourceElem.parentElement.querySelector('.success').classList.add('hidden')
@@ -78,6 +79,29 @@ sourceElem.onchange = async () => {
     sourceElem.parentElement.querySelector('button').classList.remove('hidden')
   }
   sourceElem.parentElement.querySelector('.busy').classList.add('hidden')
+}
+
+const certifyElem = document.querySelector('#certify-conversion input')
+certifyElem.onchange = async () => {
+  console.debug('Certify change')
+  certifyElem.disabled = true
+  const response = await fetch(window.location.pathname + '/update', {
+    method: 'POST',
+    body: new URLSearchParams({
+      conversion_certified: certifyElem.checked * 1,
+    })
+  })
+  if (response.ok) {
+    const successElem = document.querySelector('#certify-conversion')
+      .parentElement.querySelector('.success')
+    successElem.classList.remove('hidden')
+    setTimeout(() => {
+      successElem.classList.add('hidden')
+    }, 3000)
+  } else {
+    alert('Error updating certification: ' + response.statusText)
+  }
+  certifyElem.disabled = false
 }
 
 const titleElem = document.getElementsByName('title').item(0)

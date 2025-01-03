@@ -53,7 +53,7 @@
     <label>Word or LaTeX source file <br />(not anonymized)</label>
     <div class="upload">
       <span class="current-file">
-        Current version:
+        Converted document:
         <%_ if (paper['converted_id']) { _%>
         <a target="_blank" href="/process/<%= paper['converted_id'] %>"><%= paper['converted_id'] %></a>
         <%_ } else { _%>
@@ -64,6 +64,9 @@
       <input class="hidden" type="file" name="source" accept=".docx,.zip" />
       <span class="busy hidden">Uploading...</span>
       <span class="success hidden">✓</span>
+      <div id="certify-conversion" class="<% if (!paper['converted_id']) { %> hidden <%_ } %>">
+        <label><input type="checkbox" <%_ if (paper['conversion_certified']) { %> checked <%_ } %> /> I have reviewed the converted document, have resolved all issues feasible, and am satisfied with the final version.</label>
+      </div>
     </div>
   </div>
   <div class="item">
