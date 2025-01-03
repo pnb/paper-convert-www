@@ -1,4 +1,6 @@
-document.getElementById('metadata-update').onsubmit = function(e) {
+/* global alert */ // ESLint
+
+document.getElementById('metadata-update').onsubmit = (e) => {
   // Prevent submit (happens with any button in Firefox even with no form action)
   e.preventDefault()
   return false
@@ -6,7 +8,7 @@ document.getElementById('metadata-update').onsubmit = function(e) {
 
 const pdfElem = document.getElementsByName('pdf').item(0)
 const pdfLink = pdfElem.parentElement.querySelector('.current-file a')
-pdfElem.parentElement.querySelector('button').onclick = function(e) {
+pdfElem.parentElement.querySelector('button').onclick = function (e) {
   pdfElem.classList.remove('hidden')
   this.classList.add('hidden')
 }
@@ -20,7 +22,7 @@ pdfElem.onchange = async () => {
   formData.append('pdf', pdfElem.files[0])
   const response = await fetch(window.location.pathname + '/update', {
     method: 'POST',
-    body: formData,
+    body: formData
   })
   if (response.ok) {
     pdfElem.parentElement.querySelector('.success').classList.remove('hidden')
@@ -39,7 +41,7 @@ pdfElem.onchange = async () => {
 
 const sourceElem = document.getElementsByName('source').item(0)
 const sourceLink = sourceElem.parentElement.querySelector('.current-file a')
-sourceElem.parentElement.querySelector('button').onclick = function(e) {
+sourceElem.parentElement.querySelector('button').onclick = (e) => {
   sourceElem.classList.remove('hidden')
   this.classList.add('hidden')
 }
@@ -55,7 +57,7 @@ sourceElem.onchange = async () => {
   formData.append('doc_file', sourceElem.files[0])
   const response = await fetch('/upload', {
     method: 'POST',
-    body: formData,
+    body: formData
   })
   if (response.ok && response.redirected) {
     // Now do the update
@@ -63,17 +65,22 @@ sourceElem.onchange = async () => {
       method: 'POST',
       body: new URLSearchParams({
         source_original_filename: sourceElem.files[0].name,
-        converted_id: response.url.split('/').pop(),
+        converted_id: response.url.split('/').pop()
       })
     })
-    sourceLink.href = response.url
-    sourceLink.innerText = response.url.split('/').pop()
-    document.querySelector('#certify-conversion input').checked = false
-    sourceElem.parentElement.querySelector('.success').classList.remove('hidden')
-    setTimeout(() => {
-      sourceElem.parentElement.querySelector('.success').classList.add('hidden')
+    if (updateResponse.ok) {
+      sourceLink.href = response.url
+      sourceLink.innerText = response.url.split('/').pop()
+      document.querySelector('#certify-conversion input').checked = false
+      sourceElem.parentElement.querySelector('.success').classList.remove('hidden')
+      setTimeout(() => {
+        sourceElem.parentElement.querySelector('.success').classList.add('hidden')
+        sourceElem.parentElement.querySelector('button').classList.remove('hidden')
+      }, 3000)
+    } else {
+      alert('Error updating after upload: ' + await updateResponse.text())
       sourceElem.parentElement.querySelector('button').classList.remove('hidden')
-    }, 3000)
+    }
   } else {
     alert('Error uploading source file: ' + await response.text())
     sourceElem.parentElement.querySelector('button').classList.remove('hidden')
@@ -88,7 +95,7 @@ certifyElem.onchange = async () => {
   const response = await fetch(window.location.pathname + '/update', {
     method: 'POST',
     body: new URLSearchParams({
-      conversion_certified: certifyElem.checked * 1,
+      conversion_certified: certifyElem.checked * 1
     })
   })
   if (response.ok) {
@@ -106,21 +113,21 @@ certifyElem.onchange = async () => {
 
 const titleElem = document.getElementsByName('title').item(0)
 let currentTitle = titleElem.value.trim()
-titleElem.oninput = function() {
+titleElem.oninput = function () {
   if (currentTitle === titleElem.value.trim()) {
     this.parentElement.querySelector('button').classList.add('hidden')
   } else {
     this.parentElement.querySelector('button').classList.remove('hidden')
   }
 }
-titleElem.parentElement.querySelector('button').onclick = async function() {
+titleElem.parentElement.querySelector('button').onclick = async function () {
   this.disabled = true
   titleElem.disabled = true
   // Current URL is like /camera/metadata/somevenue/1234567890
   const response = await fetch(window.location.pathname + '/update', {
     method: 'POST',
     body: new URLSearchParams({
-      title: titleElem.value.trim(),
+      title: titleElem.value.trim()
     })
   })
   if (response.ok) {
@@ -139,20 +146,20 @@ titleElem.parentElement.querySelector('button').onclick = async function() {
 
 const abstractElem = document.getElementsByName('abstract').item(0)
 let currentAbstract = abstractElem.value
-abstractElem.oninput = function() {
+abstractElem.oninput = function () {
   if (currentAbstract === abstractElem.value.trim()) {
     this.parentElement.querySelector('button').classList.add('hidden')
   } else {
     this.parentElement.querySelector('button').classList.remove('hidden')
   }
 }
-abstractElem.parentElement.querySelector('button').onclick = async function() {
+abstractElem.parentElement.querySelector('button').onclick = async function () {
   this.disabled = true
   abstractElem.disabled = true
   const response = await fetch(window.location.pathname + '/update', {
     method: 'POST',
     body: new URLSearchParams({
-      abstract: abstractElem.value.trim(),
+      abstract: abstractElem.value.trim()
     })
   })
   if (response.ok) {
