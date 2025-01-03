@@ -17,7 +17,7 @@ router.get('/metadata/:venue/:camera_id', (req, res) => {
   }
   const paper = JSON.parse(
     fs.readFileSync(path.join(paperDir, 'metadata.json'), 'utf8'))
-  res.render('camera/metadata', {paper: paper})
+  res.render('camera/metadata', { paper })
 })
 
 // Download current version of PDF
@@ -63,7 +63,7 @@ router.post('/metadata/:venue/:camera_id/update', (req, res) => {
   } else if (req.body.source_original_filename) {
     paper.source_original_filename = req.body.source_original_filename
     paper.converted_id = req.body.converted_id
-    paper.conversion_certified = false  // New submission resets this
+    paper.conversion_certified = false // New submission resets this
   } else if (req.body.conversion_certified !== undefined) {
     paper.conversion_certified = parseInt(req.body.conversion_certified) === 1
   } else {
@@ -85,7 +85,7 @@ router.post('/manage/:venue', (req, res) => {
   }
   const papers = {}
   const venueDir = path.join(router.venues_dir, req.params.venue)
-  fs.readdirSync(venueDir, {withFileTypes: true}).forEach((entry) => {
+  fs.readdirSync(venueDir, { withFileTypes: true }).forEach((entry) => {
     if (entry.isDirectory()) {
       const curPaper = fs.readFileSync(
         path.join(venueDir, entry.name, 'metadata.json'), 'utf8')
@@ -94,7 +94,7 @@ router.post('/manage/:venue', (req, res) => {
   })
   res.render('camera/manage', {
     venue: req.params.venue,
-    papers: papers,
+    papers
   })
 })
 
@@ -145,11 +145,11 @@ router.post('/import/add-one', (req, res) => {
       authors: req.body.authors.split(';').map((author) => author.trim()),
       corresponding_email: req.body.corresponding_email.split(';').map(
         (email) => email.trim()),
-      last_updated: Date.now(),
+      last_updated: Date.now()
     }))
   } catch (e) {
     console.error(e)
-    fs.rmSync(paperDir, {recursive: true, force: true})
+    fs.rmSync(paperDir, { recursive: true, force: true })
     return res.status(500).send('Error writing to disk: ' + e.message)
   }
   return res.status(200).send('Added paper ' + paperHash)
@@ -157,16 +157,16 @@ router.post('/import/add-one', (req, res) => {
 
 // Public domain hashing function from:
 // https://github.com/bryc/code/blob/master/jshash/experimental/cyrb53.js
-function cyrb53(str, seed = 0) {
-  let h1 = 0xdeadbeef ^ seed, h2 = 0x41c6ce57 ^ seed
+function cyrb53 (str, seed = 0) {
+  let h1 = 0xdeadbeef ^ seed; let h2 = 0x41c6ce57 ^ seed
   for (let i = 0, ch; i < str.length; i++) {
     ch = str.charCodeAt(i)
     h1 = Math.imul(h1 ^ ch, 2654435761)
     h2 = Math.imul(h2 ^ ch, 1597334677)
   }
-  h1  = Math.imul(h1 ^ (h1 >>> 16), 2246822507)
+  h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507)
   h1 ^= Math.imul(h2 ^ (h2 >>> 13), 3266489909)
-  h2  = Math.imul(h2 ^ (h2 >>> 16), 2246822507)
+  h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507)
   h2 ^= Math.imul(h1 ^ (h1 >>> 13), 3266489909)
 
   return 4294967296 * (2097151 & h2) + (h1 >>> 0)
