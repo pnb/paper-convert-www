@@ -37,6 +37,48 @@ pdfElem.onchange = async () => {
   pdfElem.parentElement.querySelector('.busy').classList.add('hidden')
 }
 
+const sourceElem = document.getElementsByName('source').item(0)
+const sourceLink = sourceElem.parentElement.querySelector('.current-file a')
+sourceElem.parentElement.querySelector('button').onclick = function(e) {
+  sourceElem.classList.remove('hidden')
+  this.classList.add('hidden')
+}
+sourceElem.onchange = async () => {
+  if (!sourceElem.files.length) {
+    return
+  }
+  // First upload source file to start conversion, getting conversion doc ID from the
+  // converter
+  sourceElem.classList.add('hidden')
+  sourceElem.parentElement.querySelector('.busy').classList.remove('hidden')
+  const formData = new FormData()
+  formData.append('doc_file', sourceElem.files[0])
+  const response = await fetch('/upload', {
+    method: 'POST',
+    body: formData,
+  })
+  if (response.ok && response.redirected) {
+    // Now do the update
+    const updateResponse = await fetch(window.location.pathname + '/update', {
+      method: 'POST',
+      body: new URLSearchParams({
+        source_original_filename: sourceElem.files[0].name,
+        converted_id: response.url.split('/').pop(),
+      })
+    })
+    sourceLink.href = response.url
+    sourceLink.innerText = response.url.split('/').pop()
+    sourceElem.parentElement.querySelector('.success').classList.remove('hidden')
+    setTimeout(() => {
+      sourceElem.parentElement.querySelector('.success').classList.add('hidden')
+      sourceElem.parentElement.querySelector('button').classList.remove('hidden')
+    }, 3000)
+  } else {
+    alert('Error uploading source file: ' + await response.text())
+    sourceElem.parentElement.querySelector('button').classList.remove('hidden')
+  }
+  sourceElem.parentElement.querySelector('.busy').classList.add('hidden')
+}
 
 const titleElem = document.getElementsByName('title').item(0)
 let currentTitle = titleElem.value.trim()

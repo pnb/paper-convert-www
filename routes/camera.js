@@ -53,17 +53,20 @@ router.post('/metadata/:venue/:camera_id/update', (req, res) => {
     paper.title = req.body.title
   } else if (req.body.abstract) {
     paper.abstract = req.body.abstract
-  } else if (req.files.pdf) {
+  } else if (req?.files?.pdf) {
     if (!req.files.pdf.name.toLowerCase().endsWith('.pdf')) {
       return res.status(400).send('PDF filename must end in .pdf')
     }
     paper.pdf_original_filename = req.files.pdf.name
     fs.writeFileSync(path.join(paperDir, req.params.camera_id + '.pdf'),
       req.files.pdf.data)
+  } else if (req.body.source_original_filename) {
+    paper.source_original_filename = req.body.source_original_filename
+    paper.converted_id = req.body.converted_id
   } else {
     return res.status(400).send('No data to update')
   }
-  paper.lastUpdated = new Date().getTime()
+  paper.last_updated = Date.now()
   fs.writeFileSync(path.join(paperDir, 'metadata.json'), JSON.stringify(paper))
   return res.status(200).send('Updated paper')
 })
@@ -139,7 +142,7 @@ router.post('/import/add-one', (req, res) => {
       authors: req.body.authors.split(';').map((author) => author.trim()),
       corresponding_email: req.body.corresponding_email.split(';').map(
         (email) => email.trim()),
-      lastUpdated: new Date().getTime(),
+      last_updated: Date.now(),
     }))
   } catch (e) {
     console.error(e)

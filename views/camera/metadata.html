@@ -52,9 +52,18 @@
   <div class="item">
     <label>Word or LaTeX source file <br />(not anonymized)</label>
     <div class="upload">
-      <span class="current-file">Current version: <a>(none)</a></span>
+      <span class="current-file">
+        Current version:
+        <%_ if (paper['converted_id']) { _%>
+        <a target="_blank" href="/process/<%= paper['converted_id'] %>"><%= paper['converted_id'] %></a>
+        <%_ } else { _%>
+        <a target="_blank">(none)</a>
+        <%_ } _%>
+      </span>
       <button>Replace</button>
       <input class="hidden" type="file" name="source" accept=".docx,.zip" />
+      <span class="busy hidden">Uploading...</span>
+      <span class="success hidden">✓</span>
     </div>
   </div>
   <div class="item">
