@@ -3,35 +3,58 @@
 <h1>Manage accepted papers for <%= venue %></h1>
 
 <table class="submitted-papers">
-    <thead>
-        <tr>
-            <th>actions</th>
-            <th>id</th>
-            <th>authors</th>
-            <th>last updated</th>
-            <th>emailed</th>
-            <th>corresponding email</th>
-            <th>title</th>
-        </tr>
-    </thead>
-    <tbody>
-    <%_ Object.keys(papers).sort().forEach((id) => { _%>
-        <tr>
-            <td class="actions"><label><input type="checkbox" class="actions" data-paper-id="<%= papers[id].id %>"></label></td>
-            <td class="id"><a href="/camera/metadata/<%= venue %>/<%= papers[id].id %>"><%= papers[id].id %></a></td>
-            <td class="authors"><%= papers[id].authors.join('; ') %></td>
-            <td class="time"><%= papers[id].lastUpdated %></td>
-            <td class="emailed"><%= papers[id].emailed %></td>
-            <td class="corresponding-email"><%= papers[id].corresponding_email.join('; ') %></td>
-            <td class="title"><%= papers[id].title %></td>
-        </tr>
-    <%_ }) _%>
-    </tbody>
+  <thead>
+    <tr>
+      <th>actions</th>
+      <th>id</th>
+      <th>authors</th>
+      <th>last updated</th>
+      <th>emailed</th>
+      <th>corresponding email</th>
+      <th>title</th>
+    </tr>
+  </thead>
+  <tbody>
+  <%_ Object.keys(papers).sort().forEach((id) => { _%>
+    <tr>
+      <td class="actions"><label><input type="checkbox" class="actions" data-paper-id="<%= papers[id].id %>"></label></td>
+      <td class="id"><a href="/camera/metadata/<%= venue %>/<%= papers[id].id %>"><%= papers[id].id %></a></td>
+      <td class="authors"><%= papers[id].authors.join('; ') %></td>
+      <td class="time"><%= papers[id].lastUpdated %></td>
+      <td class="emailed"><%= papers[id].emailed %></td>
+      <td class="corresponding-email"><%= papers[id].corresponding_email.join('; ') %></td>
+      <td class="title"><%= papers[id].title %></td>
+    </tr>
+  <%_ }) _%>
+  </tbody>
 </table>
 
 <div class="actions hidden">
   <h2>Actions for selected papers</h2>
-  <button id="action-email">Email corresponding authors</button>
+  <div class="collapsible">
+    <div class="collapsible-title">&triangleright; Email corresponding authors</div>
+    <div class="email-fields collapsible-content hidden">
+      <label for="subject">Subject</label>
+      <input type="text" id="subject" value="<%= settings.email_authors.subject.replace('{VENUE}', venue) %>">
+      <label for="body-text">Body</label>
+      <textarea id="body-text"><%= settings.email_authors.body.replace('{VENUE}', venue) %></textarea>
+      <ul>
+        <li>{AUTHORS} will be replaced by the authors of the paper</li>
+        <li>{PAPER_URL} will be replaced by a link to the paper's submission page</li>
+      </ul>
+      <button id="preview">Preview a random email</button>
+      <label for="pw">Re-enter admin password</label>
+      <input type="password" placeholder="Password" name="pw" />
+      <button id="send">Send</button>
+      <div class="results-output hidden"></div>
+    </div>
+    <div class="hidden overlay">
+      <div class="overlay-content">
+        <div class="overlay-instructions">Click anywhere or press escape to close.</div>
+        <pre></pre>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script type="module" src="/js/manage.js"></script>

@@ -94,7 +94,8 @@ router.post('/manage/:venue', (req, res) => {
   })
   res.render('camera/manage', {
     venue: req.params.venue,
-    papers
+    papers: papers,
+    settings: JSON.parse(fs.readFileSync(path.join(venueDir, 'settings.json'), 'utf8'))
   })
 })
 
@@ -121,9 +122,11 @@ router.post('/import/add-one', (req, res) => {
   if (!/^[a-z0-9]+$/.test(req.body.venue)) {
     return res.status(400).send('Invalid venue name')
   }
-  // Create venue dir if needed
+  // Create venue dir if needed and copy in settings template
   if (!fs.existsSync(path.join(router.venues_dir, req.body.venue))) {
     fs.mkdirSync(path.join(router.venues_dir, req.body.venue))
+    fs.copyFileSync(path.join(router.venues_dir, 'settings_template.json'),
+      path.join(router.venues_dir, req.body.venue, 'settings.json'))
   }
   // Check though if there's a paper with the same name (i.e., hash)
   // Salt the hash with the admin password so that anybody who knows the paper title

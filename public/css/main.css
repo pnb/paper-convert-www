@@ -70,7 +70,7 @@ table.submitted-papers th {
     border-bottom: 1px solid #222;
 }
 
-/******** Camera ready ********/
+/******** Import/manage ********/
 div#import-data {
     margin: 1em;
     padding: 1em;
@@ -102,7 +102,7 @@ div#import-settings input[type="submit"] {
     margin-top: 1em;
 }
 
-div#results-output {
+div.results-output {
     padding: 1em;
     border: 1px solid #000;
 }
@@ -124,6 +124,63 @@ table.submitted-papers input[type="checkbox"] {
     height: 2em;
 }
 
+div.collapsible .collapsible-title {
+    padding: 1em;
+    border-top: 1px solid #ddd;
+    cursor: pointer;
+}
+
+div.collapsible .collapsible-title:hover {
+    background: #eee;
+}
+
+div.email-fields label {
+    display: block;
+    margin-top: 1em;
+}
+
+div.email-fields input,
+div.email-fields textarea {
+    width: 30em;
+}
+
+div.email-fields textarea {
+    height: 15em;
+}
+
+div.email-fields button {
+    display: block;
+    margin-top: 1em;
+}
+
+div.overlay {
+    position: fixed;
+    overflow-y: scroll;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #000000dd;
+    z-index: 100;
+}
+
+.overlay-instructions {
+    font-weight: bold;
+    margin-bottom: 1em;
+}
+
+.overlay-content {
+    margin: 4em;
+    padding: 1em;
+    background: #fafafa;
+    max-width: 60em;
+}
+
+.overlay-content pre {
+    text-wrap: wrap;
+}
+
+/******** Camera ready ********/
 form#metadata-update input[type="text"],
 form#metadata-update textarea {
     width: 30em;

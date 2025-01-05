@@ -54,7 +54,7 @@ document.querySelector('#import-settings form').onsubmit = async function(e) {
   })
   // Run the import
   document.getElementById('import-results').classList.remove('hidden')
-  const outputElem = document.getElementById('results-output')
+  const outputElem = document.querySelector('.results-output')
   outputElem.innerHTML = ''
   const venue = document.getElementsByName('venue').item(0).value
   for (const row of document.querySelectorAll('#import-data tbody tr')) {
