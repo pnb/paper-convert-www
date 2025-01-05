@@ -39,6 +39,48 @@ document.addEventListener('keydown', (ev) => {
   }
 })
 
+document.querySelector('.email-fields input[name="pw"]').oninput = function () {
+  document.getElementById('send').disabled = !this.value
+}
+
+// Send emails via ./email endpoint
+document.getElementById('send').onclick = async function () {
+  const outputElem = this.parentElement.querySelector('.results-output')
+  const paperRows = Array.from(
+    document.querySelectorAll('table.submitted-papers tbody tr')).filter(
+    (elem) => elem.querySelector('input.actions').checked)
+  outputElem.classList.remove('hidden')
+  outputElem.innerHTML = ''
+  this.disabled = true
+  for (const paperRow of paperRows) {
+    const email = makeEmail(paperRow)
+    const response = await fetch(window.location.pathname + '/email', {
+      method: 'POST',
+      body: new URLSearchParams({
+        subject: email.subject,
+        body: email.body,
+        pw: this.parentElement.querySelector('input[name="pw"]').value
+      })
+    })
+    if (response.ok) {
+      if (!outputElem.innerHTML) {
+        setTimeout(() => window.scrollBy(0, document.body.scrollHeight), 0)
+      }
+      outputElem.innerHTML += '<p>Sent email for ' +
+        paperRow.querySelector('.id a').textContent + ' (' +
+        paperRow.querySelector('.corresponding-email').textContent + ')</p>'
+      const emailedCounter = paperRow.querySelector('.emailed')
+      emailedCounter.innerText = parseInt(emailedCounter.innerText) + 1
+    } else {
+      outputElem.innerHTML += '<p>Error for ' +
+        paperRow.querySelector('.id a').textContent + ' (stopping)</p>'
+      alert('Error: ' + await response.text())
+      break
+    }
+  }
+  this.disabled = false
+}
+
 function makeEmail (tableRow) {
   const authorList = tableRow.querySelector('td.authors').textContent.split(';')
   const authors = authorList.map((author, i) => {
