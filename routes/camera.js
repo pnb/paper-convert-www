@@ -94,7 +94,7 @@ router.post('/manage/:venue', (req, res) => {
   })
   res.render('camera/manage', {
     venue: req.params.venue,
-    papers: papers,
+    papers,
     settings: JSON.parse(fs.readFileSync(path.join(venueDir, 'settings.json'), 'utf8'))
   })
 })
@@ -156,6 +156,47 @@ router.post('/import/add-one', (req, res) => {
     return res.status(500).send('Error writing to disk: ' + e.message)
   }
   return res.status(200).send('Added paper ' + paperHash)
+})
+
+// Send one email to corresponding authors via Postmark
+router.post('/manage/:venue/email', async (req, res) => {
+  if (req.body.pw !== process.env.npm_package_config_admin_page_password) {
+    return res.status(401).send('Incorrect password')
+  }
+  const venueDir = path.join(router.venues_dir, req.params.venue)
+  if (!fs.existsSync(venueDir)) {
+    return res.status(404).send('Venue not found')
+  }
+  const paperDir = path.join(venueDir, req.body.camera_id)
+  if (!fs.existsSync(paperDir)) {
+    return res.status(404).send('Paper not found')
+  }
+  // Get corresponding authors to send email to
+  const paper = JSON.parse(
+    fs.readFileSync(path.join(paperDir, 'metadata.json'), 'utf8'))
+  const result = await fetch('https://api.postmarkapp.com/email', {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      'X-Postmark-Server-Token': process.env.npm_package_config_postmark_api_key
+    },
+    body: JSON.stringify({
+      From: process.env.npm_package_config_from_email,
+      To: paper.corresponding_email.join(','),
+      Subject: req.body.subject,
+      HtmlBody: req.body.body,
+      MessageStream: 'outbound',
+      Tag: 'IEDMS'
+    })
+  })
+  console.debug(await result.text())
+  if (result.ok) {
+    paper.emailed = paper.emailed + 1
+    fs.writeFileSync(path.join(paperDir, 'metadata.json'), JSON.stringify(paper))
+    return res.status(200).send('Sent email')
+  }
+  return res.status(500).send('Error sending email: ' + result.statusText)
 })
 
 // Public domain hashing function from:

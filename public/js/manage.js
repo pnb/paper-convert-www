@@ -57,6 +57,7 @@ document.getElementById('send').onclick = async function () {
     const response = await fetch(window.location.pathname + '/email', {
       method: 'POST',
       body: new URLSearchParams({
+        camera_id: paperRow.querySelector('.id a').textContent,
         subject: email.subject,
         body: email.body,
         pw: this.parentElement.querySelector('input[name="pw"]').value
