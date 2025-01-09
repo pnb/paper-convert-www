@@ -1,7 +1,9 @@
-document.getElementById('import-file').onchange = function() {
-  // When the user selects a file, open it client side in JS and parse
-  const tbody = document.querySelector('#import-data tbody')
-  tbody.innerHTML = ''
+const submissions = []
+const authors = []
+
+document.getElementById('submissions-file').onchange = function() {
+  submissions.length = 0
+  const cols = ['#', 'title']
   Papa.parse(this.files[0], {
     header: true,
     dynamicTyping: true,
@@ -11,17 +13,83 @@ document.getElementById('import-file').onchange = function() {
       if (result.errors.length) {
         alert('Parsing errors: ' + JSON.stringify(result.errors))
       }
-      result.data.forEach((row) => {
-        const newRow = document.createElement('tr')
-        ;['authors', 'corresponding_email', 'title'].forEach((col) => {
-          const td = document.createElement('td')
-          td.innerText = row[col]
-          newRow.append(td)
-        })
-        tbody.append(newRow)
-      })
+      for (const row of result.data) {
+        for (const col of cols) {
+          if (!Object.prototype.hasOwnProperty.call(row, col)) {
+            alert('Submissions CSV must have column: ' + col)
+            return
+          }
+        }
+        submissions.push(row)
+      }
+      if (submissions.length && authors.length) {
+        updateImportedDataTable()
+      }
     }
   })
+}
+
+document.getElementById('authors-file').onchange = function() {
+  authors.length = 0
+  const cols = ['submission #', 'first name', 'last name', 'email', 'corresponding?']
+  Papa.parse(this.files[0], {
+    header: true,
+    dynamicTyping: true,
+    delimiter: ",",
+    skipEmptyLines: true,
+    complete: function(result) {
+      if (result.errors.length) {
+        alert('Parsing errors: ' + JSON.stringify(result.errors))
+      }
+      for (const row of result.data) {
+        for (const col of cols) {
+          if (!Object.prototype.hasOwnProperty.call(row, col)) {
+            alert('Authors CSV must have column: ' + col)
+            return
+          }
+        }
+        authors.push(row)
+      }
+      if (submissions.length && authors.length) {
+        updateImportedDataTable()
+      }
+    }
+  })
+}
+
+function updateImportedDataTable() {
+  const tbody = document.querySelector('#import-data tbody')
+  tbody.innerHTML = ''
+  for (const submission of submissions) {
+    const authorRows = authors.filter((a) => a['submission #'] === submission['#'])
+    if (!authorRows.length) {
+      alert('Stopping! No authors found for submission #' + submission['#'])
+      return
+    }
+    const newRow = document.createElement('tr')
+    const paperNumCell = document.createElement('td')
+    paperNumCell.innerText = submission['#']
+    paperNumCell.classList.add('paper-num')
+    newRow.append(paperNumCell)
+    const authorsCell = document.createElement('td')
+    authorsCell.innerText = authorRows
+      .map((a) => a['first name'] + ' ' + a['last name'])
+      .join('; ')
+    authorsCell.classList.add('authors')
+    newRow.append(authorsCell)
+    const correspondingEmailCell = document.createElement('td')
+    correspondingEmailCell.innerText = authorRows
+      .filter((a) => a['corresponding?'] === 'yes')
+      .map((a) => a['email'])
+      .join('; ')
+    correspondingEmailCell.classList.add('corresponding-email')
+    newRow.append(correspondingEmailCell)
+    const titleCell = document.createElement('td')
+    titleCell.innerText = submission['title']
+    titleCell.classList.add('title')
+    newRow.append(titleCell)
+    tbody.append(newRow)
+  }
 }
 
 function validateSettings() {
@@ -58,14 +126,15 @@ document.querySelector('#import-settings form').onsubmit = async function(e) {
   outputElem.innerHTML = ''
   const venue = document.getElementsByName('venue').item(0).value
   for (const row of document.querySelectorAll('#import-data tbody tr')) {
-    const paperTitle = row.querySelector('td:nth-child(3)').innerText
+    const paperTitle = row.querySelector('.title').innerText
     const result = await fetch('/camera/import/add-one', {
       method: 'POST',
       body: new URLSearchParams({
         pw: document.getElementsByName('pw').item(0).value,
         venue: venue,
-        authors: row.querySelector('td:nth-child(1)').innerText,
-        corresponding_email: row.querySelector('td:nth-child(2)').innerText,
+        paper_num: row.querySelector('.paper-num').innerText,
+        authors: row.querySelector('.authors').innerText,
+        corresponding_email: row.querySelector('.corresponding-email').innerText,
         title: paperTitle,
       }),
     })

@@ -4,55 +4,67 @@
 <h1>Import list of accepted papers for camera-ready submission</h1>
 
 <p>
--- Make importer very standalone in case the format turns out to be XLSX or unstructured txt or something.
--- if XLSX, definitely use SheetJS which is used by Excel Online itself
+Submission (papers) CSV has `decision` -- optionally should we only keep the "accept" rows?
 </p>
 
-<p>The import file should be a CSV with three or more columns, including a column of semicolon-separated author names called <code>authors</code>, semicolon-separated corresponding author email addresses called <code>corresponding_email</code>, and the paper title column called <code>title</code>. Special characters (e.g., commas, quotation marks) should be automatically escaped correctly if the CSV is saved from software such as Pandas, Excel, or Google Sheets.</p>
-
+<h2>Upload list of submissions (CSV)</h2>
+<p>The <em>submissions</em> CSV file should have at least these columns: <code>#</code> is the paper number from EasyChair and <code>title</code> is the paper title. Columns can be in any order, and other columns can be included but will be ignored.</p>
 <p>For example:</p>
-<pre>authors,corresponding_email,title
-First Author;Second B. Author;Third C. Author,fa@example.com;tc@example.com,My paper title</pre>
-
+<pre>#,title
+1,My paper title
+5,Another paper</pre>
 <fieldset>
-    <legend>Drag and drop file or click Browse</legend>
-    <input type=file id="import-file" aria-label="CSV file" />
+  <legend><em>Submissions CSV</em> -- Drag and drop file or click Browse</legend>
+  <input type=file id="submissions-file" aria-label="CSV file" />
+</fieldset>
+
+<h2>Upload list of authors (CSV)</h2>
+<p>The <em>authors</em> CSV file should have at least these columns: <code>submission #</code> is the paper number from EasyChair, <code>first name</code> and <code>last name</code> are the author's name columns (one author per row), <code>email</code> is the author's email address, and <code>corresponding?</code> is whether the author is a corresponding author ("yes" or "no"). Columns can be in any order, and other columns can be included but will be ignored.</p>
+<p>For example:</p>
+<pre>submission #,first name,last name,email,corresponding?
+1,First,Author,fa@example.com,yes
+1,Second B.,Author,sba@example.com,no
+1,Third,Author,tc@example.com,yes
+5,Solo,Author,solo@example.com,yes</pre>
+<fieldset>
+  <legend><em>Authors CSV</em> -- Drag and drop file or click Browse</legend>
+  <input type=file id="authors-file" aria-label="CSV file" />
 </fieldset>
 
 <h2>Data to import</h2>
 <div id="import-data">
-    <table>
-        <thead>
-            <tr><th>authors</th><th>corresponding_email</th><th>title</th><th></tr>
-        </thead>
-        <tbody></tbody>
-    </table>
+  <table class="submitted-papers">
+    <thead>
+      <tr><th>#</th><th>authors</th><th>corresponding_email</th><th>title</th><th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 </div>
 
 <h2>Import settings</h2>
 <div id="import-settings">
-    <form>
-        <div class="item">
-            <label>Venue name (e.g., edm2020)</label>
-            <input type="text" name="venue" />
-        </div>
-        <div class="item">
-            <label>Re-enter admin password</label>
-            <input type="password" placeholder="Password" name="pw" /> 
-        </div>
-        <input type="submit" value="Run import" />
-    </form>
+  <form>
+    <div class="item">
+      <label>Venue name (e.g., edm2020)</label>
+      <input type="text" name="venue" />
+    </div>
+    <div class="item">
+      <label>Re-enter admin password</label>
+      <input type="password" placeholder="Password" name="pw" /> 
+    </div>
+    <input type="submit" value="Run import" />
+  </form>
 </div>
 
 <div id="import-results" class="hidden">
-    <h2>Import results</h2>
-    <div class="results-output"></div>
-    <div id="manage-results-link">
-        <form action="" method=POST>
-            <input type="hidden" name="pw" />
-            <a href="javascript:;">Manage resulting papers</a>
-        </form>
-    </div>
+  <h2>Import results</h2>
+  <div class="results-output"></div>
+  <div id="manage-results-link">
+    <form action="" method=POST>
+      <input type="hidden" name="pw" />
+      <a href="javascript:;">Manage resulting papers</a>
+    </form>
+  </div>
 </div>
 
 <script type="module" src="/js/import.js"></script>

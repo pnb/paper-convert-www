@@ -6,6 +6,7 @@
   <thead>
     <tr>
       <th>actions</th>
+      <th>#</th>
       <th>id</th>
       <th>authors</th>
       <th>last updated</th>
@@ -18,6 +19,7 @@
   <%_ Object.keys(papers).sort().forEach((id) => { _%>
     <tr>
       <td class="actions"><label><input type="checkbox" class="actions" data-paper-id="<%= papers[id].id %>"></label></td>
+      <td class="paper-num"><%= papers[id].paper_num %></td>
       <td class="id"><a href="/camera/metadata/<%= venue %>/<%= papers[id].id %>"><%= papers[id].id %></a></td>
       <td class="authors"><%= papers[id].authors.join('; ') %></td>
       <td class="time"><%= papers[id].lastUpdated %></td>
@@ -40,6 +42,8 @@
       <textarea id="body-text"><%= settings.email_authors.body.replace('{VENUE}', venue) %></textarea>
       <ul>
         <li>{AUTHORS} will be replaced by the authors of the paper</li>
+        <li>{NUM} will be replaced by the paper number (i.e., <code>#</code>)</li>
+        <li>{TITLE} will be replaced by the title of the paper</li>
         <li>{PAPER_URL} will be replaced by a link to the paper's submission page</li>
       </ul>
       <button id="preview">Preview a random email</button>

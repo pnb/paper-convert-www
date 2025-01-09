@@ -96,6 +96,8 @@ function makeEmail (tableRow) {
   const venue = window.location.pathname.split('/').slice(-1)[0]
   function placeholders (text) {
     return text.replace('{AUTHORS}', authors.join(', '))
+      .replace('{NUM}', tableRow.querySelector('.paper-num').textContent)
+      .replace('{TITLE}', tableRow.querySelector('.title').textContent)
       .replace('{VENUE}', venue)
       .replace('{PAPER_URL}', '<a href="' + tableRow.querySelector('.id a').href +
         '" target="_blank">' + tableRow.querySelector('.id a').href + '</a>')

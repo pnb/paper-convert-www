@@ -141,6 +141,7 @@ router.post('/import/add-one', (req, res) => {
   try {
     fs.writeFileSync(path.join(paperDir, 'metadata.json'), JSON.stringify({
       id: paperHash,
+      paper_num: req.body.paper_num,
       title: req.body.title,
       original_title: req.body.title,
       venue: req.body.venue,
@@ -185,7 +186,7 @@ router.post('/manage/:venue/email', async (req, res) => {
       From: process.env.npm_package_config_from_email,
       To: paper.corresponding_email.join(','),
       Subject: req.body.subject,
-      HtmlBody: req.body.body,
+      TextBody: req.body.body,
       MessageStream: 'outbound',
       Tag: 'IEDMS'
     })
