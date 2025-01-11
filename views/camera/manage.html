@@ -36,10 +36,23 @@
   <div class="collapsible">
     <div class="collapsible-title">&triangleright; Email corresponding authors</div>
     <div class="email-fields collapsible-content hidden">
+      <%_ if (settings.email_authors.length > 1) { _%>
+      <h3>Load previous email template</h3>
+      <ol>
+        <%_ settings.email_authors.slice(1).forEach((template, i) => { _%>
+        <li>
+          <a href="javascript:;" class="load-email-template"
+            data-subject64="<%= btoa(template.subject) %>"
+            data-body64="<%= btoa(template.body) %>"><%= template.subject %></a>
+          (<%= new Date(template.serverUnix).toLocaleString() %>)
+        </li>
+        <%_ }) _%>
+      </ol>
+      <%_ } _%>
       <label for="subject">Subject</label>
-      <input type="text" id="subject" value="<%= settings.email_authors.subject.replace('{VENUE}', venue) %>">
+      <input type="text" id="subject" value="<%= settings.email_authors.slice(-1).pop().subject.replace('{VENUE}', venue) %>">
       <label for="body-text">Body</label>
-      <textarea id="body-text"><%= settings.email_authors.body.replace('{VENUE}', venue) %></textarea>
+      <textarea id="body-text"><%= settings.email_authors.slice(-1).pop().body.replace('{VENUE}', venue) %></textarea>
       <ul>
         <li>{AUTHORS} will be replaced by the authors of the paper</li>
         <li>{NUM} will be replaced by the paper number (i.e., <code>#</code>)</li>

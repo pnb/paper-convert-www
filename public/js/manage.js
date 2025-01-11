@@ -1,3 +1,5 @@
+/* globals alert */ // ESLint
+
 document.querySelectorAll('input.actions').forEach((elem) => {
   elem.onchange = () => {
     if (document.querySelectorAll('input.actions:checked').length) {
@@ -11,6 +13,13 @@ document.querySelectorAll('input.actions').forEach((elem) => {
 document.querySelectorAll('.collapsible-title').forEach((elem) => {
   elem.onclick = () => {
     elem.parentElement.querySelector('.collapsible-content').classList.toggle('hidden')
+  }
+})
+
+document.querySelectorAll('a.load-email-template').forEach((elem) => {
+  elem.onclick = () => {
+    document.getElementById('subject').value = atob(elem.dataset.subject64)
+    document.getElementById('body-text').value = atob(elem.dataset.body64)
   }
 })
 
@@ -79,6 +88,20 @@ document.getElementById('send').onclick = async function () {
       break
     }
   }
+  // Save the email template
+  const response = await fetch(window.location.pathname + '/add-email-template', {
+    method: 'POST',
+    body: new URLSearchParams({
+      pw: this.parentElement.querySelector('input[name="pw"]').value,
+      subject: document.getElementById('subject').value,
+      body: document.getElementById('body-text').value
+    })
+  })
+  if (response.ok) {
+    outputElem.innerHTML += '<p>Saved email template</p>'
+  } else {
+    alert('Error saving template: ' + await response.text())
+  }
   this.disabled = false
 }
 
@@ -93,9 +116,10 @@ function makeEmail (tableRow) {
     }
     return author.trim()
   })
+  const authorNames = authors.length > 2 ? authors.join(', ') : authors.join(' ')
   const venue = window.location.pathname.split('/').slice(-1)[0]
   function placeholders (text) {
-    return text.replace('{AUTHORS}', authors.join(', '))
+    return text.replace('{AUTHORS}', authorNames)
       .replace('{NUM}', tableRow.querySelector('.paper-num').textContent)
       .replace('{TITLE}', tableRow.querySelector('.title').textContent)
       .replace('{VENUE}', venue)

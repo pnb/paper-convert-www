@@ -200,6 +200,26 @@ router.post('/manage/:venue/email', async (req, res) => {
   return res.status(500).send('Error sending email: ' + result.statusText)
 })
 
+// Add email template after a batch has been sent
+router.post('/manage/:venue/add-email-template', (req, res) => {
+  if (req.body.pw !== process.env.npm_package_config_admin_page_password) {
+    return res.status(401).send('Incorrect password')
+  }
+  const venueDir = path.join(router.venues_dir, req.params.venue)
+  if (!fs.existsSync(venueDir)) {
+    return res.status(404).send('Venue not found')
+  }
+  const settings = JSON.parse(
+    fs.readFileSync(path.join(venueDir, 'settings.json'), 'utf8'))
+  settings.email_authors.push({
+    subject: req.body.subject,
+    body: req.body.body,
+    serverUnix: Date.now()
+  })
+  fs.writeFileSync(path.join(venueDir, 'settings.json'), JSON.stringify(settings))
+  return res.status(200).send('Added email template')
+})
+
 // Public domain hashing function from:
 // https://github.com/bryc/code/blob/master/jshash/experimental/cyrb53.js
 function cyrb53 (str, seed = 0) {
