@@ -8,7 +8,7 @@ document.getElementById('metadata-update').onsubmit = (e) => {
 
 const pdfElem = document.getElementsByName('pdf').item(0)
 const pdfLink = pdfElem.parentElement.querySelector('.current-file a')
-pdfElem.parentElement.querySelector('button').onclick = function (e) {
+pdfElem.parentElement.querySelector('button').onclick = function () {
   pdfElem.classList.remove('hidden')
   this.classList.add('hidden')
 }
@@ -41,7 +41,7 @@ pdfElem.onchange = async () => {
 
 const sourceElem = document.getElementsByName('source').item(0)
 const sourceLink = sourceElem.parentElement.querySelector('.current-file a')
-sourceElem.parentElement.querySelector('button').onclick = (e) => {
+sourceElem.parentElement.querySelector('button').onclick = function () {
   sourceElem.classList.remove('hidden')
   this.classList.add('hidden')
 }
@@ -49,7 +49,7 @@ sourceElem.onchange = async () => {
   if (!sourceElem.files.length) {
     return
   }
-  // First upload source file to start conversion, getting conversion doc ID from the
+  // First upload source file to start conversion and get conversion doc ID from the
   // converter
   sourceElem.classList.add('hidden')
   sourceElem.parentElement.querySelector('.busy').classList.remove('hidden')
@@ -72,6 +72,7 @@ sourceElem.onchange = async () => {
       sourceLink.href = response.url
       sourceLink.innerText = response.url.split('/').pop()
       document.querySelector('#certify-conversion input').checked = false
+      document.querySelector('#certify-conversion').classList.remove('hidden')
       sourceElem.parentElement.querySelector('.success').classList.remove('hidden')
       setTimeout(() => {
         sourceElem.parentElement.querySelector('.success').classList.add('hidden')
@@ -90,7 +91,6 @@ sourceElem.onchange = async () => {
 
 const certifyElem = document.querySelector('#certify-conversion input')
 certifyElem.onchange = async () => {
-  console.debug('Certify change')
   certifyElem.disabled = true
   const response = await fetch(window.location.pathname + '/update', {
     method: 'POST',
