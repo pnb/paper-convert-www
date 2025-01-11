@@ -75,40 +75,53 @@ router.get('/view/:doc_id/:filename*', (req, res) => {
   res.sendFile(path.join(router.docs_dir, req.params.doc_id, fname))
 })
 
+// Check on the progress of the conversion or view its warnings
 router.get('/process/:doc_id', (req, res) => {
-  // Check on the progress of the conversion
-  let conversionLog = []
-  try {
-    const logFname = path.join(router.docs_dir, req.params.doc_id,
-      'converter-output.txt')
-    conversionLog = fs.readFileSync(logFname, { encoding: 'utf8' })
-    conversionLog = conversionLog.split(/\n+/)
-  } catch (_) {} // Not yet finished converting
-
-  // Get full information about warnings from conversion's messages.json
-  const warnings = []
-  if (conversionLog.length) {
-    const logLines = getWarnings(req.params.doc_id)
-    logLines.forEach((warning) => {
-      const def = structuredClone(warningDefs[warning.warning_name])
-      if (parseInt(warning.is_tex) && def?.tex) {
-        for (const key in def.tex) {
-          def[key] = def.tex[key]
-        }
-      }
-      warnings.push({
-        message: def.message,
-        severity: def.severity,
-        help: def.help,
-        extra_info: warning.extra_info
-      })
-    })
-  }
-
   res.render('convert/result', {
     started: !fs.existsSync(path.join(router.docs_dir, req.params.doc_id + '.todo')),
-    conversion_log: conversionLog,
-    warnings,
+    conversion_log: getConversionLog(req.params.doc_id),
+    warnings: getFullWarningsInfo(req.params.doc_id),
     doc_id: req.params.doc_id
   })
 })
+
+// Get the full information about warnings as a separate endpoint, which could be useful
+// for checking if a submitted paper has addressed all required issues
+router.get('/process/warnings/:doc_id', (req, res) => {
+  res.json({
+    started: !fs.existsSync(path.join(router.docs_dir, req.params.doc_id + '.todo')),
+    finished: getConversionLog(req.params.doc_id).length > 0,
+    warnings: getFullWarningsInfo(req.params.doc_id)
+  })
+})
+
+function getConversionLog(docId) {
+  const logFname = path.join(router.docs_dir, docId, 'converter-output.txt')
+  let conversionLog = []
+  try {
+    conversionLog = fs.readFileSync(logFname, { encoding: 'utf8' })
+    conversionLog = conversionLog.split(/\n+/)
+  } catch (_) {} // Not yet finished converting
+  return conversionLog
+}
+
+// Get full information about warnings from conversion's messages.json
+function getFullWarningsInfo(docId) {
+  const warnings = []
+  const logLines = getWarnings(docId)
+  logLines.forEach((warning) => {
+    const def = structuredClone(warningDefs[warning.warning_name])
+    if (parseInt(warning.is_tex) && def?.tex) {
+      for (const key in def.tex) {
+        def[key] = def.tex[key]
+      }
+    }
+    warnings.push({
+      message: def.message,
+      severity: def.severity,
+      help: def.help,
+      extra_info: warning.extra_info
+    })
+  })
+  return warnings
+}
