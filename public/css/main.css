@@ -122,6 +122,11 @@ table.submitted-papers input[type="checkbox"] {
     height: 2em;
 }
 
+th.sortable:hover {
+    background: #eee;
+    cursor: pointer;
+}
+
 div.collapsible .collapsible-title {
     padding: 1em;
     border-top: 1px solid #ddd;

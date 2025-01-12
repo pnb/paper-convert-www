@@ -1,6 +1,22 @@
 /* globals alert */ // ESLint
 
-document.querySelector('th input.actions').onchange = function() {
+function makeTableSortable (table) {
+  table.querySelectorAll('th.sortable').forEach((th) => {
+    const colIndex = Array.from(table.querySelectorAll('th')).findIndex((x) => x === th)
+    th.onclick = () => {
+      const rows = Array.from(table.querySelectorAll('tbody tr'))
+      rows.sort((a, b) => {
+        const aval = a.querySelectorAll('td')[colIndex].textContent.trim()
+        const bval = b.querySelectorAll('td')[colIndex].textContent.trim()
+        return aval.localeCompare(bval)
+      })
+      rows.forEach((tr) => table.querySelector('tbody').appendChild(tr))
+    }
+  })
+}
+makeTableSortable(document.querySelector('table.submitted-papers'))
+
+document.querySelector('th input.actions').onchange = function () {
   document.querySelectorAll('tr input.actions').forEach((elem) => {
     elem.checked = this.checked
   })
