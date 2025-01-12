@@ -85,20 +85,7 @@ router.get('/process/:doc_id', (req, res) => {
   })
 })
 
-// Get the full information about warnings as a separate endpoint, which could be useful
-// for checking if a submitted paper has addressed all required issues
-router.get('/process/warnings/:doc_id', (req, res) => {
-  if (!fs.existsSync(path.join(router.docs_dir, req.params.doc_id))) {
-    return res.status(404).send('No such document')
-  }
-  res.json({
-    started: !fs.existsSync(path.join(router.docs_dir, req.params.doc_id + '.todo')),
-    finished: getConversionLog(req.params.doc_id).length > 0,
-    warnings: getFullWarningsInfo(req.params.doc_id)
-  })
-})
-
-function getConversionLog(docId) {
+export function getConversionLog(docId) {
   const logFname = path.join(router.docs_dir, docId, 'converter-output.txt')
   let conversionLog = []
   try {
@@ -109,7 +96,7 @@ function getConversionLog(docId) {
 }
 
 // Get full information about warnings from conversion's messages.json
-function getFullWarningsInfo(docId) {
+export function getFullWarningsInfo(docId) {
   const warnings = []
   const logLines = getWarnings(docId)
   logLines.forEach((warning) => {

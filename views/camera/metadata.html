@@ -37,8 +37,8 @@
     <div class="upload">
       <span class="current-file">
         Current version:
-        <%_ if (paper['pdf_original_filename']) { _%>
-        <a href="/camera/metadata/<%= paper['venue'] %>/<%= paper['id'] %>/pdf"><%= paper['id'] %>.pdf</a>
+        <%_ if (paper.pdf_original_filename) { _%>
+        <a href="/camera/metadata/<%= paper.venue %>/<%= paper.id %>/pdf"><%= paper.id %>.pdf</a>
         <%_ } else { _%>
         <a>(none)</a>
         <%_ } _%>
@@ -54,48 +54,51 @@
     <div class="upload">
       <span class="current-file">
         Converted document:
-        <%_ if (paper['converted_id']) { _%>
-        <a target="_blank" href="/process/<%= paper['converted_id'] %>"><%= paper['converted_id'] %></a>
+        <%_ if (paper.converted_id && paper.conversion_low_severity >= 0) { _%>
+        <a target="_blank" href="/process/<%= paper.converted_id %>"><%= paper.converted_id %></a>
         <%_ } else { _%>
         <a target="_blank">(none)</a>
         <%_ } _%>
       </span>
-      <button>Replace</button>
+      <button class="<% if (paper.converted_id && !(paper.conversion_low_severity >= 0)) { %>hidden<% } %>">Replace</button>
       <input class="hidden" type="file" name="source" accept=".docx,.zip" />
       <span class="busy hidden">Uploading...</span>
-      <span id="conversion-result">
-        <span class="busy hidden">Converting (do not refresh page)...</span>
-        <p id="conversion-high-severity" class="<% if (!paper['conversion_high_severity']) { _%> hidden <%_ } %>">
-          The HTML version of the converted paper has one or more high-severity issues that must be resolved before the paper can be finalized.
-        </p>
-        <p id="conversion-other-severity" class="<% if (!paper['conversion_medium_severity'] && !paper['conversion_low_severity'] || paper['conversion_high_severity']) { _%> hidden <%_ } %>">
-          Low- or medium-severity issues were detected in the HTML version of the converted paper. Please review the converted document and resolve these issues if possible.
-        </p>
-        <div id="certify-conversion" class="<% if (!paper['converted_id'] || paper['conversion_high_severity']) { _%> hidden <%_ } %>">
-          <label>
-            <input type="checkbox" <%_ if (paper['conversion_certified']) { %> checked <%_ } %> />
-            I have reviewed the converted paper, have resolved all issues feasible, and am satisfied with the final version.
-          </label>
-        </div>
-      </span>
+      <span id="currently-converting" class="busy <%_ if (!paper.converted_id || paper.conversion_low_severity >= 0) { %> hidden <%_ } %>">Converting...(refresh page to update; may take minutes)</span>
+      <%_ if (paper.conversion_high_severity) { _%>
+      <p id="conversion-high-severity">
+        The HTML version of the converted paper has one or more high-severity issues that must be resolved before the paper can be finalized.
+      </p>
+      <%_ } else if (paper.conversion_medium_severity || paper.conversion_low_severity) { _%>
+      <p id="conversion-other-severity">
+        Low- or medium-severity issues were detected in the HTML version of the converted paper. Please review the converted document and resolve these issues if possible.
+      </p>
+      <%_ } _%>
+      <%_ if (paper.conversion_high_severity === 0) { _%>
+      <div id="certify-conversion" class="<% if (!paper.converted_id || paper.conversion_high_severity) { _%> hidden <%_ } %>">
+        <label>
+          <input type="checkbox" <%_ if (paper.conversion_certified) { %> checked <%_ } %> />
+          I have reviewed the converted paper, have resolved all issues feasible, and am satisfied with the final version.
+        </label>
+      </div>
+      <%_ } _%>
     </div>
   </div>
   <div class="item">
     <label>Title</label>
-    <input type="text" name="title" value="<%= paper['title'] %>" />
+    <input type="text" name="title" value="<%= paper.title %>" />
     <button class="hidden">Save change</button>
     <span class="success hidden">✓</span>
   </div>
   <div class="item">
     <label>Abstract</label>
-    <textarea name="abstract"><%= paper['abstract'] %></textarea>
+    <textarea name="abstract"><%= paper.abstract %></textarea>
     <button class="hidden">Save change</button>
     <span class="success hidden">✓</span>
   </div>
   <div class="item author-list">
     <label>Authors</label>
     <div>
-      <%_ paper['authors'].forEach((author) => { _%>
+      <%_ paper.authors.forEach((author) => { _%>
         <p><%= author %></p>
       <%_ }) _%>
     </div>

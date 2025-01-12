@@ -52,10 +52,8 @@ sourceElem.onchange = async () => {
   // Upload source to start conversion and get conversion doc ID from the converter
   sourceElem.classList.add('hidden')
   sourceLink.classList.add('hidden')
-  document.querySelector('#conversion-high-severity').classList.add('hidden')
-  document.querySelector('#conversion-other-severity').classList.add('hidden')
-  document.querySelector('#certify-conversion input').checked = false
-  document.querySelector('#certify-conversion').classList.remove('hidden')
+  document.querySelector('#conversion-high-severity')?.classList?.add('hidden')
+  document.querySelector('#conversion-other-severity')?.classList?.add('hidden')
   sourceElem.parentElement.querySelector('.busy').classList.remove('hidden')
   const formData = new FormData()
   formData.append('doc_file', sourceElem.files[0])
@@ -63,73 +61,35 @@ sourceElem.onchange = async () => {
     method: 'POST',
     body: formData
   })
-  sourceElem.parentElement.querySelector('.busy').classList.add('hidden')
-
-  // Check status of conversion periodically, especially for severe warnings
+  // Now update the paper's status on the server
   if (response.ok && response.redirected) {
-    const convertedId = response.url.split('/').pop()
-    document.querySelector('#conversion-result .busy').classList.remove('hidden')
-    function checkConversion (docId) {
-      return new Promise((resolve, reject) => {
-        const warningsTimerId = setInterval(async () => {
-          const warningsRes = await fetch('/process/warnings/' + docId)
-          if (warningsRes.ok) {
-            const warnings = await warningsRes.json()
-            if (warnings.finished) {
-              clearInterval(warningsTimerId)
-              resolve(warnings.warnings)
-            }
-          } else {
-            clearInterval(warningsTimerId)
-            resolve('error')
-          }
-        }, 3000)
-      })
-    }
-    const warnings = await checkConversion(convertedId)
-    document.querySelector('#conversion-result .busy').classList.add('hidden')
-    document.querySelector('#conversion-high-severity').classList.toggle('hidden',
-      warnings !== 'error' && !warnings.some((w) => w.severity === 'high'))
-    document.querySelector('#conversion-other-severity').classList.toggle('hidden',
-      warnings === 'error' || !warnings.some((w) => w.severity !== 'high'))
-
-    // Now update the paper's status on the server
-    sourceElem.parentElement.querySelector('.busy').classList.remove('hidden')
     const updateResponse = await fetch(window.location.pathname + '/update', {
       method: 'POST',
       body: new URLSearchParams({
         source_original_filename: sourceElem.files[0].name,
-        converted_id: convertedId,
-        convert_high_severity: warnings.filter((w) => w.severity === 'high').length,
-        convert_medium_severity: warnings.filter((w) => w.severity === 'medium').length,
-        convert_low_severity: warnings.filter((w) => w.severity === 'low').length
+        converted_id: response.url.split('/').pop()
       })
     })
-    sourceElem.parentElement.querySelector('.busy').classList.add('hidden')
     if (updateResponse.ok) {
-      sourceLink.classList.remove('hidden')
-      sourceLink.href = response.url
-      sourceLink.innerText = convertedId
-      setTimeout(() => {
-        sourceElem.parentElement.querySelector('button').classList.remove('hidden')
-      }, 3000)
+      document.getElementById('currently-converting').classList.remove('hidden')
     } else {
-      alert('Error updating after conversion: ' + await updateResponse.text())
+      alert('Error recording upload: ' + await updateResponse.text())
       sourceElem.parentElement.querySelector('button').classList.remove('hidden')
     }
   } else {
     alert('Error uploading source file: ' + await response.text())
     sourceElem.parentElement.querySelector('button').classList.remove('hidden')
   }
+  sourceElem.parentElement.querySelector('.busy').classList.add('hidden')
 }
 
-const certifyElem = document.querySelector('#certify-conversion input')
-certifyElem.onchange = async () => {
-  certifyElem.disabled = true
+const certifyElem = document.querySelector('#certify-conversion input') || {}
+certifyElem.onchange = async function () {
+  this.disabled = true
   const response = await fetch(window.location.pathname + '/update', {
     method: 'POST',
     body: new URLSearchParams({
-      conversion_certified: certifyElem.checked * 1
+      conversion_certified: this.checked * 1
     })
   })
   if (response.ok) {
@@ -142,7 +102,7 @@ certifyElem.onchange = async () => {
   } else {
     alert('Error updating certification: ' + response.statusText)
   }
-  certifyElem.disabled = false
+  this.disabled = false
 }
 
 const titleElem = document.getElementsByName('title').item(0)

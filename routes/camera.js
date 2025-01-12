@@ -2,6 +2,8 @@ import fs from 'fs'
 import path from 'path'
 import { Router } from 'express'
 
+import { getConversionLog, getFullWarningsInfo } from './convert.js'
+
 export const router = Router()
 router.venues_dir = false
 
@@ -17,6 +19,19 @@ router.get('/metadata/:venue/:camera_id', (req, res) => {
   }
   const paper = JSON.parse(
     fs.readFileSync(path.join(paperDir, 'metadata.json'), 'utf8'))
+  // Check if the conversion is done and update conversion metadata if needed
+  if (paper.converted_id &&
+      !Object.prototype.hasOwnProperty.call(paper, 'conversion_low_severity') &&
+      getConversionLog(paper.converted_id).length > 0) {
+    const warnings = getFullWarningsInfo(paper.converted_id)
+    paper.conversion_low_severity = warnings.filter(
+      (w) => w.severity === 'low').length
+    paper.conversion_medium_severity = warnings.filter(
+      (w) => w.severity === 'medium').length
+    paper.conversion_high_severity = warnings.filter(
+      (w) => w.severity === 'high').length
+    fs.writeFileSync(path.join(paperDir, 'metadata.json'), JSON.stringify(paper))
+  }
   res.render('camera/metadata', { paper })
 })
 
@@ -64,9 +79,9 @@ router.post('/metadata/:venue/:camera_id/update', (req, res) => {
     paper.source_original_filename = req.body.source_original_filename
     paper.converted_id = req.body.converted_id
     paper.conversion_certified = false // New submission resets this
-    paper.conversion_high_severity = parseInt(req.body.convert_high_severity)
-    paper.conversion_medium_severity = parseInt(req.body.convert_medium_severity)
-    paper.conversion_low_severity = parseInt(req.body.convert_low_severity)
+    delete paper.conversion_low_severity
+    delete paper.conversion_medium_severity
+    delete paper.conversion_high_severity
   } else if (req.body.conversion_certified !== undefined) {
     paper.conversion_certified = parseInt(req.body.conversion_certified) === 1
   } else {
