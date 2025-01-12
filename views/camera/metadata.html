@@ -56,7 +56,7 @@
         Converted document:
         <%_ if (paper.converted_id && paper.conversion_low_severity >= 0) { _%>
         <a target="_blank" href="/process/<%= paper.converted_id %>"><%= paper.converted_id %></a>
-        <%_ } else { _%>
+        <%_ } else if (!paper.converted_id) { _%>
         <a target="_blank">(none)</a>
         <%_ } _%>
       </span>
