@@ -63,10 +63,21 @@
       <button>Replace</button>
       <input class="hidden" type="file" name="source" accept=".docx,.zip" />
       <span class="busy hidden">Uploading...</span>
-      <span class="success hidden">✓</span>
-      <div id="certify-conversion" class="<% if (!paper['converted_id']) { %> hidden <%_ } %>">
-        <label><input type="checkbox" <%_ if (paper['conversion_certified']) { %> checked <%_ } %> /> I have reviewed the converted document, have resolved all issues feasible, and am satisfied with the final version.</label>
-      </div>
+      <span id="conversion-result">
+        <span class="busy hidden">Converting (do not refresh page)...</span>
+        <p id="conversion-high-severity" class="<% if (!paper['conversion_high_severity']) { _%> hidden <%_ } %>">
+          The HTML version of the converted paper has one or more high-severity issues that must be resolved before the paper can be finalized.
+        </p>
+        <p id="conversion-other-severity" class="<% if (!paper['conversion_medium_severity'] && !paper['conversion_low_severity'] || paper['conversion_high_severity']) { _%> hidden <%_ } %>">
+          Low- or medium-severity issues were detected in the HTML version of the converted paper. Please review the converted document and resolve these issues if possible.
+        </p>
+        <div id="certify-conversion" class="<% if (!paper['converted_id'] || paper['conversion_high_severity']) { _%> hidden <%_ } %>">
+          <label>
+            <input type="checkbox" <%_ if (paper['conversion_certified']) { %> checked <%_ } %> />
+            I have reviewed the converted paper, have resolved all issues feasible, and am satisfied with the final version.
+          </label>
+        </div>
+      </span>
     </div>
   </div>
   <div class="item">

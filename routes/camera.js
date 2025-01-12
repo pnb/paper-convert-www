@@ -64,6 +64,9 @@ router.post('/metadata/:venue/:camera_id/update', (req, res) => {
     paper.source_original_filename = req.body.source_original_filename
     paper.converted_id = req.body.converted_id
     paper.conversion_certified = false // New submission resets this
+    paper.conversion_high_severity = parseInt(req.body.convert_high_severity)
+    paper.conversion_medium_severity = parseInt(req.body.convert_medium_severity)
+    paper.conversion_low_severity = parseInt(req.body.convert_low_severity)
   } else if (req.body.conversion_certified !== undefined) {
     paper.conversion_certified = parseInt(req.body.conversion_certified) === 1
   } else {
