@@ -93,11 +93,9 @@ certifyElem.onchange = async function () {
     })
   })
   if (response.ok) {
-    const successElem = document.querySelector('#certify-conversion')
-      .parentElement.querySelector('.success')
-    successElem.classList.remove('hidden')
+    document.querySelector('#certify-conversion .success').classList.remove('hidden')
     setTimeout(() => {
-      successElem.classList.add('hidden')
+      document.querySelector('#certify-conversion .success').classList.add('hidden')
     }, 3000)
   } else {
     alert('Error updating certification: ' + response.statusText)

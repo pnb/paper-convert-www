@@ -5,9 +5,11 @@
 <table class="submitted-papers">
   <thead>
     <tr>
-      <th>actions</th>
+      <th><input type="checkbox" class="actions"></th>
       <th>#</th>
       <th>id</th>
+      <th>PDF</th>
+      <th>HTML</th>
       <th>authors</th>
       <th>last updated</th>
       <th>emailed</th>
@@ -21,8 +23,10 @@
       <td class="actions"><label><input type="checkbox" class="actions" data-paper-id="<%= papers[id].id %>"></label></td>
       <td class="paper-num"><%= papers[id].paper_num %></td>
       <td class="id"><a href="/camera/metadata/<%= venue %>/<%= papers[id].id %>"><%= papers[id].id %></a></td>
+      <td class="pdf-ok"><%= papers[id].pdf_original_filename ? 'Y' : '' %></td>
+      <td class="html-ok"><%= papers[id].conversion_certified ? 'Y' : (papers[id].conversion_low_severity >= 0 ? 'X' : 'N') %></td>
       <td class="authors"><%= papers[id].authors.join('; ') %></td>
-      <td class="time"><%= papers[id].lastUpdated %></td>
+      <td class="time"><%= new Date(papers[id].last_updated).toLocaleString() %></td>
       <td class="emailed"><%= papers[id].emailed %></td>
       <td class="corresponding-email"><%= papers[id].corresponding_email.join('; ') %></td>
       <td class="title"><%= papers[id].title %></td>

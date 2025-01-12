@@ -1,8 +1,15 @@
 /* globals alert */ // ESLint
 
-document.querySelectorAll('input.actions').forEach((elem) => {
+document.querySelector('th input.actions').onchange = function() {
+  document.querySelectorAll('tr input.actions').forEach((elem) => {
+    elem.checked = this.checked
+  })
+  document.querySelector('div.actions').classList.toggle('hidden', !this.checked)
+}
+
+document.querySelectorAll('td input.actions').forEach((elem) => {
   elem.onchange = () => {
-    if (document.querySelectorAll('input.actions:checked').length) {
+    if (document.querySelectorAll('td input.actions:checked').length) {
       document.querySelector('div.actions').classList.remove('hidden')
     } else {
       document.querySelector('div.actions').classList.add('hidden')

@@ -50,13 +50,7 @@ button#btn-upload {
 }
 
 /******** Admin ********/
-table.submitted-papers td.id,
-table.submitted-papers td.time {
-    font-family: 'Courier New', Courier, monospace;
-}
-
-table.submitted-papers td.id,
-table.submitted-papers td.time {
+table.submitted-papers td.id {
     font-family: 'Courier New', Courier, monospace;
 }
 
@@ -113,6 +107,10 @@ table.submitted-papers td.corresponding-email {
 
 table.submitted-papers td.authors {
     max-width: 20em;
+}
+
+table.submitted-papers td.time {
+    max-width: 8em;
 }
 
 table.submitted-papers td.actions label {

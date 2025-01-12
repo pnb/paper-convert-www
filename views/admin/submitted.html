@@ -24,7 +24,7 @@
         <tr>
             <td class="id"><a href="/process/<%= papers[id].id %>"><%= papers[id].id %></a></td>
             <td><a href="/view/<%= papers[id].id %>/<%= papers[id].id + papers[id].source_ext %>"><%= papers[id].source_ext %></a></td>
-            <td class="time"><%= papers[id].time %></td>
+            <td class="time"><%= new Date(papers[id].time).toLocaleString() %></td>
             <td class="title"><%= papers[id].title %></td>
         </tr>
     <%_ }) _%>
