@@ -57,7 +57,7 @@ function read_paper_data(dir) {
 
     try {
         const dir_stats = fs.statSync(path.join(router.docs_dir, dir));
-        cur_paper.time = Math.round(dir_stats.birthtimeMs);
+        cur_paper.time = Math.round(dir_stats.ctimeMs);
     } catch (_) {}
 
     if (!fs.existsSync(path.join(router.docs_dir, dir, 'converter-output.txt'))) {
