@@ -10,6 +10,7 @@
       <th class="actions"><input type="checkbox" class="actions"></th>
       <th class="paper-num sortable">#</th>
       <th class="id sortable">id</th>
+      <th class="track sortable">track</th>
       <th class="pdf-ok sortable">PDF</th>
       <th class="html-ok sortable">HTML</th>
       <th class="authors sortable">authors</th>
@@ -25,7 +26,8 @@
       <td class="actions"><label><input type="checkbox" class="actions" data-paper-id="<%= papers[id].id %>"></label></td>
       <td class="paper-num"><%= papers[id].paper_num %></td>
       <td class="id"><a target="_blank" href="/camera/metadata/<%= venue %>/<%= papers[id].id %>"><%= papers[id].id %></a></td>
-      <td class="pdf-ok"><%= papers[id].pdf_original_filename ? 'Y' : '' %></td>
+      <td class="track"><%= papers[id].track %></td>
+      <td class="pdf-ok"><%= papers[id].pdf_original_filename ? 'Y' : 'N' %></td>
       <td class="html-ok"><%= papers[id].conversion_certified ? 'Y' : (papers[id].conversion_low_severity >= 0 ? 'X' : 'N') %></td>
       <td class="authors"><%= papers[id].authors.join('; ') %></td>
       <td class="time"><%= new Date(papers[id].last_updated).toISOString().replace('T', ' ').substr(0, 19) %></td>

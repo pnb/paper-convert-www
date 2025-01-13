@@ -8,11 +8,11 @@ Submission (papers) CSV has `decision` -- optionally should we only keep the "ac
 </p>
 
 <h2>Upload list of submissions (CSV)</h2>
-<p>The <em>submissions</em> CSV file should have at least these columns: <code>#</code> is the paper number from EasyChair and <code>title</code> is the paper title. Columns can be in any order, and other columns can be included but will be ignored.</p>
+<p>The <em>submissions</em> CSV file should have at least these columns: <code>#</code> (paper number from EasyChair), <code>track name</code>, and <code>title</code> (the paper title). Columns can be in any order, and other columns can be included but will be ignored.</p>
 <p>For example:</p>
-<pre>#,title
-1,My paper title
-5,Another paper</pre>
+<pre>#,track name,title
+1,Full papers,My paper title
+5,Short papers,Another paper</pre>
 <fieldset>
   <legend><em>Submissions CSV</em> -- Drag and drop file or click Browse</legend>
   <input type=file id="submissions-file" aria-label="CSV file" />
@@ -35,7 +35,13 @@ Submission (papers) CSV has `decision` -- optionally should we only keep the "ac
 <div id="import-data">
   <table class="submitted-papers">
     <thead>
-      <tr><th>#</th><th>authors</th><th>corresponding_email</th><th>title</th><th></tr>
+      <tr>
+        <th class="paper-num">#</th>
+        <th class="track">track</th>
+        <th class="authors">authors</th>
+        <th class="corresponding-email">corresponding email</th>
+        <th class="title">title</th>
+      </tr>
     </thead>
     <tbody></tbody>
   </table>

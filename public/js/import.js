@@ -1,15 +1,17 @@
+/* global alert, Papa */ // ESLint
+
 const submissions = []
 const authors = []
 
-document.getElementById('submissions-file').onchange = function() {
+document.getElementById('submissions-file').onchange = function () {
   submissions.length = 0
-  const cols = ['#', 'title']
+  const cols = ['#', 'track name', 'title']
   Papa.parse(this.files[0], {
     header: true,
     dynamicTyping: true,
-    delimiter: ",",
+    delimiter: ',',
     skipEmptyLines: true,
-    complete: function(result) {
+    complete: function (result) {
       if (result.errors.length) {
         alert('Parsing errors: ' + JSON.stringify(result.errors))
       }
@@ -29,15 +31,15 @@ document.getElementById('submissions-file').onchange = function() {
   })
 }
 
-document.getElementById('authors-file').onchange = function() {
+document.getElementById('authors-file').onchange = function () {
   authors.length = 0
   const cols = ['submission #', 'first name', 'last name', 'email', 'corresponding?']
   Papa.parse(this.files[0], {
     header: true,
     dynamicTyping: true,
-    delimiter: ",",
+    delimiter: ',',
     skipEmptyLines: true,
-    complete: function(result) {
+    complete: function (result) {
       if (result.errors.length) {
         alert('Parsing errors: ' + JSON.stringify(result.errors))
       }
@@ -57,7 +59,7 @@ document.getElementById('authors-file').onchange = function() {
   })
 }
 
-function updateImportedDataTable() {
+function updateImportedDataTable () {
   const tbody = document.querySelector('#import-data tbody')
   tbody.innerHTML = ''
   for (const submission of submissions) {
@@ -71,6 +73,10 @@ function updateImportedDataTable() {
     paperNumCell.innerText = submission['#']
     paperNumCell.classList.add('paper-num')
     newRow.append(paperNumCell)
+    const trackCell = document.createElement('td')
+    trackCell.innerText = submission['track name']
+    trackCell.classList.add('track')
+    newRow.append(trackCell)
     const authorsCell = document.createElement('td')
     authorsCell.innerText = authorRows
       .map((a) => a['first name'] + ' ' + a['last name'])
@@ -80,19 +86,19 @@ function updateImportedDataTable() {
     const correspondingEmailCell = document.createElement('td')
     correspondingEmailCell.innerText = authorRows
       .filter((a) => a['corresponding?'] === 'yes')
-      .map((a) => a['email'])
+      .map((a) => a.email)
       .join('; ')
     correspondingEmailCell.classList.add('corresponding-email')
     newRow.append(correspondingEmailCell)
     const titleCell = document.createElement('td')
-    titleCell.innerText = submission['title']
+    titleCell.innerText = submission.title
     titleCell.classList.add('title')
     newRow.append(titleCell)
     tbody.append(newRow)
   }
 }
 
-function validateSettings() {
+function validateSettings () {
   if (!document.querySelector('#import-data td')) {
     alert('You must load the import data first.')
     return false
@@ -112,10 +118,10 @@ function validateSettings() {
   return true
 }
 
-document.querySelector('#import-settings form').onsubmit = async function(e) {
+document.querySelector('#import-settings form').onsubmit = async function (e) {
   e.preventDefault()
   if (!validateSettings()) {
-    return false  // Prevent form submit
+    return false // Prevent form submit
   }
   document.querySelectorAll('#import-settings input').forEach((elem) => {
     elem.disabled = true
@@ -131,17 +137,18 @@ document.querySelector('#import-settings form').onsubmit = async function(e) {
       method: 'POST',
       body: new URLSearchParams({
         pw: document.getElementsByName('pw').item(0).value,
-        venue: venue,
+        venue,
         paper_num: row.querySelector('.paper-num').innerText,
+        track: row.querySelector('.track').innerText,
         authors: row.querySelector('.authors').innerText,
         corresponding_email: row.querySelector('.corresponding-email').innerText,
-        title: paperTitle,
-      }),
+        title: paperTitle
+      })
     })
     const message = await result.text()
     if (result.status === 409 || result.status === 200) {
       // 409 = already exists; 200 = added
-      if (!outputElem.innerHTML) {  // Scroll to bottom on first output
+      if (!outputElem.innerHTML) { // Scroll to bottom on first output
         window.scrollTo(0, document.body.scrollHeight)
       }
       outputElem.innerText += message + ' → ' + paperTitle + '\n'
@@ -160,5 +167,5 @@ document.querySelector('#import-settings form').onsubmit = async function(e) {
   document.querySelector('#manage-results-link a').onclick = () => {
     document.querySelector('#manage-results-link form').submit()
   }
-  return false  // Prevent form submit
+  return false // Prevent form submit
 }

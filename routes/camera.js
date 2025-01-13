@@ -160,6 +160,7 @@ router.post('/import/add-one', (req, res) => {
     fs.writeFileSync(path.join(paperDir, 'metadata.json'), JSON.stringify({
       id: paperHash,
       paper_num: req.body.paper_num,
+      track: req.body.track,
       title: req.body.title,
       original_title: req.body.title,
       venue: req.body.venue,
