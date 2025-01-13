@@ -2,6 +2,7 @@
 *.swp
 papers/
 venues/
+pdf_checks/
 
 # Logs
 logs
