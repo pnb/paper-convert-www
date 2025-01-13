@@ -41,12 +41,14 @@ router.post('/upload', async (req, res) => {
 router.get('/process/:docId', (req, res) => {
   const docDir = path.join(router.pdfsDir, req.params.docId)
   if (!fs.existsSync(docDir)) {
-    return res.status(404).send('File not found')
+    return res.status(404).send('Paper not found')
   }
-  const checkerOutput = fs.readFileSync(
-    path.join(docDir, 'pdf_checker-output.txt'), 'utf-8')
+  const outPath = path.join(docDir, 'pdf_checker-output.txt')
+  if (!fs.existsSync(outPath)) {
+    return res.status(200).send('Paper checking in progress (refresh to update)')
+  }
   res.render('pdf_check/pdf_result', {
     docId: req.params.docId,
-    checkerOutput
+    checkerOutput: fs.readFileSync(outPath, 'utf-8')
   })
 })

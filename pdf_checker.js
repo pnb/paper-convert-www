@@ -43,11 +43,11 @@ export class PdfChecker {
   #checkPdf (dibsFname, pdfId) {
     console.log('PdfChecker: Started document', pdfId)
     const outDir = path.join(this.monitorDir, pdfId)
-    const pdfFname = path.join(outDir, pdfId)
     let stdout = ''
     try {
       stdout = execSync(
-        path.join(this.pythonPath, 'pdf_checker.py') + ' ' + pdfFname + ' ' + outDir,
+        this.pythonPath + ' ' + path.join(this.scriptsDir, 'pdf_checker.py ') +
+        path.join(outDir, pdfId) + '.pdf',
         { encoding: 'utf8' }).toString()
       console.log('PdfChecker: Finished document', pdfId)
     } catch (sysErr) {
