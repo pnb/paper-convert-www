@@ -15,6 +15,7 @@
         "conversion_scripts_dir": "../paper-convert-scripts",
         "conversion_monitor_dir": "./papers",
         "conversion_time_limit_ms": 300000,
+        "pdf_check_monitor_dir": "./pdf_checks",
         "admin_page_password": "change-me",
         "postmark_api_key": "POSTMARK_API_TEST",
         "from_email": "noreply@pnigel.com"

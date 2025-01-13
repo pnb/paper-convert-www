@@ -1,0 +1,13 @@
+<% title = 'PDF check' -%>
+<%- include ('../header.html') %>
+<h1>Upload PDF for basic formatting checks</h1>
+<p>This checker can only do very basic checks. Human discretion is required.</p>
+<form method="POST" action="/pdf-check/upload" enctype="multipart/form-data" id="pdf-submit-form">
+  <fieldset>
+    <legend>Drag and drop file or click Browse</legend>
+    <input type=file name="pdf" accept=".pdf" aria-label="PDF file" />
+  </fieldset>
+  <br />
+  <button type="submit" onclick="this.disabled = true; document.getElementById('pdf-submit-form').submit()">Upload and check</button>
+</form>
+<%- include ('../footer.html') _%>

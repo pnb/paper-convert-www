@@ -30,7 +30,7 @@ router.post('/upload', (req, res) => {
   if (!req.files?.doc_file) {
     return res.status(400).send('Error: No files uploaded')
   } else if (!req.files.doc_file.name.endsWith('.zip') &&
-               !req.files.doc_file.name.endsWith('.docx')) {
+             !req.files.doc_file.name.endsWith('.docx')) {
     return res.status(400).send(
       'Error: Only .docx (Word) and .zip (LaTeX) files are allowed')
   }
