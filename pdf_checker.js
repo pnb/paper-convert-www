@@ -47,7 +47,7 @@ export class PdfChecker {
     try {
       stdout = execSync(
         this.pythonPath + ' ' + path.join(this.scriptsDir, 'pdf_checker.py ') +
-        path.join(outDir, pdfId) + '.pdf',
+        path.resolve(path.join(outDir, pdfId) + '.pdf'),
         { encoding: 'utf8' }).toString()
       console.log('PdfChecker: Finished document', pdfId)
     } catch (sysErr) {

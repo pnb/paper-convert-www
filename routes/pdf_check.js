@@ -52,3 +52,15 @@ router.get('/process/:docId', (req, res) => {
     checkerOutput: fs.readFileSync(outPath, 'utf-8')
   })
 })
+
+router.get('/pdf/:docId.pdf', (req, res) => {
+  const docDir = path.join(router.pdfsDir, req.params.docId)
+  if (!fs.existsSync(docDir)) {
+    return res.status(404).send('Paper not found')
+  }
+  const pdfPath = path.join(docDir, req.params.docId + '.pdf')
+  if (!fs.existsSync(pdfPath)) {
+    return res.status(404).send('Paper not found')
+  }
+  res.sendFile(pdfPath)
+})

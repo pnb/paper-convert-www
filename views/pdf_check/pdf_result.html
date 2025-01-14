@@ -14,10 +14,15 @@
 <p class="pdf-warning">Margins: <%- line.substring(9) %></p>
 <%_ } else if (line.startsWith('page size: ')) { _%>
 <p class="pdf-warning">Page size: <%- line.substring(11) %></p>
+<%_ } else if (line.startsWith('copyright block: ')) { _%>
+<p class="pdf-warning">Copyright block: <%- line.substring(17) %></p>
 <%_ } else { _%>
 <p class="pdf-warning">Unexpected error (please report): <code><%- line %></code></p>
 <%_ } _%>
 
 <%_ } _%>
 <%_ }) _%>
+
+<p>Uploaded PDF: <a target="_blank" href="/pdf-check/pdf/<%- docId %>.pdf"><%- docId %>.pdf</a></p>
+
 <%- include ('../footer.html') _%>

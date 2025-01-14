@@ -217,3 +217,8 @@ div.author-list p {
 textarea[name="abstract"] {
     height: 10em;
 }
+
+p.pdf-warning {
+    background: #fdd;
+    padding: 0.5em;
+}
