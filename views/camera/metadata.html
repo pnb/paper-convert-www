@@ -8,16 +8,21 @@
     <div class="upload">
       <span class="current-file">
         Current version:
-        <%_ if (paper.pdf_original_filename) { _%>
-        <a href="/camera/metadata/<%= paper.venue %>/<%= paper.id %>/pdf"><%= paper.id %>.pdf</a>
-        <%_ } else { _%>
+        <%_ if (paper.pdf_check_id && paper.pdf_checks_failed >= 0) { _%>
+        <a target="_blank" href="/pdf-check/process/<%= paper.pdf_check_id %>"><%= paper.pdf_check_id %></a>
+        <%_ } else if (!paper.pdf_check_id) { _%>
         <a>(none)</a>
         <%_ } _%>
       </span>
-      <button>Replace</button>
+      <button class="<% if (paper.pdf_check_id && !(paper.pdf_checks_failed >= 0)) { %>hidden<% } %>">Replace</button>
       <input type="file" name="pdf" accept=".pdf" class="hidden" />
       <span class="busy hidden">Uploading...</span>
-      <span class="success hidden">✓</span>
+      <span id="currently-checking" class="busy <%_ if (!paper.pdf_check_id || paper.pdf_checks_failed >= 0) { %> hidden <%_ } %>">Checking...(refresh page to update; may take minutes)</span>
+      <%_ if (paper.pdf_checks_failed) { _%>
+      <p id="pdf-checks-failed">
+        The PDF version of the paper has one or more high-severity issues that must be resolved before the paper can be finalized.
+      </p>
+      <%_ } _%>
     </div>
   </div>
   <div class="item">

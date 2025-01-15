@@ -2,7 +2,7 @@
 <%- include ('../header.html') %>
 <h1>Manage accepted papers for <%= venue %></h1>
 
-<p>For the HTML column, <em>Y</em> indicates that there are no high-severity conversion issues and the authors have certified the converted paper. <em>X</em> indicates that the converted paper has not been certified (e.g., because there are major issues). <em>N</em> indicates nothing was submitted.</p>
+<p>For the HTML and PDF columns, <em>Y</em> indicates that there are no high-severity conversion issues (and for HTML, the authors have certified the converted paper). <em>X</em> indicates major issues (or no certified HTML conversion). <em>N</em> indicates nothing was submitted.</p>
 
 <table class="submitted-papers">
   <thead>
@@ -27,7 +27,7 @@
       <td class="paper-num"><%= papers[id].paper_num %></td>
       <td class="id"><a target="_blank" href="/camera/metadata/<%= venue %>/<%= papers[id].id %>"><%= papers[id].id %></a></td>
       <td class="track"><%= papers[id].track %></td>
-      <td class="pdf-ok"><%= papers[id].pdf_original_filename ? 'Y' : 'N' %></td>
+      <td class="pdf-ok"><%= papers[id].pdf_checks_failed === 0 ? 'Y' : (papers[id].pdf_checks_failed > 0 ? 'X' : 'N') %></td>
       <td class="html-ok"><%= papers[id].conversion_certified ? 'Y' : (papers[id].conversion_low_severity >= 0 ? 'X' : 'N') %></td>
       <td class="authors"><%= papers[id].authors.join('; ') %></td>
       <td class="time"><%= new Date(papers[id].last_updated).toISOString().replace('T', ' ').substr(0, 19) %></td>

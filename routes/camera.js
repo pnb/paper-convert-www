@@ -3,6 +3,7 @@ import path from 'path'
 import { Router } from 'express'
 
 import { getConversionLog, getFullWarningsInfo } from './convert.js'
+import { getPDFWarnings } from './pdf_check.js'
 
 export const router = Router()
 router.venues_dir = false
@@ -19,7 +20,15 @@ router.get('/metadata/:venue/:camera_id', (req, res) => {
   }
   const paper = JSON.parse(
     fs.readFileSync(path.join(paperDir, 'metadata.json'), 'utf8'))
-  // Check if the conversion is done and update conversion metadata if needed
+  // Check if PDF checking is done and update PDF metadata if needed
+  if (paper.pdf_check_id && !(paper.pdf_checks_failed >= 0)) {
+    // Check if the conversion is done and update conversion metadata if needed
+    const warnings = getPDFWarnings(paper.pdf_check_id)
+    if (warnings !== false) {
+      paper.pdf_checks_failed = warnings.length
+      fs.writeFileSync(path.join(paperDir, 'metadata.json'), JSON.stringify(paper))
+    }
+  }
   if (paper.converted_id &&
       !Object.prototype.hasOwnProperty.call(paper, 'conversion_low_severity') &&
       getConversionLog(paper.converted_id).length > 0) {
@@ -68,13 +77,10 @@ router.post('/metadata/:venue/:camera_id/update', (req, res) => {
     paper.title = req.body.title
   } else if (req.body.abstract) {
     paper.abstract = req.body.abstract
-  } else if (req?.files?.pdf) {
-    if (!req.files.pdf.name.toLowerCase().endsWith('.pdf')) {
-      return res.status(400).send('PDF filename must end in .pdf')
-    }
-    paper.pdf_original_filename = req.files.pdf.name
-    fs.writeFileSync(path.join(paperDir, req.params.camera_id + '.pdf'),
-      req.files.pdf.data)
+  } else if (req.body.pdf_original_filename) {
+    paper.pdf_original_filename = req.body.pdf_original_filename
+    paper.pdf_check_id = req.body.pdf_check_id
+    delete paper.pdf_checks_failed
   } else if (req.body.source_original_filename) {
     paper.source_original_filename = req.body.source_original_filename
     paper.converted_id = req.body.converted_id

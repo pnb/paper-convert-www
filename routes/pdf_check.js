@@ -53,6 +53,7 @@ router.get('/process/:docId', (req, res) => {
   })
 })
 
+// Download the PDF
 router.get('/pdf/:docId.pdf', (req, res) => {
   const docDir = path.join(router.pdfsDir, req.params.docId)
   if (!fs.existsSync(docDir)) {
@@ -64,3 +65,15 @@ router.get('/pdf/:docId.pdf', (req, res) => {
   }
   res.sendFile(pdfPath)
 })
+
+// Get PDF checking warnings for a given PDF's ID, or false if the PDF is not
+// checked yet/doesn't exist
+export function getPDFWarnings (docId) {
+  const docDir = path.join(router.pdfsDir, docId)
+  const outPath = path.join(docDir, 'pdf_checker-output.txt')
+  if (!fs.existsSync(outPath)) {
+    return false
+  }
+  const lines = fs.readFileSync(outPath, 'utf-8').split('\n')
+  return lines.filter((line) => line.trim().length)
+}

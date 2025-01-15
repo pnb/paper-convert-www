@@ -16,22 +16,32 @@ pdfElem.onchange = async () => {
   if (!pdfElem.files.length) {
     return
   }
+  // Upload PDF to PDF checker to start checking and get PDF check ID
   pdfElem.classList.add('hidden')
+  pdfLink.classList.add('hidden')
+  document.querySelector('#pdf-checks-failed')?.classList?.add('hidden')
   pdfElem.parentElement.querySelector('.busy').classList.remove('hidden')
   const formData = new FormData()
   formData.append('pdf', pdfElem.files[0])
-  const response = await fetch(window.location.pathname + '/update', {
+  const response = await fetch('/pdf-check/upload', {
     method: 'POST',
     body: formData
   })
-  if (response.ok) {
-    pdfElem.parentElement.querySelector('.success').classList.remove('hidden')
-    pdfLink.href = window.location.pathname + '/pdf'
-    pdfLink.innerText = window.location.pathname.split('/').pop() + '.pdf'
-    setTimeout(() => {
-      pdfElem.parentElement.querySelector('.success').classList.add('hidden')
+  // Now update the PDF's status on the server
+  if (response.ok && response.redirected) {
+    const updateResponse = await fetch(window.location.pathname + '/update', {
+      method: 'POST',
+      body: new URLSearchParams({
+        pdf_original_filename: pdfElem.files[0].name,
+        pdf_check_id: response.url.split('/').pop()
+      })
+    })
+    if (updateResponse.ok) {
+      document.getElementById('currently-checking').classList.remove('hidden')
+    } else {
+      alert('Error recording upload: ' + await updateResponse.text())
       pdfElem.parentElement.querySelector('button').classList.remove('hidden')
-    }, 3000)
+    }
   } else {
     alert('Error uploading PDF: ' + await response.text())
     pdfElem.parentElement.querySelector('button').classList.remove('hidden')
