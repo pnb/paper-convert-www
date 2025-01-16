@@ -1,0 +1,8 @@
+{
+    "email_authors": [
+        {
+            "subject": "Camera-ready instructions for paper {NUM} ({VENUE})",
+            "body": "Dear {AUTHORS},\n\nCongratulations once again on the acceptance of your paper:\n\n{TITLE}\nTrack: {TRACK}\n\nIt is now time to submit your final camera-ready, non-anonymous version! Submit your camera-ready paper here:\n{PAPER_URL}\n\nSincerely,\nProgram Committee Chairs"
+        }
+    ]
+}

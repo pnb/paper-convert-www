@@ -144,7 +144,8 @@ function makeEmail (tableRow) {
   function placeholders (text) {
     return text.replace('{AUTHORS}', authorNames)
       .replace('{NUM}', tableRow.querySelector('.paper-num').textContent)
-      .replace('{TITLE}', tableRow.querySelector('.title').textContent)
+      .replace('{TITLE}', tableRow.querySelector('.title').innerHTML)
+      .replace('{TRACK}', tableRow.querySelector('.track').innerHTML)
       .replace('{VENUE}', venue)
       .replace('{PAPER_URL}', '<a href="' + tableRow.querySelector('.id a').href +
         '" target="_blank">' + tableRow.querySelector('.id a').href + '</a>')
