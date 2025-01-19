@@ -179,8 +179,11 @@ div.overlay {
     max-width: 60em;
 }
 
-.overlay-content pre {
-    text-wrap: wrap;
+.overlay-content .email-preview {
+    font-family: monospace;
+    font-size: 1.1em;
+    width: calc(100% - 1em);
+    height: 25em;
 }
 
 /******** Camera ready ********/

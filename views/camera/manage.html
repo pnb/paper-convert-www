@@ -62,6 +62,7 @@
       <label for="body-text">Body</label>
       <textarea id="body-text"><%= settings.email_authors.slice(-1).pop().body.replace('{VENUE}', venue) %></textarea>
       <ul>
+        <li>Only plain text is supported in the email body; HTML will not be displayed</li>
         <li>{AUTHORS} will be replaced by the authors of the paper</li>
         <li>{NUM} will be replaced by the paper number (i.e., <code>#</code>)</li>
         <li>{TITLE} will be replaced by the title of the paper</li>
@@ -76,7 +77,8 @@
     <div class="hidden overlay">
       <div class="overlay-content">
         <div class="overlay-instructions">Click anywhere or press escape to close.</div>
-        <pre></pre>
+        <div class="email-preview-subject"></div>
+        <textarea readonly class="email-preview"></textarea>
       </div>
     </div>
   </div>

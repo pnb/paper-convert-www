@@ -54,8 +54,9 @@ document.getElementById('preview').onclick = function () {
     (elem) => elem.querySelector('input.actions').checked)
   const randomRow = paperRows[Math.floor(Math.random() * paperRows.length)]
   const email = makeEmail(randomRow)
-  overlay.querySelector('pre').innerHTML =
-    `<em>Subject: ${email.subject}</em>\n\n${email.body}`
+  overlay.querySelector('.email-preview-subject').innerHTML = 
+    `<em>Subject: ${email.subject}</em>`
+  overlay.querySelector('.email-preview').innerHTML = email.body
 }
 
 document.querySelectorAll('.overlay').forEach((elem) => {
@@ -144,11 +145,10 @@ function makeEmail (tableRow) {
   function placeholders (text) {
     return text.replace('{AUTHORS}', authorNames)
       .replace('{NUM}', tableRow.querySelector('.paper-num').textContent)
-      .replace('{TITLE}', tableRow.querySelector('.title').innerHTML)
+      .replace('{TITLE}', tableRow.querySelector('.title').textContent)
       .replace('{TRACK}', tableRow.querySelector('.track').innerHTML)
       .replace('{VENUE}', venue)
-      .replace('{PAPER_URL}', '<a href="' + tableRow.querySelector('.id a').href +
-        '" target="_blank">' + tableRow.querySelector('.id a').href + '</a>')
+      .replace('{PAPER_URL}', tableRow.querySelector('.id a').href)
   }
   return {
     subject: placeholders(document.getElementById('subject').value),
