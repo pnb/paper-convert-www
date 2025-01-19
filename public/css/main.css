@@ -208,6 +208,12 @@ form#metadata-update .busy {
     margin-left: 0.5em;
 }
 
+p#pdf-checks-failed,
+p#conversion-high-severity {
+    background: #fdd;
+    padding: 0.5em;
+}
+
 div#certify-conversion label {
     display: inline-block;
     max-width: 30em;
