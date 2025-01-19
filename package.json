@@ -12,6 +12,7 @@
         "nanoid": "^3.3.8"
     },
     "config": {
+        "port": 3000,
         "conversion_scripts_dir": "../paper-convert-scripts",
         "conversion_monitor_dir": "./papers",
         "conversion_time_limit_ms": 300000,

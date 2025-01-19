@@ -103,6 +103,6 @@ if (cluster.isPrimary) {
   routesCamera.venues_dir = path.join(__dirname, 'venues')
   app.use('/camera', routesCamera)
 
-  app.listen(3000)
-  console.log('Listening on port 3000')
+  app.listen(process.env.npm_package_config_port)
+  console.log('Listening on port', process.env.npm_package_config_port)
 }
