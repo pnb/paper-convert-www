@@ -1,3 +1,7 @@
+strong {
+    font-weight: bold;  /* Make Firefox in line with other browsers (vs. bolder) */
+}
+
 .paper-contents {
     line-height: 1.4;
     max-width: 50em;
