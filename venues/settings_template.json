@@ -1,8 +1,9 @@
 {
-    "email_authors": [
+    "emailAuthors": [
         {
+            "ccReplyTo": ["person1@example.com", "person2@example.com"],
             "subject": "Camera-ready instructions for paper {NUM} ({VENUE})",
-            "body": "Dear {AUTHORS},\n\nCongratulations once again on the acceptance of your paper:\n{TITLE}\nTrack: {TRACK}\n\nIt is now time to submit your final camera-ready, non-anonymous version! Submit your camera-ready paper here:\n{PAPER_URL}\n\nSincerely,\nProgram Committee Chairs"
+            "body": "Dear {AUTHORS},\n\nCongratulations once again on the acceptance of your paper:\n{TITLE}\nTrack: {TRACK}\n\nIt is now time to submit your final camera-ready, non-anonymous version! Submit your camera-ready paper here:\n{PAPER_URL}\n\nIf you have any questions, please reply-all to this email.\n\nSincerely,\nProgram Committee Chairs"
         }
     ]
 }

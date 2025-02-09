@@ -43,8 +43,51 @@ document.querySelectorAll('a.load-email-template').forEach((elem) => {
   elem.onclick = () => {
     document.getElementById('subject').value = atob(elem.dataset.subject64)
     document.getElementById('body-text').value = atob(elem.dataset.body64)
+    // Remove existing CC/Reply-To boxes
+    document.querySelectorAll('.email-fields .remove-cc-replyto').forEach((elem) => {
+      elem.previousElementSibling.remove() // <input>
+      elem.previousElementSibling.remove() // <label>
+      elem.remove() // <a>
+    })
+    // Add new ones as needed
+    atob(elem.dataset.ccReplyto).split(',').filter((x) => x).forEach((email) => {
+      addCCReplyTo()
+      document.querySelector('.email-fields input[id^="cc-replyto"]').value = email
+    })
   }
 })
+
+function setRemoveCCHandler (elem) {
+  elem.onclick = () => { // Remove previous input, label, and itself
+    elem.previousElementSibling.remove()
+    elem.previousElementSibling.remove()
+    elem.remove()
+  }
+}
+document.querySelectorAll('.remove-cc-replyto').forEach(setRemoveCCHandler)
+
+function addCCReplyTo () {
+  let i = 0 // First unused ID
+  while (document.getElementById('cc-replyto' + i)) { ++i }
+  const label = document.createElement('label')
+  label.setAttribute('for', 'cc-replyto' + i)
+  label.innerText = 'CC and reply-to'
+  const input = document.createElement('input')
+  input.setAttribute('type', 'text')
+  input.setAttribute('id', 'cc-replyto' + i)
+  const remove = document.createElement('a')
+  remove.setAttribute('href', 'javascript:;')
+  remove.setAttribute('class', 'remove-cc-replyto')
+  remove.innerText = 'Remove'
+  setRemoveCCHandler(remove)
+  document.querySelector('.add-cc-replyto').insertAdjacentElement('afterend', label)
+  label.insertAdjacentElement('afterend', input)
+  input.insertAdjacentElement('afterend', remove)
+  input.insertAdjacentText('afterend', ' ') // Space before removal link
+  setTimeout(() => input.focus(), 0)
+}
+
+document.querySelector('.add-cc-replyto').onclick = addCCReplyTo
 
 document.getElementById('preview').onclick = function () {
   const overlay = this.parentElement.parentElement.querySelector('.overlay')
@@ -54,7 +97,9 @@ document.getElementById('preview').onclick = function () {
     (elem) => elem.querySelector('input.actions').checked)
   const randomRow = paperRows[Math.floor(Math.random() * paperRows.length)]
   const email = makeEmail(randomRow)
-  overlay.querySelector('.email-preview-subject').innerHTML = 
+  overlay.querySelector('.email-preview-cc-replyto').innerHTML =
+    'CC and reply-to: ' + email.ccReplyTo.join(', ')
+  overlay.querySelector('.email-preview-subject').innerHTML =
     `<em>Subject: ${email.subject}</em>`
   overlay.querySelector('.email-preview').innerHTML = email.body
 }
@@ -85,12 +130,14 @@ document.getElementById('send').onclick = async function () {
   outputElem.classList.remove('hidden')
   outputElem.innerHTML = ''
   this.disabled = true
+  let lastCCReplyTo = []
   for (const paperRow of paperRows) {
     const email = makeEmail(paperRow)
     const response = await fetch(window.location.pathname + '/email', {
       method: 'POST',
       body: new URLSearchParams({
         camera_id: paperRow.querySelector('.id a').textContent,
+        ccReplyTo: email.ccReplyTo.join(','), // Can't have nested JSON
         subject: email.subject,
         body: email.body,
         pw: this.parentElement.querySelector('input[name="pw"]').value
@@ -105,6 +152,7 @@ document.getElementById('send').onclick = async function () {
         paperRow.querySelector('.corresponding-email').textContent + ')</p>'
       const emailedCounter = paperRow.querySelector('.emailed')
       emailedCounter.innerText = parseInt(emailedCounter.innerText) + 1
+      lastCCReplyTo = email.ccReplyTo
     } else {
       outputElem.innerHTML += '<p>Error for ' +
         paperRow.querySelector('.id a').textContent + ' (stopping)</p>'
@@ -117,6 +165,7 @@ document.getElementById('send').onclick = async function () {
     method: 'POST',
     body: new URLSearchParams({
       pw: this.parentElement.querySelector('input[name="pw"]').value,
+      ccReplyTo: lastCCReplyTo.join(','), // Cannot have nested JSON in URLSearchParams
       subject: document.getElementById('subject').value,
       body: document.getElementById('body-text').value
     })
@@ -151,6 +200,8 @@ function makeEmail (tableRow) {
       .replace('{PAPER_URL}', tableRow.querySelector('.id a').href)
   }
   return {
+    ccReplyTo: Array.from(document.querySelectorAll('input[id^="cc-replyto"]'))
+      .map((elem) => elem.value).filter((email) => email),
     subject: placeholders(document.getElementById('subject').value),
     body: placeholders(document.getElementById('body-text').value)
   }

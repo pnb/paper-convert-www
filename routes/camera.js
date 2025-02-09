@@ -213,7 +213,9 @@ router.post('/manage/:venue/email', async (req, res) => {
       Subject: req.body.subject,
       TextBody: req.body.body,
       MessageStream: 'outbound',
-      Tag: 'IEDMS'
+      Tag: 'IEDMS',
+      ...(req.body.ccReplyTo && { ReplyTo: req.body.ccReplyTo }),
+      ...(req.body.ccReplyTo && { Cc: req.body.ccReplyTo })
     })
   })
   console.debug(await result.text())
@@ -236,8 +238,9 @@ router.post('/manage/:venue/add-email-template', (req, res) => {
   }
   const settings = JSON.parse(
     fs.readFileSync(path.join(venueDir, 'settings.json'), 'utf8'))
-  settings.email_authors.push({
+  settings.emailAuthors.push({
     subject: req.body.subject,
+    ccReplyTo: req.body.ccReplyTo.split(','),
     body: req.body.body,
     serverUnix: Date.now()
   })

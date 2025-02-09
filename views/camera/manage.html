@@ -44,12 +44,13 @@
   <div class="collapsible">
     <div class="collapsible-title">&triangleright; Email corresponding authors</div>
     <div class="email-fields collapsible-content hidden">
-      <%_ if (settings.email_authors.length > 1) { _%>
+      <%_ if (settings.emailAuthors.length > 1) { _%>
       <h3>Load previous email template</h3>
       <ol>
-        <%_ settings.email_authors.slice(1).forEach((template, i) => { _%>
+        <%_ settings.emailAuthors.slice(1).forEach((template, i) => { _%>
         <li>
           <a href="javascript:;" class="load-email-template"
+            data-cc-replyto="<%= btoa(template.ccReplyTo.join(',')) %>"
             data-subject64="<%= btoa(template.subject) %>"
             data-body64="<%= btoa(template.body) %>"><%= template.subject %></a>
           (<%= new Date(template.serverUnix).toLocaleString() %>)
@@ -57,10 +58,21 @@
         <%_ }) _%>
       </ol>
       <%_ } _%>
+      <h3>Organizers' addresses for CC and reply-to address (optional)</h3>
+      <p>If no email addresses are supplied here, authors will be unable to reply to the email, which will come from a "noreply" address that cannot receive email.</p>
+      <a href="javascript:;" class="add-cc-replyto">Add email address for CC and reply-to</a>
+      <%_ settings.emailAuthors.slice(-1).forEach((template) => { _%>
+      <%_ template.ccReplyTo.filter((x) => x).forEach((email, i) => { _%>
+      <label for="cc-replyto<%= i %>">CC and reply-to</label>
+      <input type="text" id="cc-replyto<%= i %>" value="<%= email %>">
+      <a href="javascript:;" class="remove-cc-replyto">Remove</a>
+      <%_ }) _%>
+      <%_ }) _%>
+      <h3>Email template</h3>
       <label for="subject">Subject</label>
-      <input type="text" id="subject" value="<%= settings.email_authors.slice(-1).pop().subject.replace('{VENUE}', venue) %>">
+      <input type="text" id="subject" value="<%= settings.emailAuthors.slice(-1).pop().subject.replace('{VENUE}', venue) %>">
       <label for="body-text">Body</label>
-      <textarea id="body-text"><%= settings.email_authors.slice(-1).pop().body.replace('{VENUE}', venue) %></textarea>
+      <textarea id="body-text"><%= settings.emailAuthors.slice(-1).pop().body.replace('{VENUE}', venue) %></textarea>
       <ul>
         <li>Only plain text is supported in the email body; HTML will not be displayed</li>
         <li>{AUTHORS} will be replaced by the authors of the paper</li>
@@ -77,6 +89,7 @@
     <div class="hidden overlay">
       <div class="overlay-content">
         <div class="overlay-instructions">Click anywhere or press escape to close.</div>
+        <div class="email-preview-cc-replyto"></div>
         <div class="email-preview-subject"></div>
         <textarea readonly class="email-preview"></textarea>
       </div>
