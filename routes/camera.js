@@ -152,10 +152,10 @@ router.post('/import/add-one', (req, res) => {
     fs.copyFileSync(path.join(router.venues_dir, 'settings_template.json'),
       path.join(router.venues_dir, req.body.venue, 'settings.json'))
   }
-  // Check though if there's a paper with the same name (i.e., hash)
-  // Salt the hash with the admin password so that anybody who knows the paper title
+  // Check though if there's a paper with the same number and name (i.e., hash)
+  // Salt the hash with the admin password so that anybody who knows the paper info
   // can't deduce the hash
-  const paperHash = '' + cyrb53(req.body.title + req.body.pw)
+  const paperHash = '' + cyrb53(req.body.title + req.body.paper_num + req.body.pw)
   const paperDir = path.join(router.venues_dir, req.body.venue, paperHash)
   if (fs.existsSync(paperDir)) {
     return res.status(409).send('Paper ' + paperHash + ' already exists')
