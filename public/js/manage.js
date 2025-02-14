@@ -8,6 +8,9 @@ function makeTableSortable (table) {
       rows.sort((a, b) => {
         const aval = a.querySelectorAll('td')[colIndex].textContent.trim()
         const bval = b.querySelectorAll('td')[colIndex].textContent.trim()
+        if (!isNaN(aval) && !isNaN(bval)) {
+          return parseFloat(aval) - parseFloat(bval) // Numeric compare if possible
+        }
         return aval.localeCompare(bval)
       })
       rows.forEach((tr) => table.querySelector('tbody').appendChild(tr))
