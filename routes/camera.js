@@ -228,7 +228,7 @@ router.post('/manage/:venue/email', async (req, res) => {
   return res.status(500).send('Error sending email: ' + result.statusText)
 })
 
-// Add email template after a batch has been sent
+// Add email template, e.g., after a batch has been sent
 router.post('/manage/:venue/add-email-template', (req, res) => {
   if (req.body.pw !== process.env.npm_package_config_admin_page_password) {
     return res.status(401).send('Incorrect password')
@@ -247,6 +247,36 @@ router.post('/manage/:venue/add-email-template', (req, res) => {
   })
   fs.writeFileSync(path.join(venueDir, 'settings.json'), JSON.stringify(settings))
   return res.status(200).send('Added email template')
+})
+
+router.post('/manage/:venue/export-pdf', (req, res) => {
+  if (req.body.pw !== process.env.npm_package_config_admin_page_password) {
+    return res.status(401).send('Incorrect password')
+  }
+  const venueDir = path.join(router.venues_dir, req.params.venue)
+  if (!fs.existsSync(venueDir)) {
+    return res.status(404).send('Venue not found')
+  }
+  res.setHeader('Content-Disposition', 'attachment; filename="export-pdf.zip"');
+  res.setHeader('Content-Type', 'application/zip');
+  const archive = archiver('zip', {
+    zlib: { level: 5 }
+  });
+  archive.pipe(res)
+  archive.on('error', (err) => {
+    console.error(err)
+    return res.status(500).send('Error creating zip: ' + err.message)
+  })
+  // Get list of paper camera IDs from req.body and add them to zip, streaming
+  for (const cameraID of cameraIDs) {
+    const paperDir = path.join(venueDir, cameraID)
+    if (!fs.existsSync(paperDir)) {
+      return res.status(404).send('Paper ' + cameraID + ' not found')
+    }
+    const pdfPath = path.join(paperDir, cameraID + '.pdf')
+    // Use req. [something placeholder TODO]
+    archive.file(pdfPath, { name: cameraID + '.pdf' })
+  }
 })
 
 // Public domain hashing function from:
