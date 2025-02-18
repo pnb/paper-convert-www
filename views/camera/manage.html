@@ -95,6 +95,21 @@
       </div>
     </div>
   </div>
+  <div class="collapsible">
+    <div class="collapsible-title">&triangleright; Export for PDF proceedings</div>
+    <div class="collapsible-content hidden pdf-export">
+      <p>Naming placeholders (extension will be automatically added):</p>
+      <ul>
+        <li>{NUM} will be replaced by the paper number (i.e., <code>#</code>)</li>
+        <li>{ORDER} will be replaced by a consecutive number according to the order of selected papers as currently sorted in the table</li>
+      </ul>
+      <label for="pdf-naming">File naming pattern</label>
+      <input type="text" name="pdf-naming" placeholder="e.g., EDM2020-long-{ORDER}" value="<%= settings.pdfPattern %>" />
+      <label for="pw">Re-enter admin password</label>
+      <input type="password" placeholder="Password" name="pw" />
+      <button id="start-pdf-export">Export</button>
+    </div>
+  </div>
 </div>
 
 <script type="module" src="/js/manage.js"></script>
