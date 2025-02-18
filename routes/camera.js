@@ -45,23 +45,6 @@ router.get('/metadata/:venue/:camera_id', (req, res) => {
   res.render('camera/metadata', { paper })
 })
 
-// Download current version of PDF
-router.get('/metadata/:venue/:camera_id/pdf', (req, res) => {
-  const venueDir = path.join(router.venues_dir, req.params.venue)
-  if (!fs.existsSync(venueDir)) {
-    return res.status(404).send('Venue not found')
-  }
-  const paperDir = path.join(venueDir, req.params.camera_id)
-  if (!fs.existsSync(paperDir)) {
-    return res.status(404).send('Paper not found')
-  }
-  const pdfPath = path.join(paperDir, req.params.camera_id + '.pdf')
-  if (!fs.existsSync(pdfPath)) {
-    return res.status(404).send('PDF not found')
-  }
-  res.download(pdfPath)
-})
-
 // Update some aspect of this paper
 router.post('/metadata/:venue/:camera_id/update', (req, res) => {
   const venueDir = path.join(router.venues_dir, req.params.venue)
