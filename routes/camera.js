@@ -4,7 +4,7 @@ import { Router } from 'express'
 import archiver from 'archiver'
 
 import { getConversionLog, getFullWarningsInfo } from './convert.js'
-import { getPDFWarnings } from './pdf_check.js'
+import { getPDFWarnings, router as pdfCheckRouter } from './pdf_check.js'
 
 export const router = Router()
 router.venues_dir = false
@@ -250,23 +250,16 @@ router.post('/manage/:venue/export-pdf', async (req, res) => {
   }
   res.setHeader('Content-Disposition', 'attachment; filename="export-pdf.zip"')
   res.setHeader('Content-Type', 'application/zip')
-  const archive = archiver('zip', {
-    zlib: { level: 5 }
-  })
-  const output = fs.createWriteStream('/var/home/nigel/dbhomes/pcwww/paper-convert-www/example.zip')
-  output.on('close', function() {
-    console.log(archive.pointer() + ' total bytes');
-    console.log('archiver has been finalized and the output file descriptor has closed.');
-  });
-  archive.on('warning', function(err) {
+  const archive = archiver('zip', {zlib: { level: 5 }})
+  archive.on('warning', (err) => {
     console.error(err)
+    res.status(500).send('Server error creating zip: ' + err.message)
   })
-  archive.pipe(output)
-  //archive.pipe(res)
   archive.on('error', (err) => {
     console.error(err)
-    return res.status(500).send('Error creating zip: ' + err.message)
+    res.status(500).send('Server error creating zip: ' + err.message)
   })
+  archive.pipe(res)
   // Get list of paper camera IDs from req.body and add them to zip, streaming
   const cameraIDs = req.body.cameraIDs.split(',')
   for (let i = 0; i < cameraIDs.length; ++i) {
@@ -274,14 +267,16 @@ router.post('/manage/:venue/export-pdf', async (req, res) => {
     if (!fs.existsSync(paperDir)) {
       return res.status(404).send('Paper ' + cameraIDs[i] + ' not found')
     }
-    const pdfPath = path.join(paperDir, cameraIDs[i] + '.pdf')
+    // Load paper metadata.json to get PDF filename
+    const paper = JSON.parse(
+      fs.readFileSync(path.join(paperDir, 'metadata.json'), 'utf8'))
+    const pdfPath = path.join(pdfCheckRouter.pdfsDir, paper.pdf_check_id,
+      paper.pdf_check_id) + '.pdf'
     const fname = req.body.pdfNaming.replace('{NUM}', cameraIDs[i])
       .replace('{ORDER}', i + 1)
-    console.debug('Adding', pdfPath, 'as', fname + '.pdf')
     archive.file(pdfPath, { name: fname + '.pdf' })
   }
   await archive.finalize()
-  res.status(200).end()
 })
 
 // Public domain hashing function from:

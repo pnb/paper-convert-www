@@ -2,6 +2,7 @@
     "name": "paper-convert-www",
     "type": "module",
     "dependencies": {
+        "archiver": "^7.0.1",
         "cluster": "^0.7.7",
         "connect-slashes": "^1.4.0",
         "csv-parse": "^5.0.4",
