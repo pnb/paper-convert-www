@@ -1,9 +1,10 @@
 import fs from 'fs'
 import path from 'path'
 import { Router } from 'express'
+import archiver from 'archiver'
 
 import { getConversionLog, getFullWarningsInfo } from './convert.js'
-import { getPDFWarnings } from './pdf_check.js'
+import { getPDFWarnings, router as pdfCheckRouter } from './pdf_check.js'
 
 export const router = Router()
 router.venues_dir = false
@@ -42,23 +43,6 @@ router.get('/metadata/:venue/:camera_id', (req, res) => {
     fs.writeFileSync(path.join(paperDir, 'metadata.json'), JSON.stringify(paper))
   }
   res.render('camera/metadata', { paper })
-})
-
-// Download current version of PDF
-router.get('/metadata/:venue/:camera_id/pdf', (req, res) => {
-  const venueDir = path.join(router.venues_dir, req.params.venue)
-  if (!fs.existsSync(venueDir)) {
-    return res.status(404).send('Venue not found')
-  }
-  const paperDir = path.join(venueDir, req.params.camera_id)
-  if (!fs.existsSync(paperDir)) {
-    return res.status(404).send('Paper not found')
-  }
-  const pdfPath = path.join(paperDir, req.params.camera_id + '.pdf')
-  if (!fs.existsSync(pdfPath)) {
-    return res.status(404).send('PDF not found')
-  }
-  res.download(pdfPath)
 })
 
 // Update some aspect of this paper
@@ -228,7 +212,7 @@ router.post('/manage/:venue/email', async (req, res) => {
   return res.status(500).send('Error sending email: ' + result.statusText)
 })
 
-// Add email template after a batch has been sent
+// Add email template, e.g., after a batch has been sent
 router.post('/manage/:venue/add-email-template', (req, res) => {
   if (req.body.pw !== process.env.npm_package_config_admin_page_password) {
     return res.status(401).send('Incorrect password')
@@ -247,6 +231,52 @@ router.post('/manage/:venue/add-email-template', (req, res) => {
   })
   fs.writeFileSync(path.join(venueDir, 'settings.json'), JSON.stringify(settings))
   return res.status(200).send('Added email template')
+})
+
+// Route for exporting the proceedings PDFs, or a subset of them
+router.post('/manage/:venue/export-pdf', async (req, res) => {
+  if (req.body.pw !== process.env.npm_package_config_admin_page_password) {
+    return res.status(401).send('Incorrect password')
+  }
+  const venueDir = path.join(router.venues_dir, req.params.venue)
+  if (!fs.existsSync(venueDir)) {
+    return res.status(404).send('Venue not found')
+  }
+  if (!req.body.cameraIDs) {
+    return res.status(400).send('No camera IDs provided')
+  }
+  if (!req.body.pdfNaming) {
+    return res.status(400).send('No PDF naming pattern provided')
+  }
+  res.setHeader('Content-Disposition', 'attachment; filename="export-pdf.zip"')
+  res.setHeader('Content-Type', 'application/zip')
+  const archive = archiver('zip', {zlib: { level: 5 }})
+  archive.on('warning', (err) => {
+    console.error(err)
+    res.status(500).send('Server error creating zip: ' + err.message)
+  })
+  archive.on('error', (err) => {
+    console.error(err)
+    res.status(500).send('Server error creating zip: ' + err.message)
+  })
+  archive.pipe(res)
+  // Get list of paper camera IDs from req.body and add them to zip, streaming
+  const cameraIDs = req.body.cameraIDs.split(',')
+  for (let i = 0; i < cameraIDs.length; ++i) {
+    const paperDir = path.join(venueDir, cameraIDs[i])
+    if (!fs.existsSync(paperDir)) {
+      return res.status(404).send('Paper ' + cameraIDs[i] + ' not found')
+    }
+    // Load paper metadata.json to get PDF filename
+    const paper = JSON.parse(
+      fs.readFileSync(path.join(paperDir, 'metadata.json'), 'utf8'))
+    const pdfPath = path.join(pdfCheckRouter.pdfsDir, paper.pdf_check_id,
+      paper.pdf_check_id) + '.pdf'
+    const fname = req.body.pdfNaming.replace('{NUM}', cameraIDs[i])
+      .replace('{ORDER}', i + 1)
+    archive.file(pdfPath, { name: fname + '.pdf' })
+  }
+  await archive.finalize()
 })
 
 // Public domain hashing function from:

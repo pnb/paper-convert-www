@@ -143,7 +143,7 @@ document.getElementById('send').onclick = async function () {
         ccReplyTo: email.ccReplyTo.join(','), // Can't have nested JSON
         subject: email.subject,
         body: email.body,
-        pw: this.parentElement.querySelector('input[name="pw"]').value
+        pw: this.parentElement.querySelector('.email-fields input[name="pw"]').value
       })
     })
     if (response.ok) {
@@ -179,6 +179,35 @@ document.getElementById('send').onclick = async function () {
     alert('Error saving template: ' + await response.text())
   }
   this.disabled = false
+}
+
+// Export proceedings PDFs
+document.getElementById('start-pdf-export').onclick = async function () {
+  const paperRows = Array.from(
+    document.querySelectorAll('table.submitted-papers tbody tr')).filter(
+    (elem) => elem.querySelector('input.actions').checked)
+  const cameraIDs = paperRows.map((elem) => elem.querySelector('.id a').textContent)
+  const response = await fetch(window.location.pathname + '/export-pdf', {
+    method: 'POST',
+    body: new URLSearchParams({
+      pw: this.parentElement.querySelector('input[name="pw"]').value,
+      cameraIDs: cameraIDs.join(','),
+      pdfNaming: this.parentElement.querySelector('input[name="pdf-naming"]').value
+    })
+  })
+  if (response.ok) {
+    const blob = await response.blob()
+    const url = window.URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = 'export-pdf.zip'
+    document.body.appendChild(a)
+    a.click()
+    a.remove()
+    window.URL.revokeObjectURL(url)
+  } else {
+    alert('Error: ' + await response.text())
+  }
 }
 
 function makeEmail (tableRow) {
