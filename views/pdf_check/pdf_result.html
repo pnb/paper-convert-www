@@ -16,7 +16,7 @@
 <p class="pdf-warning">Page size: <%- line.substring(11) %></p>
 <%_ } else if (line.startsWith('copyright block: ')) { _%>
 <p class="pdf-warning">Copyright block: <%- line.substring(17) %></p>
-<%_ } else { _%>
+<%_ } else if (!line.startsWith('info: ')) { _%>
 <p class="pdf-warning">Unexpected error (please report): <code><%- line %></code></p>
 <%_ } _%>
 

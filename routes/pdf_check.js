@@ -75,5 +75,5 @@ export function getPDFWarnings (docId) {
     return false
   }
   const lines = fs.readFileSync(outPath, 'utf-8').split('\n')
-  return lines.filter((line) => line.trim().length)
+  return lines.filter((line) => line.trim().length && !line.startsWith('info: '))
 }
