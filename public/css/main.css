@@ -138,14 +138,16 @@ div.collapsible .collapsible-title:hover {
 }
 
 div.email-fields label,
-div.pdf-export label {
+div.pdf-export label,
+div.page-limits label {
     display: block;
     margin-top: 1em;
 }
 
 div.email-fields input,
 div.email-fields textarea,
-div.pdf-export input {
+div.pdf-export input,
+div.page-limits input {
     width: 30em;
 }
 
@@ -154,7 +156,8 @@ div.email-fields textarea {
 }
 
 div.email-fields button,
-div.pdf-export button {
+div.pdf-export button,
+div.page-limits button {
     display: block;
     margin-top: 1em;
 }

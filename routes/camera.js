@@ -7,11 +7,12 @@ import { getConversionLog, getFullWarningsInfo } from './convert.js'
 import { getPDFWarnings, router as pdfCheckRouter } from './pdf_check.js'
 
 export const router = Router()
-router.venues_dir = false
+const venuesDir = path.join(process.cwd(), 'venues')
+const pdfsDir = path.join(process.cwd(), 'pdf_checks')
 
 // Show the data for this paper from the venue folder for this paper
 router.get('/metadata/:venue/:camera_id', (req, res) => {
-  const venueDir = path.join(router.venues_dir, req.params.venue)
+  const venueDir = path.join(venuesDir, req.params.venue)
   if (!fs.existsSync(venueDir)) {
     return res.status(404).send('Venue not found')
   }
@@ -47,7 +48,7 @@ router.get('/metadata/:venue/:camera_id', (req, res) => {
 
 // Update some aspect of this paper
 router.post('/metadata/:venue/:camera_id/update', (req, res) => {
-  const venueDir = path.join(router.venues_dir, req.params.venue)
+  const venueDir = path.join(venuesDir, req.params.venue)
   if (!fs.existsSync(venueDir)) {
     return res.status(404).send('Venue not found')
   }
@@ -74,6 +75,8 @@ router.post('/metadata/:venue/:camera_id/update', (req, res) => {
     delete paper.conversion_high_severity
   } else if (req.body.conversion_certified !== undefined) {
     paper.conversion_certified = parseInt(req.body.conversion_certified) === 1
+  } else if (req.body.pageLimit !== undefined) {
+    paper.pageLimit = parseInt(req.body.pageLimit)
   } else {
     return res.status(400).send('No data to update')
   }
@@ -92,7 +95,7 @@ router.post('/manage/:venue', (req, res) => {
     return res.status(401).send('Incorrect password')
   }
   const papers = {}
-  const venueDir = path.join(router.venues_dir, req.params.venue)
+  const venueDir = path.join(venuesDir, req.params.venue)
   fs.readdirSync(venueDir, { withFileTypes: true }).forEach((entry) => {
     if (entry.isDirectory()) {
       const curPaper = fs.readFileSync(
@@ -108,9 +111,6 @@ router.post('/manage/:venue', (req, res) => {
 })
 
 router.get('/import', (req, res) => {
-  if (!router.venues_dir) {
-    throw Error('`venues_dir` is not set in the camera.js router')
-  }
   res.redirect('/admin/password?to=' + encodeURIComponent('/camera/import'))
 })
 
@@ -131,17 +131,17 @@ router.post('/import/add-one', (req, res) => {
     return res.status(400).send('Invalid venue name')
   }
   // Create venue dir if needed and copy in settings template
-  if (!fs.existsSync(path.join(router.venues_dir, req.body.venue))) {
-    fs.mkdirSync(path.join(router.venues_dir, req.body.venue))
-    fs.copyFileSync(path.join(router.venues_dir, 'settings_template.json'),
-      path.join(router.venues_dir, req.body.venue, 'settings.json'))
+  if (!fs.existsSync(path.join(venuesDir, req.body.venue))) {
+    fs.mkdirSync(path.join(venuesDir, req.body.venue))
+    fs.copyFileSync(path.join(venuesDir, 'settings_template.json'),
+      path.join(venuesDir, req.body.venue, 'settings.json'))
   }
   // Check though if there's a paper with the same number and name (i.e., hash)
   // Salt the hash with the admin password so that anybody who knows the paper info
   // can't deduce the hash
   const unpaddedHash = '' + cyrb53(req.body.title + req.body.paper_num + req.body.pw)
   const paperHash = ('0000000000000000' + unpaddedHash).slice(-16)
-  const paperDir = path.join(router.venues_dir, req.body.venue, paperHash)
+  const paperDir = path.join(venuesDir, req.body.venue, paperHash)
   if (fs.existsSync(paperDir)) {
     return res.status(409).send('Paper ' + paperHash + ' already exists')
   }
@@ -174,7 +174,7 @@ router.post('/manage/:venue/email', async (req, res) => {
   if (req.body.pw !== process.env.npm_package_config_admin_page_password) {
     return res.status(401).send('Incorrect password')
   }
-  const venueDir = path.join(router.venues_dir, req.params.venue)
+  const venueDir = path.join(venuesDir, req.params.venue)
   if (!fs.existsSync(venueDir)) {
     return res.status(404).send('Venue not found')
   }
@@ -217,7 +217,7 @@ router.post('/manage/:venue/add-email-template', (req, res) => {
   if (req.body.pw !== process.env.npm_package_config_admin_page_password) {
     return res.status(401).send('Incorrect password')
   }
-  const venueDir = path.join(router.venues_dir, req.params.venue)
+  const venueDir = path.join(venuesDir, req.params.venue)
   if (!fs.existsSync(venueDir)) {
     return res.status(404).send('Venue not found')
   }
@@ -238,7 +238,7 @@ router.post('/manage/:venue/export-pdf', async (req, res) => {
   if (req.body.pw !== process.env.npm_package_config_admin_page_password) {
     return res.status(401).send('Incorrect password')
   }
-  const venueDir = path.join(router.venues_dir, req.params.venue)
+  const venueDir = path.join(venuesDir, req.params.venue)
   if (!fs.existsSync(venueDir)) {
     return res.status(404).send('Venue not found')
   }
@@ -270,8 +270,7 @@ router.post('/manage/:venue/export-pdf', async (req, res) => {
     // Load paper metadata.json to get PDF filename
     const paper = JSON.parse(
       fs.readFileSync(path.join(paperDir, 'metadata.json'), 'utf8'))
-    const pdfPath = path.join(pdfCheckRouter.pdfsDir, paper.pdf_check_id,
-      paper.pdf_check_id) + '.pdf'
+    const pdfPath = path.join(pdfsDir, paper.pdf_check_id, paper.pdf_check_id) + '.pdf'
     const fname = req.body.pdfNaming.replace('{NUM}', cameraIDs[i])
       .replace('{ORDER}', i + 1)
     archive.file(pdfPath, { name: fname + '.pdf' })

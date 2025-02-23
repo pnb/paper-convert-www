@@ -23,6 +23,8 @@ pdfElem.onchange = async () => {
   pdfElem.parentElement.querySelector('.busy').classList.remove('hidden')
   const formData = new FormData()
   formData.append('pdf', pdfElem.files[0])
+  formData.append('venue', window.location.pathname.split('/').slice(-2)[0])
+  formData.append('cameraId', window.location.pathname.split('/').pop())
   const response = await fetch('/pdf-check/upload', {
     method: 'POST',
     body: formData

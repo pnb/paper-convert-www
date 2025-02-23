@@ -183,6 +183,7 @@ document.getElementById('send').onclick = async function () {
 
 // Export proceedings PDFs
 document.getElementById('start-pdf-export').onclick = async function () {
+  this.disabled = true
   const paperRows = Array.from(
     document.querySelectorAll('table.submitted-papers tbody tr')).filter(
     (elem) => elem.querySelector('input.actions').checked)
@@ -195,6 +196,7 @@ document.getElementById('start-pdf-export').onclick = async function () {
       pdfNaming: this.parentElement.querySelector('input[name="pdf-naming"]').value
     })
   })
+  this.disabled = false
   if (response.ok) {
     const blob = await response.blob()
     const url = window.URL.createObjectURL(blob)
@@ -206,8 +208,42 @@ document.getElementById('start-pdf-export').onclick = async function () {
     a.remove()
     window.URL.revokeObjectURL(url)
   } else {
-    alert('Error: ' + await response.text())
+    alert('Error exporting: ' + await response.text())
   }
+}
+
+// Set page limits
+document.getElementById('set-page-limits').onclick = async function () {
+  this.disabled = true
+  const outputElem = this.parentElement.querySelector('.results-output')
+  outputElem.innerHTML = ''
+  outputElem.classList.remove('hidden')
+  const paperRows = Array.from(
+    document.querySelectorAll('table.submitted-papers tbody tr')).filter(
+    (elem) => elem.querySelector('input.actions').checked)
+  for (const paperRow of paperRows) {
+    // Send one request at a time, which makes it a bit easier to implement server-side
+    // and more predictable/observable for huge updates since we see each progress
+    const cameraID = paperRow.querySelector('.id a').textContent
+    const cameraUrl = window.location.pathname.replace('/manage/', '/metadata/') + '/' +
+      cameraID
+    const response = await fetch(cameraUrl + '/update', {
+      method: 'POST',
+      body: new URLSearchParams({
+        pw: this.parentElement.querySelector('input[name="pw"]').value,
+        pageLimit: this.parentElement.querySelector('input[name="page-limit"]').value
+      })
+    })
+    if (response.ok) {
+      outputElem.innerHTML += '<p>Set page limit for ' + cameraID + '</p>'
+    } else {
+      outputElem.innerHTML += '<p>Error setting page limit for ' + cameraID +
+        ' (stopping)</p>'
+      alert('Error setting page limit: ' + await response.text())
+      break
+    }
+  }
+  this.disabled = false
 }
 
 function makeEmail (tableRow) {

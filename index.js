@@ -17,8 +17,6 @@ import { router as routesCamera } from './routes/camera.js'
 import { DocConverter } from './converter.js'
 import { PdfChecker } from './pdf_checker.js'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
 let converter // Global reference to converter so it doesn't get garbage collected
 let pdfChecker // Same here
 
@@ -72,7 +70,7 @@ if (cluster.isPrimary) {
   const app = express()
 
   // Use EJS for template rendering
-  app.set('views', path.join(__dirname, 'views'))
+  app.set('views', path.join(process.cwd(), 'views'))
   app.set('view engine', 'html')
   app.engine('html', renderFile)
 
@@ -88,19 +86,15 @@ if (cluster.isPrimary) {
   }))
 
   // Serve static assets, making clear what is publicly accessible
-  app.use('/', express.static(path.join(__dirname, 'public')))
+  app.use('/', express.static(path.join(process.cwd(), 'public')))
 
   // Redirect /xx/ to /xx to standardize URLs and avoid some relative URL problems
   app.use(connectSlashes(false))
 
   // Additional routes
-  routesConvert.docs_dir = path.join(__dirname, 'papers')
   app.use('/', routesConvert)
-  routesPdfCheck.pdfsDir = path.join(__dirname, 'pdf_checks')
   app.use('/pdf-check', routesPdfCheck)
-  routesAdmin.docs_dir = routesConvert.docs_dir
   app.use('/admin', routesAdmin)
-  routesCamera.venues_dir = path.join(__dirname, 'venues')
   app.use('/camera', routesCamera)
 
   app.listen(process.env.npm_package_config_port)

@@ -5,10 +5,11 @@ import { execSync } from 'child_process';
 import { nanoid } from 'nanoid';
 import { parse as csv_parse } from 'csv-parse/sync';
 
+const docsDir = path.join(process.cwd(), 'papers');
 
 export function get_warnings(doc_id) {
     // Parse the CSV list of conversion warnings for a document
-    const doc_dir = path.join(process.env.npm_package_config_conversion_monitor_dir, doc_id);
+    const doc_dir = path.join(docsDir, doc_id);
     try {
         const csv_content = fs.readFileSync(path.join(doc_dir, 'conversion_warnings.csv'), 'utf8');
         return csv_parse(csv_content, {columns: true});
@@ -21,11 +22,8 @@ export function get_warnings(doc_id) {
 export class DocConverter {
     constructor() {
         this.scripts_dir = process.env.npm_package_config_conversion_scripts_dir;
-        this.monitor_dir = process.env.npm_package_config_conversion_monitor_dir;
         if (!fs.existsSync(path.join(this.scripts_dir, 'config.json'))) {
             throw Error('config.json not found in `conversion_scripts_dir` in package.json');
-        } else if (!fs.existsSync(this.monitor_dir)) {
-            throw Error('Directory does not exist: `conversion_monitor_dir` in package.json');
         }
 
         // Load conversion scripts config to get python path
@@ -41,13 +39,13 @@ export class DocConverter {
     }
 
     _check_queue() {
-        fs.readdirSync(this.monitor_dir).forEach((fname) => {
+        fs.readdirSync(docsDir).forEach((fname) => {
             if (fname.endsWith('.todo')) {
                 // Found something in the queue
                 // Try to call dibs on it (may fail in a concurrency situation)
-                const dibs_fname = path.join(this.monitor_dir, nanoid()) + '.dibs';
+                const dibs_fname = path.join(docsDir, nanoid()) + '.dibs';
                 try {
-                    fs.renameSync(path.join(this.monitor_dir, fname), dibs_fname);
+                    fs.renameSync(path.join(docsDir, fname), dibs_fname);
                     this._convert(dibs_fname, fname.substring(0, fname.length - 5));
                 } catch {}
             }
@@ -56,7 +54,7 @@ export class DocConverter {
 
     _convert(dibs_fname, doc_id) {
         console.log('DocConverter: Started document', doc_id);
-        const out_dir = path.join(this.monitor_dir, doc_id);
+        const out_dir = path.join(docsDir, doc_id);
         const doc_fname = path.join(out_dir, doc_id);
         const timeout_ms = parseInt(process.env.npm_package_config_conversion_time_limit_ms)
         let cmd = this.python_path + ' ' + this.scripts_dir;

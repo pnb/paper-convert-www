@@ -5,14 +5,11 @@ import { customAlphabet } from 'nanoid'
 
 const nanoid = customAlphabet(
   '1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM', 10)
+const pdfsDir = path.join(process.cwd(), 'pdf_checks')
 
 export const router = Router()
-router.pdfsDir = false
 
 router.get('/', (req, res) => {
-  if (!router.pdfsDir) {
-    throw Error('`pdfsDir` is not set in the pdf_checks.js router')
-  }
   res.render('pdf_check/start_new_pdf')
 })
 
@@ -24,22 +21,24 @@ router.post('/upload', async (req, res) => {
     return res.status(400).send('Error: Only .pdf files are allowed')
   }
   const id = nanoid()
-  const docFname = path.join(router.pdfsDir, id, id + '.pdf')
+  const docFname = path.join(pdfsDir, id, id + '.pdf')
   await req.files.pdf.mv(docFname)
   // Record metadata, should we ever need it
-  const metadataFname = path.join(router.pdfsDir, id, id) + '.json'
+  const metadataFname = path.join(pdfsDir, id, id) + '.json'
   fs.writeFileSync(metadataFname, JSON.stringify({
     original_filename: req.files.pdf.name,
     size_bytes: req.files.pdf.size,
-    server_time_ms: Date.now()
+    server_time_ms: Date.now(),
+    ...(req.body.venue ? { venue: req.body.venue } : {}),
+    ...(req.body.cameraId ? { cameraId: req.body.cameraId } : {})
   }))
   // Create a file noting that we need to process this upload
-  fs.closeSync(fs.openSync(path.join(router.pdfsDir, id + '.todo'), 'w'))
+  fs.closeSync(fs.openSync(path.join(pdfsDir, id + '.todo'), 'w'))
   res.redirect(req.baseUrl + '/process/' + id)
 })
 
 router.get('/process/:docId', (req, res) => {
-  const docDir = path.join(router.pdfsDir, req.params.docId)
+  const docDir = path.join(pdfsDir, req.params.docId)
   if (!fs.existsSync(docDir)) {
     return res.status(404).send('Paper not found')
   }
@@ -55,7 +54,7 @@ router.get('/process/:docId', (req, res) => {
 
 // Download the PDF
 router.get('/pdf/:docId.pdf', (req, res) => {
-  const docDir = path.join(router.pdfsDir, req.params.docId)
+  const docDir = path.join(pdfsDir, req.params.docId)
   if (!fs.existsSync(docDir)) {
     return res.status(404).send('Paper not found')
   }
@@ -69,7 +68,7 @@ router.get('/pdf/:docId.pdf', (req, res) => {
 // Get PDF checking warnings for a given PDF's ID, or false if the PDF is not
 // checked yet/doesn't exist
 export function getPDFWarnings (docId) {
-  const docDir = path.join(router.pdfsDir, docId)
+  const docDir = path.join(pdfsDir, docId)
   const outPath = path.join(docDir, 'pdf_checker-output.txt')
   if (!fs.existsSync(outPath)) {
     return false
