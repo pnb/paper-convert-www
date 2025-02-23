@@ -2,7 +2,12 @@
 <%- include ('../header.html') %>
 <h1>Manage accepted papers for <%= venue %></h1>
 
-<p>For the HTML and PDF columns, <em>Y</em> indicates that there are no high-severity conversion issues (and for HTML, the authors have certified the converted paper). <em>X</em> indicates major issues (or no certified HTML conversion). <em>N</em> indicates nothing was submitted.</p>
+<p>Legend for HTML/PDF/abstract columns:</p>
+<ul>
+  <li><em>Y</em> &ndash; no high-severity issues (and for HTML, the authors have certified the converted paper)</li>
+  <li><em>X</em> &ndash; major issues or no certified HTML conversion; abstract is not checked</li>
+  <li><em>N</em> &ndash; nothing was submitted</li>
+</ul>
 
 <table class="submitted-papers">
   <thead>
@@ -13,6 +18,7 @@
       <th class="track sortable">track</th>
       <th class="pdf-ok sortable">PDF</th>
       <th class="html-ok sortable">HTML</th>
+      <th class="abstract-ok sortable">abstract</th>
       <th class="authors sortable">authors</th>
       <th class="time sortable">last updated</th>
       <th class="emailed sortable">emailed</th>
@@ -29,6 +35,7 @@
       <td class="track"><%= papers[id].track %></td>
       <td class="pdf-ok"><%= papers[id].pdf_checks_failed === 0 ? 'Y' : (papers[id].pdf_checks_failed > 0 ? 'X' : 'N') %></td>
       <td class="html-ok"><%= papers[id].conversion_certified ? 'Y' : (papers[id].conversion_low_severity >= 0 ? 'X' : 'N') %></td>
+      <td class="abstract-ok"><%= papers[id].abstract ? 'Y' : 'N' %></td>
       <td class="authors"><%= papers[id].authors.join('; ') %></td>
       <td class="time"><%= new Date(papers[id].last_updated).toISOString().replace('T', ' ').substr(0, 19) %></td>
       <td class="emailed"><%= papers[id].emailed %></td>
