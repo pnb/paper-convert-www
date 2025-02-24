@@ -4,7 +4,7 @@ import { Router } from 'express'
 import archiver from 'archiver'
 
 import { getConversionLog, getFullWarningsInfo } from './convert.js'
-import { getPDFWarnings, router as pdfCheckRouter } from './pdf_check.js'
+import { getPDFWarnings } from './pdf_check.js'
 
 export const router = Router()
 const venuesDir = path.join(process.cwd(), 'venues')
@@ -83,6 +83,23 @@ router.post('/metadata/:venue/:camera_id/update', (req, res) => {
   paper.last_updated = Date.now()
   fs.writeFileSync(path.join(paperDir, 'metadata.json'), JSON.stringify(paper))
   return res.status(200).send('Updated paper')
+})
+
+// Delete a paper
+router.delete('/metadata/:venue/:camera_id', (req, res) => {
+  if (req.body.pw !== process.env.npm_package_config_admin_page_password) {
+    return res.status(401).send('Incorrect password')
+  }
+  const venueDir = path.join(venuesDir, req.params.venue)
+  if (!fs.existsSync(venueDir)) {
+    return res.status(404).send('Venue not found')
+  }
+  const paperDir = path.join(venueDir, req.params.camera_id)
+  if (!fs.existsSync(paperDir)) {
+    return res.status(404).send('Paper not found')
+  }
+  fs.rmSync(paperDir, { recursive: true, force: true })
+  return res.status(200).send('Deleted paper')
 })
 
 router.get('/manage/:venue', (req, res) => {

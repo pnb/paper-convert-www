@@ -95,9 +95,7 @@ document.querySelector('.add-cc-replyto').onclick = addCCReplyTo
 document.getElementById('preview').onclick = function () {
   const overlay = this.parentElement.parentElement.querySelector('.overlay')
   overlay.classList.remove('hidden')
-  const paperRows = Array.from(
-    document.querySelectorAll('table.submitted-papers tbody tr')).filter(
-    (elem) => elem.querySelector('input.actions').checked)
+  const paperRows = getSelectedPaperRows()
   const randomRow = paperRows[Math.floor(Math.random() * paperRows.length)]
   const email = makeEmail(randomRow)
   overlay.querySelector('.email-preview-cc-replyto').innerHTML =
@@ -127,14 +125,11 @@ document.querySelector('.email-fields input[name="pw"]').oninput = function () {
 // Send emails via ./email endpoint
 document.getElementById('send').onclick = async function () {
   const outputElem = this.parentElement.querySelector('.results-output')
-  const paperRows = Array.from(
-    document.querySelectorAll('table.submitted-papers tbody tr')).filter(
-    (elem) => elem.querySelector('input.actions').checked)
   outputElem.classList.remove('hidden')
   outputElem.innerHTML = ''
   this.disabled = true
   let lastCCReplyTo = []
-  for (const paperRow of paperRows) {
+  for (const paperRow of getSelectedPaperRows()) {
     const email = makeEmail(paperRow)
     const response = await fetch(window.location.pathname + '/email', {
       method: 'POST',
@@ -184,9 +179,7 @@ document.getElementById('send').onclick = async function () {
 // Export proceedings PDFs
 document.getElementById('start-pdf-export').onclick = async function () {
   this.disabled = true
-  const paperRows = Array.from(
-    document.querySelectorAll('table.submitted-papers tbody tr')).filter(
-    (elem) => elem.querySelector('input.actions').checked)
+  const paperRows = getSelectedPaperRows()
   const cameraIDs = paperRows.map((elem) => elem.querySelector('.id a').textContent)
   const response = await fetch(window.location.pathname + '/export-pdf', {
     method: 'POST',
@@ -218,10 +211,7 @@ document.getElementById('set-page-limits').onclick = async function () {
   const outputElem = this.parentElement.querySelector('.results-output')
   outputElem.innerHTML = ''
   outputElem.classList.remove('hidden')
-  const paperRows = Array.from(
-    document.querySelectorAll('table.submitted-papers tbody tr')).filter(
-    (elem) => elem.querySelector('input.actions').checked)
-  for (const paperRow of paperRows) {
+  for (const paperRow of getSelectedPaperRows()) {
     // Send one request at a time, which makes it a bit easier to implement server-side
     // and more predictable/observable for huge updates since we see each progress
     const cameraID = paperRow.querySelector('.id a').textContent
@@ -244,6 +234,45 @@ document.getElementById('set-page-limits').onclick = async function () {
     }
   }
   this.disabled = false
+}
+
+// Delete papers
+document.getElementById('delete-papers').onclick = async function () {
+  this.disabled = true
+  const outputElem = this.parentElement.querySelector('.results-output')
+  outputElem.innerHTML = ''
+  outputElem.classList.remove('hidden')
+  for (const paperRow of getSelectedPaperRows()) {
+    // Also do one request per paper here for progress visualization
+    const cameraID = paperRow.querySelector('.id a').textContent
+    const cameraUrl = window.location.pathname.replace('/manage/', '/metadata/') + '/' +
+      cameraID
+    const response = await fetch(cameraUrl, {
+      method: 'DELETE',
+      body: new URLSearchParams({
+        pw: this.parentElement.querySelector('input[name="pw"]').value
+      })
+    })
+    if (response.ok) {
+      outputElem.innerHTML += '<p>Deleted ' + cameraID + '</p>'
+      paperRow.remove()
+    } else {
+      outputElem.innerHTML += '<p>Error deleting ' + cameraID + ' (stopping)</p>'
+      alert('Error deleting: ' + await response.text())
+      break
+    }
+  }
+  this.disabled = false
+}
+document.querySelector(
+  '.delete-papers input[name="confirm-delete"]').oninput = function () {
+  document.getElementById('delete-papers').disabled = this.value !== 'DELETE'
+}
+
+function getSelectedPaperRows () {
+  return Array.from(
+    document.querySelectorAll('table.submitted-papers tbody tr')).filter(
+    (elem) => elem.querySelector('input.actions').checked)
 }
 
 function makeEmail (tableRow) {

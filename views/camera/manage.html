@@ -130,6 +130,17 @@
       <div class="results-output hidden"></div>
     </div>
   </div>
+  <div class="collapsible">
+    <div class="collapsible-title">&triangleright; Delete</div>
+    <div class="collapsible-content hidden delete-papers">
+      <label for="confirm-delete">Are you really sure you want to delete papers? Type "DELETE" to confirm.</label>
+      <input type="text" name="confirm-delete" />
+      <label for="pw">Re-enter admin password</label>
+      <input type="password" placeholder="Password" name="pw" />
+      <button id="delete-papers" disabled>Delete</button>
+      <div class="results-output hidden"></div>
+    </div>
+  </div>
 </div>
 
 <script type="module" src="/js/manage.js"></script>
