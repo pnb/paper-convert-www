@@ -68,6 +68,10 @@ table {
     margin: 1em 0 1em 0;
 }
 
+tbody tr:hover {
+    background: #eee;
+}
+
 input[type="checkbox"] {
     margin-right: .25em;
 }
