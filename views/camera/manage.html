@@ -49,6 +49,19 @@
 <div class="actions hidden">
   <h2>Actions for selected papers</h2>
   <div class="collapsible">
+    <div class="collapsible-title">&triangleright; Set page limits (do this first)</div>
+    <div class="collapsible-content hidden page-limits">
+      <p>Page limits will be applied to the PDF checker, which will count the number of pages before the "References" heading, including the first page of references <em>only</em> if there is other content on that page before the references heading.</p>
+      <p>Changing page limits will not re-run PDF checks if authors have already uploaded papers. Any PDFs that need to be re-checked against the new page limit will need to be re-uploaded.</p>
+      <label for="page-limit">Page limit (blank for no limit)</label>
+      <input type="number" name="page-limit" />
+      <label for="pw">Re-enter admin password</label>
+      <input type="password" placeholder="Password" name="pw" />
+      <button id="set-page-limits">Set page limits</button>
+      <div class="results-output hidden"></div>
+    </div>
+  </div>
+  <div class="collapsible">
     <div class="collapsible-title">&triangleright; Email corresponding authors</div>
     <div class="email-fields collapsible-content hidden">
       <%_ if (settings.emailAuthors.length > 1) { _%>
@@ -115,19 +128,6 @@
       <label for="pw">Re-enter admin password</label>
       <input type="password" placeholder="Password" name="pw" />
       <button id="start-pdf-export">Export</button>
-    </div>
-  </div>
-  <div class="collapsible">
-    <div class="collapsible-title">&triangleright; Set page limits</div>
-    <div class="collapsible-content hidden page-limits">
-      <p>Page limits will be applied to the PDF checker, which will count the number of pages before the "References" heading, including the first page of references <em>only</em> if there is other content on that page before the references heading.</p>
-      <p>Changing page limits will not re-run PDF checks if authors have already uploaded papers. Any PDFs that need to be re-checked against the new page limit will need to be re-uploaded.</p>
-      <label for="page-limit">Page limit (blank for no limit)</label>
-      <input type="number" name="page-limit" />
-      <label for="pw">Re-enter admin password</label>
-      <input type="password" placeholder="Password" name="pw" />
-      <button id="set-page-limits">Set page limits</button>
-      <div class="results-output hidden"></div>
     </div>
   </div>
   <div class="collapsible">
