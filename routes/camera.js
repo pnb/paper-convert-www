@@ -2,6 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import { Router } from 'express'
 import archiver from 'archiver'
+import { stringify as csvStringify } from 'csv-stringify'
 
 import { getConversionLog, getFullWarningsInfo, getHTMLTitle } from './convert.js'
 import { getPDFWarnings, getPDFTitle } from './pdf_check.js'
@@ -298,6 +299,8 @@ router.post('/manage/:venue/export-pdf', async (req, res) => {
     res.status(500).send('Server error creating zip: ' + err.message)
   })
   archive.pipe(res)
+  // EasyChair-like submission.csv file with paper info
+  const submissionCsvRows = [['#', 'track name', 'title', 'authors', 'abstract']]
   // Get list of paper camera IDs from req.body and add them to zip, streaming
   const cameraIDs = req.body.cameraIDs.split(',')
   for (let i = 0; i < cameraIDs.length; ++i) {
@@ -308,11 +311,22 @@ router.post('/manage/:venue/export-pdf', async (req, res) => {
     // Load paper metadata.json to get PDF filename
     const paper = JSON.parse(
       fs.readFileSync(path.join(paperDir, 'metadata.json'), 'utf8'))
+    // TODO: handle missing PDF, which currently crashes it
     const pdfPath = path.join(pdfsDir, paper.pdf_check_id, paper.pdf_check_id) + '.pdf'
     const fname = req.body.pdfNaming.replace('{NUM}', cameraIDs[i])
       .replace('{ORDER}', i + 1)
     archive.file(pdfPath, { name: fname + '.pdf' })
+    // Add paper info to submission.csv data
+    submissionCsvRows.push([
+      paper.paper_num,
+      paper.track,
+      paper.title,
+      paper.authors.join(', '),
+      paper.abstract
+    ])
   }
+  // Save submission.csv to zip
+  archive.append(csvStringify(submissionCsvRows), { name: 'submission.csv' })
   await archive.finalize()
 })
 
