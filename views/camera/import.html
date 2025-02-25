@@ -3,16 +3,14 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.js" defer></script>
 <h1>Import list of accepted papers for camera-ready submission</h1>
 
-<p>
-Submission (papers) CSV has `decision` -- optionally should we only keep the "accept" rows?
-</p>
-
 <h2>Upload list of submissions (CSV)</h2>
-<p>The <em>submissions</em> CSV file should have at least these columns: <code>#</code> (paper number from EasyChair), <code>track name</code>, and <code>title</code> (the paper title). Columns can be in any order, and other columns can be included but will be ignored.</p>
+<p>The <em>submissions</em> CSV file should have at least these columns: <code>#</code> (paper number from EasyChair), <code>track name</code>, and <code>title</code> (the paper title). A <code>decision</code> column is optional and can be used to filter rows to import. Columns can be in any order, and other columns can be included but will be ignored.</p>
 <p>For example:</p>
-<pre>#,track name,title
-1,Full papers,My paper title
-5,Short papers,Another paper</pre>
+<pre>#,track name,title,decision
+1,Full papers,My paper title,accept
+5,Short papers,Another paper,accept
+6,Full papers,A third paper,reject
+</pre>
 <fieldset>
   <legend><em>Submissions CSV</em> -- Drag and drop file or click Browse</legend>
   <input type=file id="submissions-file" aria-label="CSV file" accept=".csv" />
@@ -33,6 +31,7 @@ Submission (papers) CSV has `decision` -- optionally should we only keep the "ac
 
 <h2>Data to import</h2>
 <div id="import-data">
+  <ul class="decisions hidden"></ul>
   <table class="submitted-papers">
     <thead>
       <tr>

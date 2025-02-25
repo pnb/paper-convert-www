@@ -60,6 +60,7 @@ document.getElementById('authors-file').onchange = function () {
 }
 
 function updateImportedDataTable () {
+  const decisionCounts = {} // Map decision -> count (if `decision` column exists)
   const tbody = document.querySelector('#import-data tbody')
   tbody.innerHTML = ''
   for (const submission of submissions) {
@@ -95,6 +96,39 @@ function updateImportedDataTable () {
     titleCell.classList.add('title')
     newRow.append(titleCell)
     tbody.append(newRow)
+    // Count decision, if the column exists for this paper
+    if (submission.decision) {
+      if (!Object.prototype.hasOwnProperty.call(decisionCounts, submission.decision)) {
+        decisionCounts[submission.decision] = 0
+      }
+      decisionCounts[submission.decision] += 1
+      newRow.dataset.decision = submission.decision
+    }
+  }
+  // Render decision counts, if relevant
+  const decisionsList = document.querySelector('#import-data .decisions')
+  decisionsList.innerHTML = ''
+  decisionsList.classList.add('hidden')
+  if (Object.keys(decisionCounts).length) {
+    decisionsList.classList.remove('hidden')
+    for (const [decision, count] of Object.entries(decisionCounts)) {
+      const li = document.createElement('li')
+      const label = document.createElement('label')
+      label.innerText = decision + ' – ' + count + ' row' + (count === 1 ? '' : 's')
+      li.append(label)
+      const checkbox = document.createElement('input')
+      checkbox.type = 'checkbox'
+      checkbox.checked = true
+      label.prepend(checkbox)
+      decisionsList.append(li)
+      checkbox.onchange = () => {
+        for (const row of document.querySelectorAll('#import-data tbody tr')) {
+          if (row.dataset.decision === decision) {
+            row.classList.toggle('hidden', !checkbox.checked)
+          }
+        }
+      }
+    }
   }
 }
 
@@ -131,7 +165,8 @@ document.querySelector('#import-settings form').onsubmit = async function (e) {
   const outputElem = document.querySelector('.results-output')
   outputElem.innerHTML = ''
   const venue = document.getElementsByName('venue').item(0).value
-  for (const row of document.querySelectorAll('#import-data tbody tr')) {
+  // Use only the non-hidden rows (hidden ones are filtered by `decision`)
+  for (const row of document.querySelectorAll('#import-data tbody tr:not(.hidden)')) {
     const paperTitle = row.querySelector('.title').innerText
     const result = await fetch('/camera/import/add-one', {
       method: 'POST',
