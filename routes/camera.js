@@ -3,7 +3,7 @@ import path from 'path'
 import { Router } from 'express'
 import archiver from 'archiver'
 
-import { getConversionLog, getFullWarningsInfo } from './convert.js'
+import { getConversionLog, getFullWarningsInfo, getHTMLTitle } from './convert.js'
 import { getPDFWarnings, getPDFTitle } from './pdf_check.js'
 
 export const router = Router()
@@ -30,13 +30,13 @@ router.get('/metadata/:venue/:camera_id', (req, res) => {
       const title = getPDFTitle(paper.pdf_check_id)
       if (title !== false) {
         paper.pdfTitle = title
+        paper.titleMismatch = titleMismatch(paper)
       }
       fs.writeFileSync(path.join(paperDir, 'metadata.json'), JSON.stringify(paper))
     }
   }
-  // Check if the conversion is done and update conversion metadata if needed
-  if (paper.converted_id &&
-      !Object.prototype.hasOwnProperty.call(paper, 'conversion_low_severity') &&
+  // Check if the HTML conversion is done and update conversion metadata if needed
+  if (paper.converted_id && !(paper.conversion_low_severity >= 0) &&
       getConversionLog(paper.converted_id).length > 0) {
     const warnings = getFullWarningsInfo(paper.converted_id)
     paper.conversion_low_severity = warnings.filter(
@@ -45,6 +45,8 @@ router.get('/metadata/:venue/:camera_id', (req, res) => {
       (w) => w.severity === 'medium').length
     paper.conversion_high_severity = warnings.filter(
       (w) => w.severity === 'high').length
+    paper.htmlTitle = getHTMLTitle(paper.converted_id)
+    paper.titleMismatch = titleMismatch(paper)
     fs.writeFileSync(path.join(paperDir, 'metadata.json'), JSON.stringify(paper))
   }
   res.render('camera/metadata', { paper })
@@ -64,6 +66,7 @@ router.post('/metadata/:venue/:camera_id/update', (req, res) => {
     fs.readFileSync(path.join(paperDir, 'metadata.json'), 'utf8'))
   if (req.body.title) {
     paper.title = req.body.title
+    paper.titleMismatch = titleMismatch(paper)
   } else if (req.body.abstract) {
     paper.abstract = req.body.abstract
   } else if (req.body.pdf_original_filename) {
@@ -88,6 +91,20 @@ router.post('/metadata/:venue/:camera_id/update', (req, res) => {
   fs.writeFileSync(path.join(paperDir, 'metadata.json'), JSON.stringify(paper))
   return res.status(200).send('Updated paper')
 })
+
+// Check if the titles match across PDF/HTML/metadata, returning the type of mismatch as
+// a string ("PDF" or "HTML") or false if there is no mismatch.
+function titleMismatch (paper) {
+  const m = paper.title.toLowerCase().replace(/[^a-z0-9/]/g, '')
+  if (paper.pdfTitle && paper.pdfTitle.toLowerCase().replace(/[^a-z0-9/]/g, '') !== m) {
+    return 'PDF'
+  }
+  if (paper.htmlTitle &&
+      paper.htmlTitle.toLowerCase().replace(/[^a-z0-9/]/g, '') !== m) {
+    return 'HTML'
+  }
+  return false
+}
 
 // Delete a paper
 router.delete('/metadata/:venue/:camera_id', (req, res) => {
@@ -271,7 +288,7 @@ router.post('/manage/:venue/export-pdf', async (req, res) => {
   }
   res.setHeader('Content-Disposition', 'attachment; filename="export-pdf.zip"')
   res.setHeader('Content-Type', 'application/zip')
-  const archive = archiver('zip', {zlib: { level: 5 }})
+  const archive = archiver('zip', { zlib: { level: 5 } })
   archive.on('warning', (err) => {
     console.error(err)
     res.status(500).send('Server error creating zip: ' + err.message)

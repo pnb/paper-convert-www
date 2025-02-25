@@ -5,7 +5,7 @@
 <p>Legend for HTML/PDF/abstract columns:</p>
 <ul>
   <li><em>Y</em> &ndash; no high-severity issues (and for HTML, the authors have certified the converted paper)</li>
-  <li><em>X</em> &ndash; major issues or no certified HTML conversion; abstract is not checked</li>
+  <li><em>X</em> &ndash; major issues, no certified HTML conversion, or title mismatch</li>
   <li><em>N</em> &ndash; nothing was submitted</li>
 </ul>
 
@@ -33,8 +33,8 @@
       <td class="paper-num"><%= papers[id].paper_num %></td>
       <td class="id"><a target="_blank" href="/camera/metadata/<%= venue %>/<%= papers[id].id %>"><%= papers[id].id %></a></td>
       <td class="track"><%= papers[id].track %></td>
-      <td class="pdf-ok"><%= papers[id].pdf_checks_failed === 0 ? 'Y' : (papers[id].pdf_checks_failed > 0 ? 'X' : 'N') %></td>
-      <td class="html-ok"><%= papers[id].conversion_certified ? 'Y' : (papers[id].conversion_low_severity >= 0 ? 'X' : 'N') %></td>
+      <td class="pdf-ok"><%= (papers[id].pdf_checks_failed === 0 && papers[id].titleMismatch !== 'PDF') ? 'Y' : (!(papers[id].pdf_checks_failed >= 0) ? 'N' : 'X') %></td>
+      <td class="html-ok"><%= (papers[id].conversion_certified && papers[id].titleMismatch !== 'HTML') ? 'Y' : (!(papers[id].conversion_low_severity >= 0) ? 'N' : 'X') %></td>
       <td class="abstract-ok"><%= papers[id].abstract ? 'Y' : 'N' %></td>
       <td class="authors"><%= papers[id].authors.join('; ') %></td>
       <td class="time"><%= new Date(papers[id].last_updated).toISOString().replace('T', ' ').substr(0, 19) %></td>

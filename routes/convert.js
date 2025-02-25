@@ -2,6 +2,8 @@ import fs from 'fs'
 import path from 'path'
 import { Router } from 'express'
 import { customAlphabet } from 'nanoid'
+import { JSDOM } from 'jsdom'
+
 import { get_warnings as getWarnings } from '../converter.js'
 
 const nanoid = customAlphabet(
@@ -82,7 +84,7 @@ router.get('/process/:doc_id', (req, res) => {
   })
 })
 
-export function getConversionLog(docId) {
+export function getConversionLog (docId) {
   const logFname = path.join(docsDir, docId, 'converter-output.txt')
   let conversionLog = []
   try {
@@ -93,7 +95,7 @@ export function getConversionLog(docId) {
 }
 
 // Get full information about warnings from conversion's messages.json
-export function getFullWarningsInfo(docId) {
+export function getFullWarningsInfo (docId) {
   const warnings = []
   const logLines = getWarnings(docId)
   logLines.forEach((warning) => {
@@ -111,4 +113,17 @@ export function getFullWarningsInfo(docId) {
     })
   })
   return warnings
+}
+
+// Get the paper title from the converted HTML, or false if paper is not yet converted
+// or the title cannot be found
+export function getHTMLTitle (docId) {
+  const htmlFname = path.join(docsDir, docId, 'index.html')
+  if (!fs.existsSync(htmlFname)) {
+    return false
+  }
+  // Load the HTML and get the first .Paper-Title text, removing newlines
+  const dom = new JSDOM(fs.readFileSync(htmlFname, { encoding: 'utf8' }))
+  const title = dom.window.document.querySelector('.Paper-Title')?.textContent
+  return title?.replace(/\n/g, ' ') || false
 }

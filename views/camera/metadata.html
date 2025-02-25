@@ -66,14 +66,12 @@
       <input type="text" name="title" value="<%= paper.title %>" />
       <button class="hidden">Save change</button>
       <span class="success hidden">✓</span>
-      <%_ if (paper.pdfTitle && paper.pdfTitle.toLowerCase().replace(/[^a-z0-9/]/g, '') !== paper.title.toLowerCase().replace(/[^a-z0-9/]/g, '')) { _%>
-      <p class="metadata-warning">
-        The title in the PDF version of the paper does not appear to match the title here, as compared case-insensitively and ignoring non-alphanumeric characters. After fixing this, you will need to refresh this page to update this warning.
-        <br /><code>PDF title:      <strong><%= paper.pdfTitle.toLowerCase().replace(/[^a-z0-9/]/g, '') %></strong></code>
+      <p class="metadata-warning hidden" id="title-mismatch">
+        The titles do not appear to match across PDF, HTML, and/or metadata provided here. Titles are only checked in terms of alphanumeric characters (i.e., spaces, punctuation, and capitalization are ignored).
+        <br /><code>PDF title:      <strong><%= paper.pdfTitle?.toLowerCase()?.replace(/[^a-z0-9/]/g, '') %></strong></code>
+        <br /><code>HTML title:     <strong><%= paper.htmlTitle?.toLowerCase()?.replace(/[^a-z0-9/]/g, '') %></strong></code>
         <br /><code>Metadata title: <strong><%= paper.title.toLowerCase().replace(/[^a-z0-9/]/g, '') %></strong></code>
-        <!-- TODO: ^ won't actually work well because the user can change the title here after uploading PDF, and might have no idea there is a mismatch. We'll need to do this in JS instead of in the template, I guess. -->
       </p>
-      <%_ } _%>
     </div>
   </div>
   <div class="item">

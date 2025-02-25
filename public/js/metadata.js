@@ -1,5 +1,9 @@
 /* global alert */ // ESLint
 
+// Reset inputs to default values in case user refreshes page without saving and gets
+// the wrong impression about what the current values are
+document.querySelectorAll('input,textarea').forEach((x) => x.value = x.defaultValue)
+
 document.getElementById('metadata-update').onsubmit = (e) => {
   // Prevent submit (happens with any button in Firefox even with no form action)
   e.preventDefault()
@@ -118,7 +122,7 @@ certifyElem.onchange = async function () {
 const titleElem = document.getElementsByName('title').item(0)
 let currentTitle = titleElem.value.trim()
 titleElem.oninput = function () {
-  if (currentTitle === titleElem.value.trim()) {
+  if (!titleElem.value.trim() || currentTitle === titleElem.value.trim()) {
     this.parentElement.querySelector('button').classList.add('hidden')
   } else {
     this.parentElement.querySelector('button').classList.remove('hidden')
@@ -141,6 +145,7 @@ titleElem.parentElement.querySelector('button').onclick = async function () {
     setTimeout(() => {
       this.parentElement.querySelector('.success').classList.add('hidden')
     }, 3000)
+    checkTitleMismatch()
   } else {
     alert('Error updating title: ' + response.statusText)
   }
@@ -151,7 +156,7 @@ titleElem.parentElement.querySelector('button').onclick = async function () {
 const abstractElem = document.getElementsByName('abstract').item(0)
 let currentAbstract = abstractElem.value
 abstractElem.oninput = function () {
-  if (currentAbstract === abstractElem.value.trim()) {
+  if (!abstractElem.value.trim() || currentAbstract === abstractElem.value.trim()) {
     this.parentElement.querySelector('button').classList.add('hidden')
   } else {
     this.parentElement.querySelector('button').classList.remove('hidden')
@@ -179,3 +184,18 @@ abstractElem.parentElement.querySelector('button').onclick = async function () {
   this.disabled = false
   abstractElem.disabled = false
 }
+
+function checkTitleMismatch () {
+  const mismatchElem = document.getElementById('title-mismatch')
+  const pdfTitle = mismatchElem.querySelector('code:nth-of-type(1) strong').textContent
+  const htmlTitle = mismatchElem.querySelector('code:nth-of-type(2) strong').textContent
+  const metadataTitle = titleElem.value.trim().toLowerCase().replace(/[^a-z0-9/]/g, '')
+  if ((pdfTitle.length && pdfTitle !== metadataTitle) ||
+      (htmlTitle.length && htmlTitle !== metadataTitle)) {
+    mismatchElem.classList.remove('hidden')
+  } else {
+    mismatchElem.classList.add('hidden')
+  }
+  mismatchElem.querySelector('code:nth-of-type(3) strong').textContent = metadataTitle
+}
+checkTitleMismatch()
