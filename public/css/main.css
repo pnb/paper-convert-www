@@ -217,8 +217,7 @@ form#metadata-update .busy {
     margin-left: 0.5em;
 }
 
-p#pdf-checks-failed,
-p#conversion-high-severity {
+p.metadata-warning {
     background: #fdd;
     padding: 0.5em;
 }

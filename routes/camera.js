@@ -4,7 +4,7 @@ import { Router } from 'express'
 import archiver from 'archiver'
 
 import { getConversionLog, getFullWarningsInfo } from './convert.js'
-import { getPDFWarnings } from './pdf_check.js'
+import { getPDFWarnings, getPDFTitle } from './pdf_check.js'
 
 export const router = Router()
 const venuesDir = path.join(process.cwd(), 'venues')
@@ -24,13 +24,17 @@ router.get('/metadata/:venue/:camera_id', (req, res) => {
     fs.readFileSync(path.join(paperDir, 'metadata.json'), 'utf8'))
   // Check if PDF checking is done and update PDF metadata if needed
   if (paper.pdf_check_id && !(paper.pdf_checks_failed >= 0)) {
-    // Check if the conversion is done and update conversion metadata if needed
     const warnings = getPDFWarnings(paper.pdf_check_id)
     if (warnings !== false) {
       paper.pdf_checks_failed = warnings.length
+      const title = getPDFTitle(paper.pdf_check_id)
+      if (title !== false) {
+        paper.pdfTitle = title
+      }
       fs.writeFileSync(path.join(paperDir, 'metadata.json'), JSON.stringify(paper))
     }
   }
+  // Check if the conversion is done and update conversion metadata if needed
   if (paper.converted_id &&
       !Object.prototype.hasOwnProperty.call(paper, 'conversion_low_severity') &&
       getConversionLog(paper.converted_id).length > 0) {

@@ -76,3 +76,18 @@ export function getPDFWarnings (docId) {
   const lines = fs.readFileSync(outPath, 'utf-8').split('\n')
   return lines.filter((line) => line.trim().length && !line.startsWith('info: '))
 }
+
+// Get PDF title for a given PDF's ID, if it has been checked (else false)
+export function getPDFTitle (docId) {
+  const docDir = path.join(pdfsDir, docId)
+  const outPath = path.join(docDir, 'pdf_checker-output.txt')
+  if (!fs.existsSync(outPath)) {
+    return false
+  }
+  const lines = fs.readFileSync(outPath, 'utf-8').split('\n')
+  const titleLine = lines.find((line) => line.startsWith('info: title='))
+  if (!titleLine) {
+    return false
+  }
+  return titleLine.slice(titleLine.indexOf('=') + 1).trim()
+}
