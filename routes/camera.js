@@ -311,7 +311,9 @@ router.post('/manage/:venue/export-pdf', async (req, res) => {
     // Load paper metadata.json to get PDF filename
     const paper = JSON.parse(
       fs.readFileSync(path.join(paperDir, 'metadata.json'), 'utf8'))
-    // TODO: handle missing PDF, which currently crashes it
+    if (!paper.pdf_check_id) {
+      return res.status(404).send('Paper ' + cameraIDs[i] + ' has no PDF')
+    }
     const pdfPath = path.join(pdfsDir, paper.pdf_check_id, paper.pdf_check_id) + '.pdf'
     const fname = req.body.pdfNaming.replace('{NUM}', cameraIDs[i])
       .replace('{ORDER}', i + 1)
