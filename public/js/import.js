@@ -177,7 +177,8 @@ document.querySelector('#import-settings form').onsubmit = async function (e) {
         track: row.querySelector('.track').innerText,
         authors: row.querySelector('.authors').innerText,
         corresponding_email: row.querySelector('.corresponding-email').innerText,
-        title: paperTitle
+        title: paperTitle,
+        decision: row.dataset.decision ?? ''
       })
     })
     const message = await result.text()

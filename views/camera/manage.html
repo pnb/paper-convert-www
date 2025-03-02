@@ -24,6 +24,7 @@
       <th class="emailed sortable">emailed</th>
       <th class="correspnding-email sortable">corresponding email</th>
       <th class="title sortable">title</th>
+      <th class="decision sortable">decision</th>
     </tr>
   </thead>
   <tbody>
@@ -41,6 +42,7 @@
       <td class="emailed"><%= papers[id].emailed %></td>
       <td class="corresponding-email"><%= papers[id].corresponding_email.join('; ') %></td>
       <td class="title"><%= papers[id].title %></td>
+      <td class="decision"><%= papers[id].decision ?? '' %></td>
     </tr>
   <%_ }) _%>
   </tbody>

@@ -198,6 +198,7 @@ router.post('/import/add-one', (req, res) => {
       authors: req.body.authors.split(';').map((author) => author.trim()),
       corresponding_email: req.body.corresponding_email.split(';').map(
         (email) => email.trim()),
+      decision: req.body.decision || null, // Optional, may be blank
       last_updated: Date.now()
     }))
   } catch (e) {
