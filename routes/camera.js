@@ -288,7 +288,7 @@ router.post('/manage/:venue/export-pdf', async (req, res) => {
   if (!req.body.pdfNaming) {
     return res.status(400).send('No PDF naming pattern provided')
   }
-  res.setHeader('Content-Disposition', 'attachment; filename="export-pdf.zip"')
+  res.setHeader('Content-Disposition', 'attachment; filename="pcwww-export-pdf.zip"')
   res.setHeader('Content-Type', 'application/zip')
   const archive = archiver('zip', { zlib: { level: 5 } })
   archive.on('warning', (err) => {
@@ -300,8 +300,8 @@ router.post('/manage/:venue/export-pdf', async (req, res) => {
     res.status(500).send('Server error creating zip: ' + err.message)
   })
   archive.pipe(res)
-  // EasyChair-like submission.csv file with paper info
-  const submissionCsvRows = [['#', 'track name', 'title', 'authors', 'abstract']]
+  // Compiled metadata file with paper info
+  const metaCsvRows = [['#', 'track name', 'title', 'authors', 'abstract']]
   // Get list of paper camera IDs from req.body and add them to zip, streaming
   const cameraIDs = req.body.cameraIDs.split(',')
   for (let i = 0; i < cameraIDs.length; ++i) {
@@ -316,11 +316,11 @@ router.post('/manage/:venue/export-pdf', async (req, res) => {
       return res.status(404).send('Paper ' + cameraIDs[i] + ' has no PDF')
     }
     const pdfPath = path.join(pdfsDir, paper.pdf_check_id, paper.pdf_check_id) + '.pdf'
-    const fname = req.body.pdfNaming.replace('{NUM}', cameraIDs[i])
+    const fname = req.body.pdfNaming.replace('{NUM}', paper.paper_num)
       .replace('{ORDER}', i + 1)
     archive.file(pdfPath, { name: fname + '.pdf' })
     // Add paper info to submission.csv data
-    submissionCsvRows.push([
+    metaCsvRows.push([
       paper.paper_num,
       paper.track,
       paper.title,
@@ -329,7 +329,7 @@ router.post('/manage/:venue/export-pdf', async (req, res) => {
     ])
   }
   // Save submission.csv to zip
-  archive.append(csvStringify(submissionCsvRows), { name: 'submission.csv' })
+  archive.append(csvStringify(metaCsvRows), { name: 'export-metadata.csv' })
   await archive.finalize()
 })
 
