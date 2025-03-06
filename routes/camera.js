@@ -285,8 +285,11 @@ router.post('/manage/:venue/export-pdf', async (req, res) => {
   if (!req.body.cameraIDs) {
     return res.status(400).send('No camera IDs provided')
   }
-  if (!req.body.pdfNaming) {
-    return res.status(400).send('No PDF naming pattern provided')
+  if (!req.body.pdfNaming ||
+      (!req.body.pdfNaming.includes('{NUM}') &&
+      !req.body.pdfNaming.includes('{ORDER}'))) {
+    return res.status(400).send(
+      'Invalid PDF naming pattern provided (must have at least one placeholder)')
   }
   res.setHeader('Content-Disposition', 'attachment; filename="pcwww-export-pdf.zip"')
   res.setHeader('Content-Type', 'application/zip')
