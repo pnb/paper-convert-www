@@ -34,6 +34,25 @@ document.querySelectorAll('td input.actions').forEach((elem) => {
       document.querySelector('div.actions').classList.add('hidden')
     }
   }
+  elem.onclick = (ev) => {
+    const prevSelectionStart = document.querySelector('.selection-start')
+    if (prevSelectionStart) {
+      prevSelectionStart.classList.remove('selection-start')
+      // Select all rows between the previous selection start and this one, if shift is
+      // currently pressed
+      if (ev.shiftKey) {
+        const checkboxes = Array.from(document.querySelectorAll('tr input.actions'))
+        const startIndex = checkboxes.findIndex((x) => x === prevSelectionStart)
+        const endIndex = checkboxes.findIndex((x) => x === elem)
+        checkboxes
+          .slice(Math.min(startIndex, endIndex), Math.max(startIndex, endIndex) + 1)
+          .forEach((x) => { x.checked = true })
+      }
+    }
+    if (elem.checked) {
+      elem.classList.add('selection-start') // This is the new selection start
+    }
+  }
 })
 
 document.querySelectorAll('.collapsible-title').forEach((elem) => {
