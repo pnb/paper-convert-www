@@ -61,6 +61,7 @@ fieldset legend {
 pre,
 code {
     font-family: Courier, 'Courier New', monospace;
+    font-variant-ligatures: none;
 }
 
 table {
