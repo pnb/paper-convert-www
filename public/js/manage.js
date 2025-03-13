@@ -239,6 +239,7 @@ document.getElementById('set-page-limits').onclick = async function () {
     const response = await fetch(cameraUrl + '/update', {
       method: 'POST',
       body: new URLSearchParams({
+        pw: this.parentElement.querySelector('input[name="pw"]').value,
         pageLimit: this.parentElement.querySelector('input[name="page-limit"]').value
       })
     })
@@ -303,6 +304,7 @@ document.getElementById('change-track').onclick = async function () {
     const response = await fetch(cameraUrl + '/update', {
       method: 'POST',
       body: new URLSearchParams({
+        pw: this.parentElement.querySelector('input[name="pw"]').value,
         track: this.parentElement.querySelector('input[name="track"]').value
       })
     })

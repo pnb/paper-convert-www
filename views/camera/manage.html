@@ -57,6 +57,8 @@
       <p>Changing page limits will not re-run PDF checks if authors have already uploaded papers. Any PDFs that need to be re-checked against the new page limit will need to be re-uploaded.</p>
       <label for="page-limit">Page limit (blank for no limit)</label>
       <input type="number" name="page-limit" />
+      <label for="pw">Re-enter admin password</label>
+      <input type="password" placeholder="Password" name="pw" />
       <button id="set-page-limits">Set page limits</button>
       <div class="results-output hidden"></div>
     </div>
@@ -120,6 +122,8 @@
     <div class="collapsible-content hidden change-track">
       <label for="track">Set track</label>
       <input type="text" name="track" />
+      <label for="pw">Re-enter admin password</label>
+      <input type="password" placeholder="Password" name="pw" />
       <button id="change-track" disabled>Change track</button>
       <div class="results-output hidden"></div>
     </div>

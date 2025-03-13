@@ -11,6 +11,16 @@ export const router = Router()
 const venuesDir = path.join(process.cwd(), 'venues')
 const pdfsDir = path.join(process.cwd(), 'pdf_checks')
 
+function hasPermissionOr401 (req, res, permission) {
+  if (permission === 'admin' &&
+      req.body.pw !== process.env.npm_package_config_admin_page_password) {
+    res.status(401).send('Incorrect password')
+    return false
+  }
+  // TODO: if (permission === 'author'
+  return true
+}
+
 // Show the data for this paper from the venue folder for this paper
 router.get('/metadata/:venue/:camera_id', (req, res) => {
   const venueDir = path.join(venuesDir, req.params.venue)
@@ -83,9 +93,10 @@ router.post('/metadata/:venue/:camera_id/update', (req, res) => {
     delete paper.conversion_high_severity
   } else if (req.body.conversion_certified !== undefined) {
     paper.conversion_certified = parseInt(req.body.conversion_certified) === 1
-  } else if (req.body.pageLimit !== undefined) {
+  } else if (req.body.pageLimit !== undefined &&
+      hasPermissionOr401(req, res, 'admin')) {
     paper.pageLimit = parseInt(req.body.pageLimit)
-  } else if (req.body.track) {
+  } else if (req.body.track && hasPermissionOr401(req, res, 'admin')) {
     paper.track = req.body.track
   } else {
     return res.status(400).send('No data to update')
@@ -111,8 +122,8 @@ function titleMismatch (paper) {
 
 // Delete a paper
 router.delete('/metadata/:venue/:camera_id', (req, res) => {
-  if (req.body.pw !== process.env.npm_package_config_admin_page_password) {
-    return res.status(401).send('Incorrect password')
+  if (!hasPermissionOr401(req, res, 'admin')) {
+    return
   }
   const venueDir = path.join(venuesDir, req.params.venue)
   if (!fs.existsSync(venueDir)) {
@@ -132,8 +143,8 @@ router.get('/manage/:venue', (req, res) => {
 })
 
 router.post('/manage/:venue', (req, res) => {
-  if (req.body.pw !== process.env.npm_package_config_admin_page_password) {
-    return res.status(401).send('Incorrect password')
+  if (!hasPermissionOr401(req, res, 'admin')) {
+    return
   }
   const papers = {}
   const venueDir = path.join(venuesDir, req.params.venue)
@@ -156,16 +167,16 @@ router.get('/import', (req, res) => {
 })
 
 router.post('/import', (req, res) => {
-  if (req.body.pw !== process.env.npm_package_config_admin_page_password) {
-    return res.status(401).send('Incorrect password')
+  if (!hasPermissionOr401(req, res, 'admin')) {
+    return
   }
   res.render('camera/import')
 })
 
 // Try to add one paper
 router.post('/import/add-one', (req, res) => {
-  if (req.body.pw !== process.env.npm_package_config_admin_page_password) {
-    return res.status(401).send('Incorrect password')
+  if (!hasPermissionOr401(req, res, 'admin')) {
+    return
   }
   // Validate the venue
   if (!/^[a-z0-9]+$/.test(req.body.venue)) {
@@ -213,8 +224,8 @@ router.post('/import/add-one', (req, res) => {
 
 // Send one email to corresponding authors via Postmark
 router.post('/manage/:venue/email', async (req, res) => {
-  if (req.body.pw !== process.env.npm_package_config_admin_page_password) {
-    return res.status(401).send('Incorrect password')
+  if (!hasPermissionOr401(req, res, 'admin')) {
+    return
   }
   const venueDir = path.join(venuesDir, req.params.venue)
   if (!fs.existsSync(venueDir)) {
@@ -256,8 +267,8 @@ router.post('/manage/:venue/email', async (req, res) => {
 
 // Add email template, e.g., after a batch has been sent
 router.post('/manage/:venue/add-email-template', (req, res) => {
-  if (req.body.pw !== process.env.npm_package_config_admin_page_password) {
-    return res.status(401).send('Incorrect password')
+  if (!hasPermissionOr401(req, res, 'admin')) {
+    return
   }
   const venueDir = path.join(venuesDir, req.params.venue)
   if (!fs.existsSync(venueDir)) {
@@ -277,8 +288,8 @@ router.post('/manage/:venue/add-email-template', (req, res) => {
 
 // Route for exporting the proceedings PDFs, or a subset of them
 router.post('/manage/:venue/export-pdf', async (req, res) => {
-  if (req.body.pw !== process.env.npm_package_config_admin_page_password) {
-    return res.status(401).send('Incorrect password')
+  if (!hasPermissionOr401(req, res, 'admin')) {
+    return
   }
   const venueDir = path.join(venuesDir, req.params.venue)
   if (!fs.existsSync(venueDir)) {
