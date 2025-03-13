@@ -85,6 +85,8 @@ router.post('/metadata/:venue/:camera_id/update', (req, res) => {
     paper.conversion_certified = parseInt(req.body.conversion_certified) === 1
   } else if (req.body.pageLimit !== undefined) {
     paper.pageLimit = parseInt(req.body.pageLimit)
+  } else if (req.body.track) {
+    paper.track = req.body.track
   } else {
     return res.status(400).send('No data to update')
   }

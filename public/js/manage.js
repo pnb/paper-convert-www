@@ -239,7 +239,6 @@ document.getElementById('set-page-limits').onclick = async function () {
     const response = await fetch(cameraUrl + '/update', {
       method: 'POST',
       body: new URLSearchParams({
-        pw: this.parentElement.querySelector('input[name="pw"]').value,
         pageLimit: this.parentElement.querySelector('input[name="page-limit"]').value
       })
     })
@@ -286,6 +285,39 @@ document.getElementById('delete-papers').onclick = async function () {
 document.querySelector(
   '.delete-papers input[name="confirm-delete"]').oninput = function () {
   document.getElementById('delete-papers').disabled = this.value !== 'DELETE'
+}
+
+document.querySelector('.change-track input[type="text"]').oninput = function () {
+  document.getElementById('change-track').disabled = !this.value
+}
+
+document.getElementById('change-track').onclick = async function () {
+  this.disabled = true
+  const outputElem = this.parentElement.querySelector('.results-output')
+  outputElem.innerHTML = ''
+  outputElem.classList.remove('hidden')
+  for (const paperRow of getSelectedPaperRows()) {
+    const cameraID = paperRow.querySelector('.id a').textContent
+    const cameraUrl = window.location.pathname.replace('/manage/', '/metadata/') + '/' +
+      cameraID
+    const response = await fetch(cameraUrl + '/update', {
+      method: 'POST',
+      body: new URLSearchParams({
+        track: this.parentElement.querySelector('input[name="track"]').value
+      })
+    })
+    if (response.ok) {
+      outputElem.innerHTML += '<p>Changed track for ' + cameraID + '</p>'
+      paperRow.querySelector('.track').innerHTML =
+        this.parentElement.querySelector('input[name="track"]').value
+    } else {
+      outputElem.innerHTML += '<p>Error changing track for ' + cameraID +
+        ' (stopping)</p>'
+      alert('Error changing track: ' + await response.text())
+      break
+    }
+  }
+  this.disabled = false
 }
 
 function getSelectedPaperRows () {
