@@ -144,6 +144,17 @@
     </div>
   </div>
   <div class="collapsible">
+    <div class="collapsible-title">&triangleright; Change edit keys (prevent author edits)</div>
+    <div class="collapsible-content hidden change-edit-keys">
+      <p>A new edit key (<code>editKey</code> URL parameter) can be generated for each paper to prevent authors from editing their papers using the links originally sent to them, although they will still be able to view their papers. This may be useful to prevent further edits to finalized papers.</p>
+      <p>If you send the new edit keys to authors by including <em>{PAPER_URL}</em> in a new email, they will be able to edit their papers again.</p>
+      <label for="pw">Re-enter admin password</label>
+      <input type="password" placeholder="Password" name="pw" />
+      <button id="change-edit-keys" disabled>Regenerate edit keys</button>
+      <div class="results-output hidden"></div>
+    </div>
+  </div>
+  <div class="collapsible">
     <div class="collapsible-title">&triangleright; Delete</div>
     <div class="collapsible-content hidden delete-papers">
       <label for="confirm-delete">Are you really sure you want to delete papers? Type "DELETE" to confirm.</label>

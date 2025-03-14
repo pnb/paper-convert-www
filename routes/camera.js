@@ -11,7 +11,7 @@ import { getPDFWarnings, getPDFTitle } from './pdf_check.js'
 export const router = Router()
 const venuesDir = path.join(process.cwd(), 'venues')
 const pdfsDir = path.join(process.cwd(), 'pdf_checks')
-const nanoid = customAlphabet('1234567890qwertyuiopasdfghjklzxcvbnm', 30)
+const genEditKey = customAlphabet('1234567890qwertyuiopasdfghjklzxcvbnm', 30)
 
 function hasPermission (req, res, permission, editKey) {
   if (permission === 'admin' &&
@@ -79,6 +79,7 @@ router.post('/metadata/:venue/:camera_id/update', (req, res) => {
   const paper = JSON.parse(
     fs.readFileSync(path.join(paperDir, 'metadata.json'), 'utf8'))
   let edited = false
+  let response = ''
   if (hasPermission(req, res, 'author', paper.editKey)) {
     edited = true
     if (req.body.title) {
@@ -111,6 +112,9 @@ router.post('/metadata/:venue/:camera_id/update', (req, res) => {
       paper.pageLimit = parseInt(req.body.pageLimit)
     } else if (req.body.track && hasPermission(req, res, 'admin')) {
       paper.track = req.body.track
+    } else if (req.body.regenerateEditKey) {
+      paper.editKey = genEditKey()
+      response = paper.editKey
     } else {
       edited = false
     }
@@ -121,7 +125,7 @@ router.post('/metadata/:venue/:camera_id/update', (req, res) => {
     return res.status(400).send('No data to update')
   }
   fs.writeFileSync(path.join(paperDir, 'metadata.json'), JSON.stringify(paper))
-  return res.status(200).send('Updated paper')
+  return res.status(200).send(response || 'Updated paper')
 })
 
 // Check if the titles match across PDF/HTML/metadata, returning the type of mismatch as
@@ -231,7 +235,7 @@ router.post('/import/add-one', (req, res) => {
         (email) => email.trim()),
       decision: req.body.decision || null, // Optional, may be blank
       last_updated: Date.now(),
-      editKey: nanoid()
+      editKey: genEditKey()
     }))
   } catch (e) {
     console.error(e)

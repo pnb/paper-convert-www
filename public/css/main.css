@@ -141,6 +141,7 @@ div.email-fields label,
 div.pdf-export label,
 div.page-limits label,
 div.change-track label,
+div.change-edit-keys label,
 div.delete-papers label {
     display: block;
     margin-top: 1em;
@@ -151,6 +152,7 @@ div.email-fields textarea,
 div.pdf-export input,
 div.page-limits input,
 div.change-track input,
+div.change-edit-keys label,
 div.delete-papers input {
     width: 30em;
 }
@@ -163,6 +165,7 @@ div.email-fields button,
 div.pdf-export button,
 div.page-limits button,
 div.change-track button,
+div.change-edit-keys label,
 div.delete-papers button {
     display: block;
     margin-top: 1em;

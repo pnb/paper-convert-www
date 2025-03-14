@@ -255,6 +255,40 @@ document.getElementById('set-page-limits').onclick = async function () {
   this.disabled = false
 }
 
+// Change edit keys (the editKey URL parameter) to prevent authors from making further
+// edits
+document.querySelector('.change-edit-keys input[name="pw"]').oninput = function () {
+  document.getElementById('change-edit-keys').disabled = !this.value
+}
+document.getElementById('change-edit-keys').onclick = async function () {
+  this.disabled = true
+  const outputElem = this.parentElement.querySelector('.results-output')
+  outputElem.innerHTML = ''
+  outputElem.classList.remove('hidden')
+  for (const paperRow of getSelectedPaperRows()) {
+    const cameraID = paperRow.querySelector('.id a').textContent
+    const cameraUrl = window.location.pathname.replace('/manage/', '/metadata/') + '/' +
+      cameraID
+    const response = await fetch(cameraUrl + '/update', {
+      method: 'POST',
+      body: new URLSearchParams({
+        pw: this.parentElement.querySelector('input[name="pw"]').value,
+        regenerateEditKey: true
+      })
+    })
+    if (response.ok) {
+      outputElem.innerHTML += '<p>Regenerated edit key for ' + cameraID + '</p>'
+      paperRow.querySelector('.id a').dataset.editKey = await response.text()
+    } else {
+      outputElem.innerHTML += '<p>Error regenerating edit key for ' + cameraID +
+        ' (stopping)</p>'
+      alert('Error regenerating edit key: ' + await response.text())
+      break
+    }
+  }
+  this.disabled = false
+}
+
 // Delete papers
 document.getElementById('delete-papers').onclick = async function () {
   this.disabled = true
