@@ -261,6 +261,16 @@ router.post('/manage/:venue/email', async (req, res) => {
   // Get corresponding authors to send email to
   const paper = JSON.parse(
     fs.readFileSync(path.join(paperDir, 'metadata.json'), 'utf8'))
+  const email = {
+    From: process.env.npm_package_config_from_email,
+    To: paper.corresponding_email.join(','),
+    Subject: req.body.subject,
+    TextBody: req.body.body,
+    MessageStream: 'outbound',
+    Tag: 'IEDMS',
+    ...(req.body.ccReplyTo && { ReplyTo: req.body.ccReplyTo }),
+    ...(req.body.ccReplyTo && { Cc: req.body.ccReplyTo })
+  }
   const result = await fetch('https://api.postmarkapp.com/email', {
     method: 'POST',
     headers: {
@@ -268,21 +278,20 @@ router.post('/manage/:venue/email', async (req, res) => {
       'Content-Type': 'application/json',
       'X-Postmark-Server-Token': process.env.npm_package_config_postmark_api_key
     },
-    body: JSON.stringify({
-      From: process.env.npm_package_config_from_email,
-      To: paper.corresponding_email.join(','),
-      Subject: req.body.subject,
-      TextBody: req.body.body,
-      MessageStream: 'outbound',
-      Tag: 'IEDMS',
-      ...(req.body.ccReplyTo && { ReplyTo: req.body.ccReplyTo }),
-      ...(req.body.ccReplyTo && { Cc: req.body.ccReplyTo })
-    })
+    body: JSON.stringify(email)
   })
   console.debug(await result.text())
   if (result.ok) {
     paper.emailed = paper.emailed + 1
     fs.writeFileSync(path.join(paperDir, 'metadata.json'), JSON.stringify(paper))
+    // Also save to emails.json in the paper dir
+    const emails = []
+    if (fs.existsSync(path.join(paperDir, 'emails.json'))) {
+      emails.push(...JSON.parse(
+        fs.readFileSync(path.join(paperDir, 'emails.json'), 'utf8')))
+    }
+    emails.push(email)
+    fs.writeFileSync(path.join(paperDir, 'emails.json'), JSON.stringify(emails))
     return res.status(200).send('Sent email')
   }
   return res.status(500).send('Error sending email: ' + result.statusText)
