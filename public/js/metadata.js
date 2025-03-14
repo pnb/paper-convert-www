@@ -2,7 +2,14 @@
 
 // Reset inputs to default values in case user refreshes page without saving and gets
 // the wrong impression about what the current values are
-document.querySelectorAll('input,textarea').forEach((x) => x.value = x.defaultValue)
+document.querySelectorAll('input,textarea').forEach((x) => { x.value = x.defaultValue })
+
+// Change the form to view-only if no editKey URL param is provided
+if (!new URLSearchParams(window.location.search).get('editKey')) {
+  document.querySelector('.view-only-message').classList.remove('hidden')
+  document.querySelectorAll('input,textarea,button')
+    .forEach((x) => { x.disabled = true })
+}
 
 document.getElementById('metadata-update').onsubmit = (e) => {
   // Prevent submit (happens with any button in Firefox even with no form action)
@@ -38,6 +45,7 @@ pdfElem.onchange = async () => {
     const updateResponse = await fetch(window.location.pathname + '/update', {
       method: 'POST',
       body: new URLSearchParams({
+        editKey: new URLSearchParams(window.location.search).get('editKey'),
         pdf_original_filename: pdfElem.files[0].name,
         pdf_check_id: response.url.split('/').pop()
       })
@@ -82,6 +90,7 @@ sourceElem.onchange = async () => {
     const updateResponse = await fetch(window.location.pathname + '/update', {
       method: 'POST',
       body: new URLSearchParams({
+        editKey: new URLSearchParams(window.location.search).get('editKey'),
         source_original_filename: sourceElem.files[0].name,
         converted_id: response.url.split('/').pop()
       })
@@ -105,6 +114,7 @@ certifyElem.onchange = async function () {
   const response = await fetch(window.location.pathname + '/update', {
     method: 'POST',
     body: new URLSearchParams({
+      editKey: new URLSearchParams(window.location.search).get('editKey'),
       conversion_certified: this.checked * 1
     })
   })
@@ -114,7 +124,7 @@ certifyElem.onchange = async function () {
       document.querySelector('#certify-conversion .success').classList.add('hidden')
     }, 3000)
   } else {
-    alert('Error updating certification: ' + response.statusText)
+    alert('Error updating certification: ' + await response.text())
   }
   this.disabled = false
 }
@@ -131,10 +141,11 @@ titleElem.oninput = function () {
 titleElem.parentElement.querySelector('button').onclick = async function () {
   this.disabled = true
   titleElem.disabled = true
-  // Current URL is like /camera/metadata/somevenue/1234567890
+  // Current URL is like /camera/metadata/somevenue/1234567890 [?editKey=abc123]
   const response = await fetch(window.location.pathname + '/update', {
     method: 'POST',
     body: new URLSearchParams({
+      editKey: new URLSearchParams(window.location.search).get('editKey'),
       title: titleElem.value.trim()
     })
   })
@@ -147,7 +158,7 @@ titleElem.parentElement.querySelector('button').onclick = async function () {
     }, 3000)
     checkTitleMismatch()
   } else {
-    alert('Error updating title: ' + response.statusText)
+    alert('Error updating title: ' + await response.text())
   }
   this.disabled = false
   titleElem.disabled = false
@@ -168,6 +179,7 @@ abstractElem.parentElement.querySelector('button').onclick = async function () {
   const response = await fetch(window.location.pathname + '/update', {
     method: 'POST',
     body: new URLSearchParams({
+      editKey: new URLSearchParams(window.location.search).get('editKey'),
       abstract: abstractElem.value.trim()
     })
   })
@@ -179,7 +191,7 @@ abstractElem.parentElement.querySelector('button').onclick = async function () {
       this.parentElement.querySelector('.success').classList.add('hidden')
     }, 3000)
   } else {
-    alert('Error updating abstract: ' + response.statusText)
+    alert('Error updating abstract: ' + await response.text())
   }
   this.disabled = false
   abstractElem.disabled = false

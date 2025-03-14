@@ -3,6 +3,7 @@ import path from 'path'
 import { Router } from 'express'
 import archiver from 'archiver'
 import { stringify as csvStringify } from 'csv-stringify'
+import { customAlphabet } from 'nanoid'
 
 import { getConversionLog, getFullWarningsInfo, getHTMLTitle } from './convert.js'
 import { getPDFWarnings, getPDFTitle } from './pdf_check.js'
@@ -10,14 +11,16 @@ import { getPDFWarnings, getPDFTitle } from './pdf_check.js'
 export const router = Router()
 const venuesDir = path.join(process.cwd(), 'venues')
 const pdfsDir = path.join(process.cwd(), 'pdf_checks')
+const nanoid = customAlphabet('1234567890qwertyuiopasdfghjklzxcvbnm', 30)
 
-function hasPermission (req, res, permission) {
+function hasPermission (req, res, permission, editKey) {
   if (permission === 'admin' &&
       req.body.pw !== process.env.npm_package_config_admin_page_password) {
     return false
+  } else if (permission === 'author' && req.query.editKey !== editKey &&
+      req.body.editKey !== editKey) {
+    return false
   }
-  // TODO: if (permission === 'author'
-  // -- somehow add a random hash to URLs for the authors as an edit key
   return true
 }
 
@@ -75,32 +78,48 @@ router.post('/metadata/:venue/:camera_id/update', (req, res) => {
   }
   const paper = JSON.parse(
     fs.readFileSync(path.join(paperDir, 'metadata.json'), 'utf8'))
-  if (req.body.title) {
-    paper.title = req.body.title
-    paper.titleMismatch = titleMismatch(paper)
-  } else if (req.body.abstract) {
-    paper.abstract = req.body.abstract
-  } else if (req.body.pdf_original_filename) {
-    paper.pdf_original_filename = req.body.pdf_original_filename
-    paper.pdf_check_id = req.body.pdf_check_id
-    delete paper.pdf_checks_failed
-  } else if (req.body.source_original_filename) {
-    paper.source_original_filename = req.body.source_original_filename
-    paper.converted_id = req.body.converted_id
-    paper.conversion_certified = false // New submission resets this
-    delete paper.conversion_low_severity
-    delete paper.conversion_medium_severity
-    delete paper.conversion_high_severity
-  } else if (req.body.conversion_certified !== undefined) {
-    paper.conversion_certified = parseInt(req.body.conversion_certified) === 1
-  } else if (req.body.pageLimit !== undefined && hasPermission(req, res, 'admin')) {
-    paper.pageLimit = parseInt(req.body.pageLimit)
-  } else if (req.body.track && hasPermission(req, res, 'admin')) {
-    paper.track = req.body.track
+  let edited = false
+  if (hasPermission(req, res, 'author', paper.editKey)) {
+    edited = true
+    if (req.body.title) {
+      paper.title = req.body.title
+      paper.titleMismatch = titleMismatch(paper)
+    } else if (req.body.abstract) {
+      paper.abstract = req.body.abstract
+    } else if (req.body.pdf_original_filename) {
+      paper.pdf_original_filename = req.body.pdf_original_filename
+      paper.pdf_check_id = req.body.pdf_check_id
+      delete paper.pdf_checks_failed
+    } else if (req.body.source_original_filename) {
+      paper.source_original_filename = req.body.source_original_filename
+      paper.converted_id = req.body.converted_id
+      paper.conversion_certified = false // New submission resets this
+      delete paper.conversion_low_severity
+      delete paper.conversion_medium_severity
+      delete paper.conversion_high_severity
+    } else if (req.body.conversion_certified !== undefined) {
+      paper.conversion_certified = parseInt(req.body.conversion_certified) === 1
+    } else {
+      edited = false
+    }
+    if (edited) {
+      paper.last_updated = Date.now()
+    }
+  } else if (hasPermission(req, res, 'admin')) {
+    edited = true
+    if (req.body.pageLimit !== undefined) {
+      paper.pageLimit = parseInt(req.body.pageLimit)
+    } else if (req.body.track && hasPermission(req, res, 'admin')) {
+      paper.track = req.body.track
+    } else {
+      edited = false
+    }
   } else {
+    return res.status(401).send('No editing permission')
+  }
+  if (!edited) {
     return res.status(400).send('No data to update')
   }
-  paper.last_updated = Date.now()
   fs.writeFileSync(path.join(paperDir, 'metadata.json'), JSON.stringify(paper))
   return res.status(200).send('Updated paper')
 })
@@ -211,7 +230,8 @@ router.post('/import/add-one', (req, res) => {
       corresponding_email: req.body.corresponding_email.split(';').map(
         (email) => email.trim()),
       decision: req.body.decision || null, // Optional, may be blank
-      last_updated: Date.now()
+      last_updated: Date.now(),
+      editKey: nanoid()
     }))
   } catch (e) {
     console.error(e)

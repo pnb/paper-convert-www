@@ -347,7 +347,8 @@ function makeEmail (tableRow) {
       .replace('{TITLE}', tableRow.querySelector('.title').textContent)
       .replace('{TRACK}', tableRow.querySelector('.track').innerHTML)
       .replace('{VENUE}', venue)
-      .replace('{PAPER_URL}', tableRow.querySelector('.id a').href)
+      .replace('{PAPER_URL}', tableRow.querySelector('.id a').href + '?editKey=' +
+        tableRow.querySelector('.id a').dataset.editKey)
   }
   return {
     ccReplyTo: Array.from(document.querySelectorAll('input[id^="cc-replyto"]'))

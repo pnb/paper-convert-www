@@ -32,7 +32,7 @@
     <tr>
       <td class="actions"><label><input type="checkbox" class="actions" data-paper-id="<%= papers[id].id %>"></label></td>
       <td class="paper-num"><%= papers[id].paper_num %></td>
-      <td class="id"><a target="_blank" href="/camera/metadata/<%= venue %>/<%= papers[id].id %>"><%= papers[id].id %></a></td>
+      <td class="id"><a target="_blank" data-edit-key="<%= papers[id].editKey %>" href="/camera/metadata/<%= venue %>/<%= papers[id].id %>"><%= papers[id].id %></a></td>
       <td class="track"><%= papers[id].track %></td>
       <td class="pdf-ok"><%= (papers[id].pdf_checks_failed === 0 && papers[id].titleMismatch !== 'PDF') ? 'Y' : (!(papers[id].pdf_checks_failed >= 0) ? 'N' : 'X') %></td>
       <td class="html-ok"><%= (papers[id].conversion_certified && papers[id].titleMismatch !== 'HTML') ? 'Y' : (!(papers[id].conversion_low_severity >= 0) ? 'N' : 'X') %></td>
@@ -131,7 +131,7 @@
   <div class="collapsible">
     <div class="collapsible-title">&triangleright; Export for PDF proceedings</div>
     <div class="collapsible-content hidden pdf-export">
-      <p>Naming placeholders (extension will be automatically added):</p>
+      <p>Naming placeholders (filename extension will be automatically added):</p>
       <ul>
         <li>{NUM} will be replaced by the paper number (i.e., <code>#</code> column)</li>
         <li>{ORDER} will be replaced by a consecutive number according to the order of selected papers as currently sorted in the table</li>
