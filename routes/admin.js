@@ -14,6 +14,22 @@ router.get('/password', (req, res) => {
   res.render('admin/password', { redirectTo: req.query.to })
 })
 
+router.get('/', (req, res) => {
+  res.redirect('/admin/password?to=' + encodeURIComponent('/admin/'))
+})
+
+router.post('/', (req, res) => {
+  if (req.body.pw !== process.env.npm_package_config_admin_page_password) {
+    return res.status(401).send('Incorrect password')
+  }
+  // Get list of venues by checking for folders in /venues
+  const venues = fs.readdirSync(path.join(process.cwd(), 'venues'),
+    { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name)
+  res.render('admin/index', { venues })
+})
+
 router.get('/submitted-papers', (req, res) => {
   res.redirect('/admin/password?to=' + encodeURIComponent('/admin/submitted-papers'))
 })
