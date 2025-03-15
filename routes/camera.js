@@ -290,7 +290,7 @@ router.post('/manage/:venue/email', async (req, res) => {
       emails.push(...JSON.parse(
         fs.readFileSync(path.join(paperDir, 'emails.json'), 'utf8')))
     }
-    emails.push(email)
+    emails.push({...email, serverUnix: Date.now()})
     fs.writeFileSync(path.join(paperDir, 'emails.json'), JSON.stringify(emails))
     return res.status(200).send('Sent email')
   }
@@ -316,6 +316,26 @@ router.post('/manage/:venue/add-email-template', (req, res) => {
   })
   fs.writeFileSync(path.join(venueDir, 'settings.json'), JSON.stringify(settings))
   return res.status(200).send('Added email template')
+})
+
+// Route for viewing emails sent to a specific paper's corresponding authors
+router.get('/manage/:venue/view-emails/:camera_id', (req, res) => {
+  const venueDir = path.join(venuesDir, req.params.venue)
+  if (!fs.existsSync(venueDir)) {
+    return res.status(404).send('Venue not found')
+  }
+  const paperDir = path.join(venueDir, req.params.camera_id)
+  if (!fs.existsSync(paperDir)) {
+    return res.status(404).send('Paper not found')
+  }
+  const paper = JSON.parse(
+    fs.readFileSync(path.join(paperDir, 'metadata.json'), 'utf8'))
+  if (!hasPermission(req, res, 'author', paper.editKey)) {
+    return res.status(401).send('Incorrect edit key')
+  }
+  const emails = JSON.parse(
+    fs.readFileSync(path.join(paperDir, 'emails.json'), 'utf8'))
+  res.render('camera/view-emails', { emails, paper })
 })
 
 // Route for exporting the proceedings PDFs, or a subset of them

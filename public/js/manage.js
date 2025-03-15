@@ -19,6 +19,19 @@ function makeTableSortable (table) {
 }
 makeTableSortable(document.querySelector('table.submitted-papers'))
 
+function updateEmailedLink (tableRow, incrementCount = false) {
+  const td = tableRow.querySelector('.emailed')
+  const count = parseInt(td.textContent) + (incrementCount ? 1 : 0)
+  if (count > 0) { // Update and turn into link
+    td.innerHTML = '<a target="_blank" href="' + window.location.pathname +
+      '/view-emails/' +
+      tableRow.querySelector('.id a').textContent + '?editKey=' +
+      tableRow.querySelector('.id a').dataset.editKey + '">' + count + '</a>'
+  }
+}
+document.querySelectorAll('td.emailed')
+  .forEach((td) => updateEmailedLink(td.parentElement))
+
 document.querySelector('th input.actions').onchange = function () {
   document.querySelectorAll('tr input.actions').forEach((elem) => {
     elem.checked = this.checked
@@ -167,8 +180,7 @@ document.getElementById('send').onclick = async function () {
       outputElem.innerHTML += '<p>Sent email for ' +
         paperRow.querySelector('.id a').textContent + ' (' +
         paperRow.querySelector('.corresponding-email').textContent + ')</p>'
-      const emailedCounter = paperRow.querySelector('.emailed')
-      emailedCounter.innerText = parseInt(emailedCounter.innerText) + 1
+      updateEmailedLink(paperRow, true)
       lastCCReplyTo = email.ccReplyTo
     } else {
       outputElem.innerHTML += '<p>Error for ' +
@@ -279,6 +291,7 @@ document.getElementById('change-edit-keys').onclick = async function () {
     if (response.ok) {
       outputElem.innerHTML += '<p>Regenerated edit key for ' + cameraID + '</p>'
       paperRow.querySelector('.id a').dataset.editKey = await response.text()
+      updateEmailedLink(paperRow)
     } else {
       outputElem.innerHTML += '<p>Error regenerating edit key for ' + cameraID +
         ' (stopping)</p>'
