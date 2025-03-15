@@ -72,8 +72,8 @@
       <span class="success hidden">✓</span>
       <p class="metadata-warning hidden" id="title-mismatch">
         The titles do not appear to match across PDF, HTML, and/or metadata provided here. Titles are only checked in terms of alphanumeric characters (i.e., spaces, punctuation, and capitalization are ignored).
-        <br /><code>PDF title:      <strong><%= paper.pdfTitle?.toLowerCase()?.replace(/[^a-z0-9/]/g, '') %></strong></code>
-        <br /><code>HTML title:     <strong><%= paper.htmlTitle?.toLowerCase()?.replace(/[^a-z0-9/]/g, '') %></strong></code>
+        <br /><code>PDF title:      <strong><%= paper.pdfTitle?.toLowerCase?.()?.replace(/[^a-z0-9/]/g, '') %></strong></code>
+        <br /><code>HTML title:     <strong><%= paper.htmlTitle?.toLowerCase?.()?.replace(/[^a-z0-9/]/g, '') %></strong></code>
         <br /><code>Metadata title: <strong><%= paper.title.toLowerCase().replace(/[^a-z0-9/]/g, '') %></strong></code>
       </p>
     </div>
