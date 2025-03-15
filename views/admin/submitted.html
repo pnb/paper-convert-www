@@ -3,32 +3,32 @@
 <h1>Papers submitted</h1>
 
 <p>
-    This table is sorted by paper title and by submitted time within title.
-    Presumably authors' best conversion results will be their most recent.
-    This ordering assumes that paper titles are unique.
+  This table is sorted by paper title and by submitted time within title.
+  Presumably authors' best conversion results will be their most recent.
+  This ordering assumes that paper titles are unique.
 </p>
 
 <label><input type=checkbox id="chk-only-latest" />Show only most recent version of each paper</label>
 
 <table class="submitted-papers">
-    <thead>
-        <tr>
-            <th>id</th>
-            <th>src</th>
-            <th>submitted</th>
-            <th>title</th>
-        </tr>
-    </thead>
-    <tbody>
-    <%_ Object.keys(papers).sort().forEach((id) => { _%>
-        <tr>
-            <td class="id"><a href="/process/<%= papers[id].id %>"><%= papers[id].id %></a></td>
-            <td><a href="/view/<%= papers[id].id %>/<%= papers[id].id + papers[id].source_ext %>"><%= papers[id].source_ext %></a></td>
-            <td class="time"><%= new Date(papers[id].time).toISOString().replace('T', ' ').substr(0, 19) %></td>
-            <td class="title"><%= papers[id].title %></td>
-        </tr>
-    <%_ }) _%>
-    </tbody>
+  <thead>
+    <tr>
+      <th>id</th>
+      <th>src</th>
+      <th>submitted</th>
+      <th>title</th>
+    </tr>
+  </thead>
+  <tbody>
+  <%_ Object.keys(papers).sort().forEach((id) => { _%>
+    <tr>
+      <td class="id"><a href="/process/<%= papers[id].id %>"><%= papers[id].id %></a></td>
+      <td><a href="/view/<%= papers[id].id %>/<%= papers[id].id + papers[id].source_ext %>"><%= papers[id].source_ext %></a></td>
+      <td class="time"><%= new Date(papers[id].time).toISOString().replace('T', ' ').substr(0, 19) %></td>
+      <td class="title"><%= papers[id].title %></td>
+    </tr>
+  <%_ }) _%>
+  </tbody>
 </table>
 
 <script type="text/javascript" src="/js/submitted.js"></script>

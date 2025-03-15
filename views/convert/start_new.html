@@ -2,20 +2,20 @@
 <%- include ('../header.html') %>
 <h1>Upload document for conversion to HTML</h1>
 <p>
-    Upload your paper source here to convert to HTML and check for common problems, such as missing sections or styles.
-    Your source file should be a <code>.docx</code> file for papers typeset with Word, or a <code>.zip</code> file for papers typeset with LaTeX.
+  Upload your paper source here to convert to HTML and check for common problems, such as missing sections or styles.
+  Your source file should be a <code>.docx</code> file for papers typeset with Word, or a <code>.zip</code> file for papers typeset with LaTeX.
 </p>
 <p>
-    If using LaTeX, the <code>.tex</code> file should be in the root of the ZIP file, as is typically the case with LaTeX editing programs like Overleaf.
-    If you have multiple <code>.tex</code> files, name one of them <code>main.tex</code> or the alphabetically first file will be assumed to be the main file.
+  If using LaTeX, the <code>.tex</code> file should be in the root of the ZIP file, as is typically the case with LaTeX editing programs like Overleaf.
+  If you have multiple <code>.tex</code> files, name one of them <code>main.tex</code> or the alphabetically first file will be assumed to be the main file.
 </p>
 <form method="POST" action="./upload" enctype="multipart/form-data" id="doc-submit-form">
-    <fieldset>
-        <legend>Drag and drop file or click Browse</legend>
-        <input type=file name="doc_file" aria-label="Document source file" />
-    </fieldset>
-    <br />
-    <button id="btn-upload">Upload and convert</button>
+  <fieldset>
+    <legend>Drag and drop file or click Browse</legend>
+    <input type=file name="doc_file" aria-label="Document source file" />
+  </fieldset>
+  <br />
+  <button id="btn-upload">Upload and convert</button>
 </form>
 <script type="text/javascript" src="/js/start_new.js"></script>
 <%- include ('../footer.html') _%>

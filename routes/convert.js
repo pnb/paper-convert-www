@@ -4,7 +4,7 @@ import { Router } from 'express'
 import { customAlphabet } from 'nanoid'
 import { JSDOM } from 'jsdom'
 
-import { get_warnings as getWarnings } from '../converter.js'
+import { getWarnings } from '../converter.js'
 
 const nanoid = customAlphabet(
   '1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM', 10)
