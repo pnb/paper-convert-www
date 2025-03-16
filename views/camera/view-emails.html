@@ -11,7 +11,7 @@ For paper <em><%= paper.title %></em> with authors: <%= paper.authors.join(', ')
 <h3>To</h3>
 <p><%= email.To %></p>
 <h3>CC/Reply-to</h3>
-<p><%= email.Cc.replace(',', ', ') %></p>
+<p><%= email.Cc?.replace?.(',', ', ') %></p>
 <h3>Body</h3>
 <pre><%= email.TextBody %></pre>
 <hr />
