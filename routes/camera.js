@@ -63,6 +63,10 @@ router.get('/metadata/:venue/:camera_id', (req, res) => {
     paper.titleMismatch = titleMismatch(paper)
     fs.writeFileSync(path.join(paperDir, 'metadata.json'), JSON.stringify(paper))
   }
+  // Redirect to view-only mode if the URL has a wrong/outdated editKey
+  if (req.query.editKey && req.query.editKey !== paper.editKey) {
+    return res.redirect(`/camera/metadata/${req.params.venue}/${req.params.camera_id}`)
+  }
   res.render('camera/metadata', { paper })
 })
 
