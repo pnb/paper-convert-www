@@ -17,7 +17,7 @@ function resizeTable (table, maxWidth) {
 }
 
 window.onload = function () {
-  const docElem = document.getElementsByClassName('paper-contents').item(0)
+  const docElem = document.querySelector('.paper-contents')
   const tables = document.getElementsByTagName('table')
   let prevWindowWidth
   window.onresize = function () {

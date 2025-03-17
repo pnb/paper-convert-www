@@ -1,5 +1,5 @@
 function hidePreviousAttempts () {
-  const titles = document.getElementsByClassName('title')
+  const titles = document.querySelectorAll('.title')
   for (let i = 0; i < titles.length; ++i) {
     if (i > 0 && titles.item(i).textContent === titles.item(i - 1).textContent) {
       // Previous row should be marked hidden as hidden since rows with the same title
