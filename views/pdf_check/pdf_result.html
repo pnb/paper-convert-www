@@ -18,6 +18,8 @@
 <p class="pdf-warning">Copyright block: <%- line.substring(17) %></p>
 <%_ } else if (line.startsWith('page limit: ')) { _%>
 <p class="pdf-warning">Page limit: <%- line.substring(12) %></p>
+<%_ } else if (line.startsWith('font size: ')) { _%>
+<p class="pdf-warning">Font size: <%- line.substring(11) %></p>
 <%_ } else { _%>
 <p class="pdf-warning">Unexpected error (please report): <code><%- line %></code></p>
 <%_ } _%>
