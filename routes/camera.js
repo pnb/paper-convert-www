@@ -215,9 +215,7 @@ router.post('/import/add-one', (req, res) => {
       path.join(venuesDir, req.body.venue, 'settings.json'))
   }
   // Check though if there's a paper with the same number and name (i.e., hash)
-  // Salt the hash with the admin password so that anybody who knows the paper info
-  // can't deduce the hash
-  const unpaddedHash = '' + cyrb53(req.body.title + req.body.paper_num + req.body.pw)
+  const unpaddedHash = '' + cyrb53(req.body.title + req.body.paper_num)
   const paperHash = ('0000000000000000' + unpaddedHash).slice(-16)
   const paperDir = path.join(venuesDir, req.body.venue, paperHash)
   if (fs.existsSync(paperDir)) {
