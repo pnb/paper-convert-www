@@ -1,45 +1,85 @@
 <% title = 'Conversion results' -%>
 <%- include ('../header.html') %>
 <h1>Document conversion results</h1>
+
 <%_ if (!started) { _%>
-    <p>Status: Conversion not yet started</p>
-    <p>Refresh page to update status.</p>
+<p>Status: Conversion not yet started</p>
+<p>Refresh page to update status.</p>
 <%_ } else if (!conversion_log.length) { _%>
-    <p>Status: Conversion in progress</p>
-    <p>Refresh page to update status.</p>
+<p>Status: Conversion in progress</p>
+<p>Refresh page to update status.</p>
 <%_ } else { _%>
-    <p>Status: Conversion complete</p>
-    <p><a href="../view/<%= doc_id %>" target="_blank" rel="noopener noreferrer">View converted document</a></p>
+<p>Status: Conversion complete</p>
+<p><a href="../view/<%= doc_id %>" target="_blank" rel="noopener noreferrer">View converted paper</a></p>
 
 <%_ if (warnings.length) { _%>
-    <p>
-        Please try to fix any problems using the help provided.
-        If there are issues you cannot resolve, or the converted document seems to have problems even after fixing warnings, please contact pnigelb@gmail.com and provide the URL of this page.
-    </p>
-    <h2>Conversion warnings</h2>
-    <ol class="doc-warning">
-    <%_ warnings.forEach((warning) => { _%>
-        <li>
-            <span class="doc-warning-message"><%= warning.message %></span>
-        <%_ if (warning.extra_info) { _%>
-            <span class="doc-warning-extra"><%= warning.extra_info %></span>
-        <%_ } _%>
-            <button class="doc-warning-showhelp">Show help</button>
-            <span class="doc-warning-help hidden"><%- warning.help.replace('\n', '<br /><br />') %></span>
-        </li>
-    <%_ }); _%>
-    </ol>
-<%_ } else { _%>
-    <p>No issues detected during conversion!</p>
-    <p>If the converted document seems to have problems anyway, please contact pnigelb@gmail.com and provide the URL of this page.<p>
+<p>
+  Please try to fix any problems using the help provided.
+  If there are issues you cannot resolve, or the converted paper seems to have problems even after fixing warnings, please contact pnb@illinois.edu, CC pnigelb@gmail.com, and provide the URL of this page.
+</p>
+
+<%_ if (warnings.some((w) => w.severity === 'high')) { _%>
+<h2>High-severity issues</h2>
+<p>High-severity issues must be fixed before the converted paper can be used.</p>
+<ol class="doc-warning doc-warning-high-severity">
+<%_ warnings.filter((w) => w.severity === 'high').forEach((warning) => { _%>
+  <li>
+    <span class="doc-warning-message"><%= warning.message %></span>
+    <%_ if (warning.extra_info) { _%>
+    <span class="doc-warning-extra"><%= warning.extra_info %></span>
+    <%_ } _%>
+    <button class="doc-warning-showhelp">Show help</button>
+    <span class="doc-warning-help hidden"><%- warning.help.replace('\n', '<br /><br />') %></span>
+  </li>
+<%_ }) _%>
+</ol>
 <%_ } _%>
 
-    <h2>Full conversion log</h2>
-    <pre>
-    <%_ for (let i in conversion_log) { _%>
-<%= conversion_log[i] %>
+<%_ if (warnings.some((w) => w.severity === 'medium')) { _%>
+<h2>Medium-severity issues</h2>
+<p>Most medium-severity issues are "true positive" issues that should be fixed, but there is a chance some of these warnings are not relevant to your paper. Please check them all to be sure.</p>
+<ol class="doc-warning doc-warning-medium-severity">
+<%_ warnings.filter((w) => w.severity === 'medium').forEach((warning) => { _%>
+  <li>
+    <span class="doc-warning-message"><%= warning.message %></span>
+    <%_ if (warning.extra_info) { _%>
+    <span class="doc-warning-extra"><%= warning.extra_info %></span>
     <%_ } _%>
-    </pre>
+    <button class="doc-warning-showhelp">Show help</button>
+    <span class="doc-warning-help hidden"><%- warning.help.replace('\n', '<br /><br />') %></span>
+  </li>
+<%_ }) _%>
+</ol>
+<%_ } _%>
+
+<%_ if (warnings.some((w) => w.severity === 'low')) { _%>
+<h2>Low-severity issues</h2>
+<p>Low-severity issues are more likely to be "false positive" warnings that may not apply to your paper, but please check them to be sure. For example, if there are numerous issues with references, there is a decent chance nearly half of them are indeed issues.</p>
+<ol class="doc-warning doc-warning-low-severity">
+<%_ warnings.filter((w) => !['high', 'medium'].includes(w.severity)).forEach((warning) => { _%>
+  <li>
+    <span class="doc-warning-message"><%= warning.message %></span>
+    <%_ if (warning.extra_info) { _%>
+    <span class="doc-warning-extra"><%= warning.extra_info %></span>
+    <%_ } _%>
+    <button class="doc-warning-showhelp">Show help</button>
+    <span class="doc-warning-help hidden"><%- warning.help.replace('\n', '<br /><br />') %></span>
+  </li>
+<%_ }) _%>
+</ol>
+<%_ } _%>
+
+<%_ } else { _%>
+<p>No issues detected during conversion!</p>
+<p>If the converted paper seems to have problems anyway, please contact pnb@illinois.edu, CC pnigelb@gmail.com, and provide the URL of this page.<p>
+<%_ } _%>
+
+<h2>Full conversion log</h2>
+<pre>
+<%_ for (let i in conversion_log) { _%>
+<%= conversion_log[i] %>
+<%_ } _%>
+</pre>
 <%_ } _%>
 
 <script type="text/javascript" src="/js/result.js"></script>

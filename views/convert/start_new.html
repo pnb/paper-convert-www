@@ -2,35 +2,20 @@
 <%- include ('../header.html') %>
 <h1>Upload document for conversion to HTML</h1>
 <p>
-    Upload your paper source here to convert to HTML and check for common problems, such as missing sections or styles.
-    Your source file should be a <code>.docx</code> file for papers typeset with Word, or a <code>.zip</code> file for papers typeset with LaTeX.
+  Upload your paper source here to convert to HTML and check for common problems, such as missing sections or styles.
+  Your source file should be a <code>.docx</code> file for papers typeset with Word, or a <code>.zip</code> file for papers typeset with LaTeX.
 </p>
 <p>
-    If using LaTeX, the <code>.tex</code> file should be in the root of the ZIP file, as is typically the case with LaTeX editing programs like Overleaf.
-    If you have multiple <code>.tex</code> files, name one of them <code>main.tex</code> or the alphabetically first file will be assumed to be the main file.
+  If using LaTeX, the <code>.tex</code> file should be in the root of the ZIP file, as is typically the case with LaTeX editing programs like Overleaf.
+  If you have multiple <code>.tex</code> files, name one of them <code>main.tex</code> or the alphabetically first file will be assumed to be the main file.
 </p>
 <form method="POST" action="./upload" enctype="multipart/form-data" id="doc-submit-form">
-    <fieldset>
-        <legend>Drag and drop file or click Browse</legend>
-        <input type=file name="doc_file" aria-label="Document source file" />
-    </fieldset>
-    <br />
-    <button id="btn-upload">Upload and convert</button>
+  <fieldset>
+    <legend>Drag and drop file or click Browse</legend>
+    <input type=file name="doc_file" aria-label="Document source file" />
+  </fieldset>
+  <br />
+  <button id="btn-upload">Upload and convert</button>
 </form>
-<h2>JEDM alt text instructions</h2>
-<p>
-    The JEDM templates do not yet include instructions for adding alt text for images. The process is the same as for EDM papers:
-</p>
-<ul>
-    <li>LaTeX: Add <code>\Description{alt text goes here}</code> right before including each figure.
-        <ul>
-            <li>Please use <a href="/misc/jedm.cls">this updated jedm.cls file</a> to support alt text.</li>
-        </ul>
-    </li>
-    <li>Word: Right-click on each image and select <em>View Alt Text...</em>, then add your alt text in the box that pops up. Do not use the "Generate alt text for me" option.</li>
-</ul>
-<p>
-Figures need to have alternative text (“alt text”) describing the figure, which will allow people using screen readers to understand the image, and will help in cases where an image cannot be loaded. Furthermore, alt text allows search engines to better index your paper and the figures in it. The alt text should describe everything necessary in the figure so that someone who cannot see the figure will not miss any essential information in the figure. The alt text should be concise. Do not simply repeat the figure caption; the figure caption is already readable as text. Moreover, figure captions typically provide <em>context</em> for a figure, whereas the purpose of alt text is to represent the <em>content</em> of the figure in an alternative format. See the <a href="https://www.sigaccess.org/welcome-to-sigaccess/resources/describing-figures/">ACM SIGACCESS guidelines</a>, the <a href="https://authors.acm.org/journals/how-to-write-alt-text-and-why">ACM author guidelines</a>, and the <a href="https://support.microsoft.com/en-us/office/everything-you-need-to-know-to-write-effective-alt-text-df98f884-ca3d-456c-807b-1a1fa82f5dc2">Microsoft Word instructions</a> for more information on how to write appropriate alt text.
-</p>
 <script type="text/javascript" src="/js/start_new.js"></script>
 <%- include ('../footer.html') _%>

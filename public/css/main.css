@@ -49,13 +49,8 @@ button#btn-upload {
     margin-top: 2em;
 }
 
-table.submitted-papers td.id,
-table.submitted-papers td.time {
-    font-family: 'Courier New', Courier, monospace;
-}
-
-table.submitted-papers td.id,
-table.submitted-papers td.time {
+/******** Admin ********/
+table.submitted-papers td.id {
     font-family: 'Courier New', Courier, monospace;
 }
 
@@ -67,4 +62,186 @@ table.submitted-papers td {
 table.submitted-papers th {
     text-align: left;
     border-bottom: 1px solid #222;
+}
+
+/******** Import/manage ********/
+div#import-data {
+    margin: 1em;
+    padding: 1em;
+    border: 1px solid #000;
+}
+
+div#import-data th,
+div#import-data td {
+    padding: .1em .4em .1em .4em;
+}
+
+div#import-data th {
+    text-align: left;
+    border-bottom: 1px solid #222;
+}
+
+form div.item {
+    display: flex;
+    align-items: baseline;
+    margin-top: 2em;
+}
+
+form div.item > label:first-child {
+    display: inline-block;
+    width: 15em;
+}
+
+div#import-settings input[type="submit"] {
+    margin-top: 1em;
+}
+
+div.results-output {
+    padding: 1em;
+    border: 1px solid #000;
+}
+
+table.submitted-papers td.corresponding-email {
+    max-width: 20em;
+}
+
+table.submitted-papers td.authors {
+    max-width: 20em;
+}
+
+table.submitted-papers td.time {
+    max-width: 8em;
+}
+
+table.submitted-papers td.actions label {
+    display: block;
+}
+
+table.submitted-papers input[type="checkbox"] {
+    width: 1em;
+    height: 2em;
+}
+
+th.sortable:hover {
+    background: #eee;
+    cursor: pointer;
+}
+
+div.collapsible .collapsible-title {
+    padding: 1em;
+    border-top: 1px solid #ddd;
+    cursor: pointer;
+}
+
+div.collapsible .collapsible-title:hover {
+    background: #eee;
+}
+
+div.email-fields label,
+div.pdf-export label,
+div.page-limits label,
+div.change-track label,
+div.change-edit-keys label,
+div.delete-papers label {
+    display: block;
+    margin-top: 1em;
+}
+
+div.email-fields input,
+div.email-fields textarea,
+div.pdf-export input,
+div.page-limits input,
+div.change-track input,
+div.change-edit-keys label,
+div.delete-papers input {
+    width: 30em;
+}
+
+div.email-fields textarea {
+    height: 15em;
+}
+
+div.email-fields button,
+div.pdf-export button,
+div.page-limits button,
+div.change-track button,
+div.change-edit-keys label,
+div.delete-papers button {
+    display: block;
+    margin-top: 1em;
+}
+
+div.overlay {
+    position: fixed;
+    overflow-y: scroll;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #000000dd;
+    z-index: 100;
+}
+
+.overlay-instructions {
+    font-weight: bold;
+    margin-bottom: 1em;
+}
+
+.overlay-content {
+    margin: 4em;
+    padding: 1em;
+    background: #fafafa;
+    max-width: 60em;
+}
+
+.overlay-content .email-preview {
+    font-family: monospace;
+    font-size: 1.1em;
+    width: calc(100% - 1em);
+    height: 25em;
+}
+
+/******** Camera ready ********/
+form#metadata-update input[type="text"],
+form#metadata-update textarea {
+    width: 30em;
+}
+
+form#metadata-update .item button {
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+}
+
+form#metadata-update .success {
+    color: #090;
+    font-weight: bold;
+    margin-left: 0.5em;
+}
+
+form#metadata-update .busy {
+    background: #eee;
+    margin-left: 0.5em;
+}
+
+p.metadata-warning {
+    background: #fdd;
+    padding: 0.5em;
+}
+
+div#certify-conversion label {
+    display: inline-block;
+    max-width: 30em;
+}
+
+div.author-list p {
+    margin: 0;
+}
+
+textarea[name="abstract"] {
+    height: 10em;
+}
+
+p.pdf-warning {
+    background: #fdd;
+    padding: 0.5em;
 }

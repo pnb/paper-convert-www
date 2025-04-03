@@ -1,0 +1,171 @@
+<% title = 'Manage papers' -%>
+<%- include ('../header.html') %>
+<h1>Manage accepted papers for <%= venue %></h1>
+
+<p>Legend for HTML/PDF/abstract columns:</p>
+<ul>
+  <li><em>Y</em> &ndash; no high-severity issues (and for HTML, the authors have certified the converted paper)</li>
+  <li><em>X</em> &ndash; major issues, no certified HTML conversion, or title mismatch</li>
+  <li><em>N</em> &ndash; nothing was submitted</li>
+</ul>
+
+<table class="submitted-papers">
+  <thead>
+    <tr>
+      <th class="actions"><input type="checkbox" class="actions"></th>
+      <th class="paper-num sortable">#</th>
+      <th class="id sortable">id</th>
+      <th class="track sortable">track</th>
+      <th class="pdf-ok sortable">PDF</th>
+      <th class="html-ok sortable">HTML</th>
+      <th class="abstract-ok sortable">abstract</th>
+      <th class="authors sortable">authors</th>
+      <th class="time sortable">last updated</th>
+      <th class="emailed sortable">emailed</th>
+      <th class="correspnding-email sortable">corresponding email</th>
+      <th class="title sortable">title</th>
+      <th class="decision sortable">decision</th>
+    </tr>
+  </thead>
+  <tbody>
+  <%_ Object.keys(papers).sort().forEach((id) => { _%>
+    <tr>
+      <td class="actions"><label><input type="checkbox" class="actions" data-paper-id="<%= papers[id].id %>"></label></td>
+      <td class="paper-num"><%= papers[id].paper_num %></td>
+      <td class="id"><a target="_blank" data-edit-key="<%= papers[id].editKey %>" href="/camera/metadata/<%= venue %>/<%= papers[id].id %>"><%= papers[id].id %></a></td>
+      <td class="track"><%= papers[id].track %></td>
+      <td class="pdf-ok"><%= (papers[id].pdf_checks_failed === 0 && papers[id].titleMismatch !== 'PDF') ? 'Y' : (!(papers[id].pdf_checks_failed >= 0) ? 'N' : 'X') %></td>
+      <td class="html-ok"><%= (papers[id].conversion_certified && papers[id].titleMismatch !== 'HTML') ? 'Y' : (!(papers[id].conversion_low_severity >= 0) ? 'N' : 'X') %></td>
+      <td class="abstract-ok"><%= papers[id].abstract ? 'Y' : 'N' %></td>
+      <td class="authors"><%= papers[id].authors.join('; ') %></td>
+      <td class="time"><%= new Date(papers[id].last_updated).toISOString().replace('T', ' ').substr(0, 19) %></td>
+      <td class="emailed"><%= papers[id].emailed %></td>
+      <td class="corresponding-email"><%= papers[id].corresponding_email.join('; ') %></td>
+      <td class="title"><%= papers[id].title %></td>
+      <td class="decision"><%= papers[id].decision ?? '' %></td>
+    </tr>
+  <%_ }) _%>
+  </tbody>
+</table>
+
+<div class="actions hidden">
+  <h2>Actions for selected papers</h2>
+  <div class="collapsible">
+    <div class="collapsible-title">&triangleright; Set page limits (do this first)</div>
+    <div class="collapsible-content hidden page-limits">
+      <p>Page limits will be applied to the PDF checker, which will count the number of pages before the "References" heading, including the first page of references <em>only</em> if there is other content on that page before the references heading.</p>
+      <p>Changing page limits will not re-run PDF checks if authors have already uploaded papers. Any PDFs that need to be re-checked against the new page limit will need to be re-uploaded.</p>
+      <label for="page-limit">Page limit (blank for no limit)</label>
+      <input type="number" name="page-limit" />
+      <label for="pw">Re-enter admin password</label>
+      <input type="password" placeholder="Password" name="pw" />
+      <button id="set-page-limits">Set page limits</button>
+      <div class="results-output hidden"></div>
+    </div>
+  </div>
+  <div class="collapsible">
+    <div class="collapsible-title">&triangleright; Email corresponding authors</div>
+    <div class="email-fields collapsible-content hidden">
+      <%_ if (settings.emailAuthors.length > 1) { _%>
+      <h3>Load previous email template</h3>
+      <ol>
+        <%_ settings.emailAuthors.slice(1).forEach((template, i) => { _%>
+        <li>
+          <a href="javascript:;" class="load-email-template"
+            data-cc-replyto="<%= btoa(template.ccReplyTo.join(',')) %>"
+            data-subject64="<%= btoa(template.subject) %>"
+            data-body64="<%= btoa(template.body) %>"><%= template.subject %></a>
+          (<%= new Date(template.serverUnix).toLocaleString() %>)
+        </li>
+        <%_ }) _%>
+      </ol>
+      <%_ } _%>
+      <h3>Organizers' addresses for CC and reply-to address (optional)</h3>
+      <p>If no email addresses are supplied here, authors will be unable to reply to the email, which will come from a "noreply" address that cannot receive email.</p>
+      <a href="javascript:;" class="add-cc-replyto">Add email address for CC and reply-to</a>
+      <%_ settings.emailAuthors.slice(-1).forEach((template) => { _%>
+      <%_ template.ccReplyTo.filter((x) => x).forEach((email, i) => { _%>
+      <label for="cc-replyto<%= i %>">CC and reply-to</label>
+      <input type="text" id="cc-replyto<%= i %>" value="<%= email %>">
+      <a href="javascript:;" class="remove-cc-replyto">Remove</a>
+      <%_ }) _%>
+      <%_ }) _%>
+      <h3>Email template</h3>
+      <label for="subject">Subject</label>
+      <input type="text" id="subject" value="<%= settings.emailAuthors.slice(-1).pop().subject.replace('{VENUE}', venue) %>">
+      <label for="body-text">Body</label>
+      <textarea id="body-text"><%= settings.emailAuthors.slice(-1).pop().body.replace('{VENUE}', venue) %></textarea>
+      <ul>
+        <li>Only plain text is supported in the email body; HTML will not be displayed</li>
+        <li>{AUTHORS} will be replaced by the authors of the paper</li>
+        <li>{NUM} will be replaced by the paper number (i.e., <code>#</code> column)</li>
+        <li>{TITLE} will be replaced by the title of the paper</li>
+        <li>{PAPER_URL} will be replaced by a link to the paper's submission page</li>
+      </ul>
+      <button id="preview">Preview a random email</button>
+      <label for="pw">Re-enter admin password</label>
+      <input type="password" placeholder="Password" name="pw" />
+      <button id="send" disabled>Send</button>
+      <div class="results-output hidden"></div>
+    </div>
+    <div class="hidden overlay">
+      <div class="overlay-content">
+        <div class="overlay-instructions">Click anywhere or press escape to close.</div>
+        <div class="email-preview-cc-replyto"></div>
+        <div class="email-preview-subject"></div>
+        <textarea readonly class="email-preview"></textarea>
+      </div>
+    </div>
+  </div>
+  <div class="collapsible">
+    <div class="collapsible-title">&triangleright; Change track</div>
+    <div class="collapsible-content hidden change-track">
+      <label for="track">Set track</label>
+      <input type="text" name="track" />
+      <label for="pw">Re-enter admin password</label>
+      <input type="password" placeholder="Password" name="pw" />
+      <button id="change-track" disabled>Change track</button>
+      <div class="results-output hidden"></div>
+    </div>
+  </div>
+  <div class="collapsible">
+    <div class="collapsible-title">&triangleright; Export for PDF proceedings</div>
+    <div class="collapsible-content hidden pdf-export">
+      <p>Naming placeholders (filename extension will be automatically added):</p>
+      <ul>
+        <li>{NUM} will be replaced by the paper number (i.e., <code>#</code> column)</li>
+        <li>{ORDER} will be replaced by a consecutive number according to the order of selected papers as currently sorted in the table</li>
+      </ul>
+      <label for="pdf-naming">File naming pattern</label>
+      <input type="text" name="pdf-naming" placeholder="e.g., EDM2020-{NUM}" value="<%= settings.pdfPattern %>" />
+      <label for="pw">Re-enter admin password</label>
+      <input type="password" placeholder="Password" name="pw" />
+      <button id="start-pdf-export">Export</button>
+    </div>
+  </div>
+  <div class="collapsible">
+    <div class="collapsible-title">&triangleright; Change edit keys (prevent author edits)</div>
+    <div class="collapsible-content hidden change-edit-keys">
+      <p>A new edit key (<code>editKey</code> URL parameter) can be generated for each paper to prevent authors from editing their papers using the links originally sent to them, although they will still be able to view their papers. This may be useful to prevent further edits to finalized papers.</p>
+      <p>If you send the new edit keys to authors by including <em>{PAPER_URL}</em> in a new email, they will be able to edit their papers again.</p>
+      <label for="pw">Re-enter admin password</label>
+      <input type="password" placeholder="Password" name="pw" />
+      <button id="change-edit-keys" disabled>Regenerate edit keys</button>
+      <div class="results-output hidden"></div>
+    </div>
+  </div>
+  <div class="collapsible">
+    <div class="collapsible-title">&triangleright; Delete</div>
+    <div class="collapsible-content hidden delete-papers">
+      <label for="confirm-delete">Are you really sure you want to delete papers? Type "DELETE" to confirm.</label>
+      <input type="text" name="confirm-delete" />
+      <label for="pw">Re-enter admin password</label>
+      <input type="password" placeholder="Password" name="pw" />
+      <button id="delete-papers" disabled>Delete</button>
+      <div class="results-output hidden"></div>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="/js/manage.js"></script>
+<%- include ('../footer.html') _%>

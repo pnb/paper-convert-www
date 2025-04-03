@@ -1,0 +1,38 @@
+<% title = 'Result of PDF check' -%>
+<%- include ('../header.html') %>
+<h1>Result of PDF check</h1>
+<p>This checker can only do very basic checks. Therefore, passing all the checks does not mean your PDF is perfect. Human discretion is required.</p>
+
+<%_ numWarnings = 0 _%>
+<%_ checkerOutput.split('\n').forEach(line => { _%>
+<%_ if (line.trim().length) { _%>
+<%_ ++numWarnings _%>
+
+<%_ if (line.startsWith('info: ')) { _%>
+<%_ --numWarnings _%>
+<%_ } else if (line.startsWith('margins: ')) { _%>
+<p class="pdf-warning">Margins: <%- line.substring(9) %></p>
+<%_ } else if (line.startsWith('page size: ')) { _%>
+<p class="pdf-warning">Page size: <%- line.substring(11) %></p>
+<%_ } else if (line.startsWith('copyright block: ')) { _%>
+<p class="pdf-warning">Copyright block: <%- line.substring(17) %></p>
+<%_ } else if (line.startsWith('page limit: ')) { _%>
+<p class="pdf-warning">Page limit: <%- line.substring(12) %></p>
+<%_ } else if (line.startsWith('font size: ')) { _%>
+<p class="pdf-warning">Font size: <%- line.substring(11) %></p>
+<%_ } else { _%>
+<p class="pdf-warning">Unexpected error (please report): <code><%- line %></code></p>
+<%_ } _%>
+
+<%_ } _%>
+<%_ }) _%>
+
+<%_ if (numWarnings === 0) { _%>
+<p>No issues detected in the PDF.</p>
+<%_ } else { _%>
+<p>If there are issues you cannot resolve, please contact pnb@illinois.edu and CC pnigelb@gmail.com, including the URL of this page in your email.</p>
+<%_ } _%>
+
+<p>Uploaded PDF: <a target="_blank" href="/pdf-check/pdf/<%- docId %>.pdf"><%- docId %>.pdf</a></p>
+
+<%- include ('../footer.html') _%>

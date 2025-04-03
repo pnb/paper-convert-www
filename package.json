@@ -2,9 +2,11 @@
     "name": "paper-convert-www",
     "type": "module",
     "dependencies": {
+        "archiver": "^7.0.1",
         "cluster": "^0.7.7",
         "connect-slashes": "^1.4.0",
         "csv-parse": "^5.0.4",
+        "csv-stringify": "^6.5.2",
         "ejs": "^3.1.10",
         "express": "^4.21.2",
         "express-fileupload": "^1.4.0",
@@ -12,10 +14,12 @@
         "nanoid": "^3.3.8"
     },
     "config": {
+        "port": 3000,
         "conversion_scripts_dir": "../paper-convert-scripts",
-        "conversion_monitor_dir": "./papers",
         "conversion_time_limit_ms": 300000,
-        "admin_page_password": "change-me"
+        "admin_page_password": "change-me",
+        "postmark_api_key": "POSTMARK_API_TEST",
+        "from_email": "noreply@pnigel.com"
     },
     "scripts": {
         "start": "node index.js"

@@ -1,0 +1,20 @@
+<% title = 'View emails' -%>
+<%- include ('../header.html') %>
+<h1>Emails sent to corresponding authors of <%= paper.id %></h1>
+
+For paper <em><%= paper.title %></em> with authors: <%= paper.authors.join(', ') %>.
+
+<%_ emails.forEach((email) => { _%>
+<h2><%= new Date(email.serverUnix).toISOString().replace('T', ' ').substr(0, 19) %></h2>
+<h3>Subject</h3>
+<p><%= email.Subject %></p>
+<h3>To</h3>
+<p><%= email.To %></p>
+<h3>CC/Reply-to</h3>
+<p><%= email.Cc?.replace?.(',', ', ') %></p>
+<h3>Body</h3>
+<pre><%= email.TextBody %></pre>
+<hr />
+<%_ }) _%>
+
+<%- include ('../footer.html') _%>

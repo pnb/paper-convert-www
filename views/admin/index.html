@@ -1,0 +1,17 @@
+<% title = 'Index of admin pages' -%>
+<%- include ('../header.html') %>
+
+<h1>Admin pages</h1>
+<p><a href="/admin/submitted-papers">All submitted HTML conversions (in entire system)</a></p>
+<p><a href="/camera/import">Import a new set of papers in EasyChair format</a>
+
+<%_ if (venues.length > 0) { _%>
+<h2>Manage camera-ready papers per venue</h2>
+<ul>
+  <%_ venues.forEach((venue) => { _%>
+  <li><a href="/camera/manage/<%= venue %>"><%= venue %></a></li>
+  <%_ }) _%>
+</ul>
+<%_ } _%>
+
+<%- include ('../footer.html') _%>

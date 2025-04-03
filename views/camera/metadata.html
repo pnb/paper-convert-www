@@ -1,0 +1,98 @@
+<% title = 'Camera-ready submission' -%>
+<%- include ('../header.html') %>
+<h1>Finalize camera-ready version</h1>
+
+<div class="view-only-message hidden">
+  <p class="metadata-warning">This page is in view-only mode.</p>
+</div>
+
+<form id="metadata-update">
+  <div class="item">
+    <label>PDF (not anonymized)</label>
+    <div class="upload">
+      <span class="current-file">
+        Current version:
+        <%_ if (paper.pdf_check_id && paper.pdf_checks_failed >= 0) { _%>
+        <a target="_blank" href="/pdf-check/process/<%= paper.pdf_check_id %>"><%= paper.pdf_check_id %></a>
+        <%_ } else if (!paper.pdf_check_id) { _%>
+        <a>(none)</a>
+        <%_ } _%>
+      </span>
+      <button class="<% if (paper.pdf_check_id && !(paper.pdf_checks_failed >= 0)) { %>hidden<% } %>">Replace</button>
+      <input type="file" name="pdf" accept=".pdf" class="hidden" />
+      <span class="busy hidden">Uploading...</span>
+      <span id="currently-checking" class="busy <%_ if (!paper.pdf_check_id || paper.pdf_checks_failed >= 0) { %> hidden <%_ } %>">Checking...(refresh page to update; may take minutes)</span>
+      <%_ if (paper.pdf_checks_failed) { _%>
+      <p id="pdf-checks-failed" class="metadata-warning">
+        The PDF version of the paper has one or more high-severity issues that must be resolved before the paper can be finalized.
+      </p>
+      <%_ } _%>
+    </div>
+  </div>
+  <div class="item">
+    <label>Word or LaTeX source file <br />(not anonymized)</label>
+    <div class="upload">
+      <span class="current-file">
+        Converted document:
+        <%_ if (paper.converted_id && paper.conversion_low_severity >= 0) { _%>
+        <a target="_blank" href="/process/<%= paper.converted_id %>"><%= paper.converted_id %></a>
+        <%_ } else if (!paper.converted_id) { _%>
+        <a target="_blank">(none)</a>
+        <%_ } _%>
+      </span>
+      <button class="<% if (paper.converted_id && !(paper.conversion_low_severity >= 0)) { %>hidden<% } %>">Replace</button>
+      <input class="hidden" type="file" name="source" accept=".docx,.zip" />
+      <span class="busy hidden">Uploading...</span>
+      <span id="currently-converting" class="busy <%_ if (!paper.converted_id || paper.conversion_low_severity >= 0) { %> hidden <%_ } %>">Converting...(refresh page to update; may take minutes)</span>
+      <%_ if (paper.conversion_high_severity) { _%>
+      <p id="conversion-high-severity" class="metadata-warning">
+        The HTML version of the converted paper has one or more high-severity issues that must be resolved before the paper can be finalized.
+      </p>
+      <%_ } else if (paper.conversion_medium_severity || paper.conversion_low_severity) { _%>
+      <p id="conversion-other-severity">
+        Low- or medium-severity issues were detected in the HTML version of the converted paper. Please review the converted document and resolve these issues if possible.
+      </p>
+      <%_ } _%>
+      <%_ if (paper.conversion_high_severity === 0) { _%>
+      <div id="certify-conversion" class="<% if (!paper.converted_id || paper.conversion_high_severity) { _%> hidden <%_ } %>">
+        <label>
+          <input type="checkbox" <%_ if (paper.conversion_certified) { %> checked <%_ } %> />
+          I have reviewed the converted paper, have resolved all issues feasible, and am satisfied with the final version.
+        </label>
+        <span class="success hidden">✓</span>
+      </div>
+      <%_ } _%>
+    </div>
+  </div>
+  <div class="item">
+    <label>Title</label>
+    <div>
+      <input type="text" name="title" value="<%= paper.title %>" />
+      <button class="hidden">Save change</button>
+      <span class="success hidden">✓</span>
+      <p class="metadata-warning hidden" id="title-mismatch">
+        The titles do not appear to match across PDF, HTML, and/or metadata provided here. Titles are only checked in terms of alphanumeric characters (i.e., spaces, punctuation, and capitalization are ignored).
+        <br /><code>PDF title:      <strong><%= paper.pdfTitle?.toLowerCase?.()?.replace(/[^a-z0-9/]/g, '') %></strong></code>
+        <br /><code>HTML title:     <strong><%= paper.htmlTitle?.toLowerCase?.()?.replace(/[^a-z0-9/]/g, '') %></strong></code>
+        <br /><code>Metadata title: <strong><%= paper.title.toLowerCase().replace(/[^a-z0-9/]/g, '') %></strong></code>
+      </p>
+    </div>
+  </div>
+  <div class="item">
+    <label>Abstract</label>
+    <textarea name="abstract"><%= paper.abstract %></textarea>
+    <button class="hidden">Save change</button>
+    <span class="success hidden">✓</span>
+  </div>
+  <div class="item author-list">
+    <label>Authors</label>
+    <div>
+      <%_ paper.authors.forEach((author) => { _%>
+        <p><%= author %></p>
+      <%_ }) _%>
+    </div>
+  </div>
+</form>
+
+<script type="text/javascript" src="/js/metadata.js"></script>
+<%- include ('../footer.html') _%>

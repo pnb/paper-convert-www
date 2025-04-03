@@ -32,7 +32,9 @@ input[type="submit"]:disabled {
 }
 
 input[type="text"],
-input[type="password"] {
+input[type="number"],
+input[type="password"],
+textarea {
     padding: .5em;
     border: .01em solid #222;
 }
@@ -59,11 +61,16 @@ fieldset legend {
 pre,
 code {
     font-family: Courier, 'Courier New', monospace;
+    font-variant-ligatures: none;
 }
 
 table {
     border-spacing: 0;
     margin: 1em 0 1em 0;
+}
+
+tbody tr:hover {
+    background: #eee;
 }
 
 input[type="checkbox"] {

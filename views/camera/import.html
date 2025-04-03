@@ -1,0 +1,76 @@
+<% title = 'Camera-ready submission' -%>
+<%- include ('../header.html') %>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.js" defer></script>
+<h1>Import list of accepted papers for camera-ready submission</h1>
+
+<h2>Upload list of submissions (CSV)</h2>
+<p>The <em>submissions</em> CSV file should have at least these columns: <code>#</code> (paper number from EasyChair), <code>track name</code>, and <code>title</code> (the paper title). A <code>decision</code> column is optional and can be used to filter rows to import. Columns can be in any order, and other columns can be included but will be ignored.</p>
+<p>For example:</p>
+<pre>#,track name,title,decision
+1,Full papers,My paper title,accept
+5,Short papers,Another paper,accept
+6,Full papers,A third paper,reject
+</pre>
+<fieldset>
+  <legend><em>Submissions CSV</em> -- Drag and drop file or click Browse</legend>
+  <input type=file id="submissions-file" aria-label="CSV file" accept=".csv" />
+</fieldset>
+
+<h2>Upload list of authors (CSV)</h2>
+<p>The <em>authors</em> CSV file should have at least these columns: <code>submission #</code> is the paper number from EasyChair, <code>first name</code> and <code>last name</code> are the author's name columns (one author per row), <code>email</code> is the author's email address, and <code>corresponding?</code> is whether the author is a corresponding author ("yes" or "no"). Columns can be in any order, and other columns can be included but will be ignored.</p>
+<p>For example:</p>
+<pre>submission #,first name,last name,email,corresponding?
+1,First,Author,fa@example.com,yes
+1,Second B.,Author,sba@example.com,no
+1,Third,Author,tc@example.com,yes
+5,Solo,Author,solo@example.com,yes</pre>
+<fieldset>
+  <legend><em>Authors CSV</em> -- Drag and drop file or click Browse</legend>
+  <input type=file id="authors-file" aria-label="CSV file" accept=".csv" />
+</fieldset>
+
+<h2>Data to import</h2>
+<div id="import-data">
+  <ul class="decisions hidden"></ul>
+  <table class="submitted-papers">
+    <thead>
+      <tr>
+        <th class="paper-num">#</th>
+        <th class="track">track</th>
+        <th class="authors">authors</th>
+        <th class="corresponding-email">corresponding email</th>
+        <th class="title">title</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+<h2>Import settings</h2>
+<div id="import-settings">
+  <form>
+    <div class="item">
+      <label>Venue name (e.g., edm2020)</label>
+      <input type="text" name="venue" />
+    </div>
+    <div class="item">
+      <label>Re-enter admin password</label>
+      <input type="password" placeholder="Password" name="pw" /> 
+    </div>
+    <input type="submit" value="Run import" />
+  </form>
+</div>
+
+<div id="import-results" class="hidden">
+  <h2>Import results</h2>
+  <div class="results-output"></div>
+  <div id="manage-results-link">
+    <form action="" method=POST>
+      <input type="hidden" name="pw" />
+      <a href="javascript:;">Manage resulting papers</a>
+    </form>
+  </div>
+</div>
+
+<script type="module" src="/js/import.js"></script>
+<%- include ('../footer.html') _%>
