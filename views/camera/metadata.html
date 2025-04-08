@@ -67,7 +67,7 @@
   <div class="item">
     <label>Title</label>
     <div>
-      <input type="text" name="title" value="<%= paper.title %>" />
+      <input type="text" name="title" value="<%= paper.title %>" placeholder="Title is required" />
       <button class="hidden">Save change</button>
       <span class="success hidden">✓</span>
       <p class="metadata-warning hidden" id="title-mismatch">
@@ -80,7 +80,7 @@
   </div>
   <div class="item">
     <label>Abstract</label>
-    <textarea name="abstract"><%= paper.abstract %></textarea>
+    <textarea name="abstract" placeholder="Abstract is required (cannot be blank)"><%= paper.abstract %></textarea>
     <button class="hidden">Save change</button>
     <span class="success hidden">✓</span>
   </div>
