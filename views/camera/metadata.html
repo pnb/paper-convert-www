@@ -9,20 +9,22 @@
 <form id="metadata-update">
   <div class="item checklist">
     <label>Completion checklist</label>
-    <%_ checks_pdf = (paper.pdf_checks_failed === 0 && paper.titleMismatch !== 'PDF') _%>
     <%_ checks_html = (paper.conversion_certified && paper.titleMismatch !== 'HTML') _%>
     <div>
       <p>
-        <%_ if (checks_pdf && checks_html && paper.abstract) { _%>
-        All automatic checks are complete and <strong>no further action is required on your part unless requested by conference organizers.</strong> However, keep in mind that automatic checks are insufficient to capture all possible issues. Please review your paper carefully for inconsistencies.
+        <%_ if (paper.pdf_checks_failed === 0 && paper.conversion_certified && !paper.titleMismatch && paper.abstract) { _%>
+        All automatic checks are complete. <strong>No further action is required on your part unless requested by conference organizers.</strong> However, keep in mind that automatic checks are insufficient to capture all possible issues. Therefore, please review your paper carefully for inconsistencies.
         <%_ } else { _%>
         <strong>The following steps must be completed for the camera-ready version of your paper to be finalized.</strong> Refresh the page to update the status of these checks.
         <%_ } _%>
       <p>
-        <%= checks_pdf ? '✅' : '❌' %> PDF
+        <%= paper.pdf_checks_failed === 0 ? '✅' : '❌' %> PDF
       </p>
       <p>
-        <%= checks_html ? '✅' : '❌' %> HTML conversion
+        <%= paper.conversion_certified ? '✅' : '❌' %> HTML conversion
+      </p>
+      <p>
+        <%= paper.titleMismatch ? '❌' : '✅' %> Titles match across PDF, HTML, and metadata entered on this page
       </p>
       <p>
         <%= paper.abstract ? '✅' : '❌' %> Abstract
