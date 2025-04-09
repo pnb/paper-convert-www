@@ -7,6 +7,28 @@
 </div>
 
 <form id="metadata-update">
+  <div class="item checklist">
+    <label>Completion checklist</label>
+    <%_ checks_pdf = (paper.pdf_checks_failed === 0 && paper.titleMismatch !== 'PDF') _%>
+    <%_ checks_html = (paper.conversion_certified && paper.titleMismatch !== 'HTML') _%>
+    <div>
+      <p>
+        <%_ if (checks_pdf && checks_html && paper.abstract) { _%>
+        All automatic checks are complete and <strong>no further action is required on your part unless requested by conference organizers.</strong> However, keep in mind that automatic checks are insufficient to capture all possible issues. Please review your paper carefully for inconsistencies.
+        <%_ } else { _%>
+        <strong>The following steps must be completed for the camera-ready version of your paper to be finalized.</strong> Refresh the page to update the status of these checks.
+        <%_ } _%>
+      <p>
+        <%= checks_pdf ? '✅' : '❌' %> PDF
+      </p>
+      <p>
+        <%= checks_html ? '✅' : '❌' %> HTML conversion
+      </p>
+      <p>
+        <%= paper.abstract ? '✅' : '❌' %> Abstract
+      </p>
+    </div>
+  </div>
   <div class="item">
     <label>PDF (not anonymized)</label>
     <div class="upload">
@@ -65,9 +87,9 @@
     </div>
   </div>
   <div class="item">
-    <label>Title</label>
+    <label for="title">Title</label>
     <div>
-      <input type="text" name="title" value="<%= paper.title %>" placeholder="Title is required" />
+      <input type="text" id="title" name="title" value="<%= paper.title %>" placeholder="Title is required" />
       <button class="hidden">Save change</button>
       <span class="success hidden">✓</span>
       <p class="metadata-warning hidden" id="title-mismatch">
@@ -79,8 +101,8 @@
     </div>
   </div>
   <div class="item">
-    <label>Abstract</label>
-    <textarea name="abstract" placeholder="Abstract is required (cannot be blank)"><%= paper.abstract %></textarea>
+    <label for="abstract">Abstract</label>
+    <textarea name="abstract" id="abstract" placeholder="Abstract is required (cannot be blank)"><%= paper.abstract %></textarea>
     <button class="hidden">Save change</button>
     <span class="success hidden">✓</span>
   </div>
