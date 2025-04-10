@@ -48,7 +48,7 @@
       <span id="currently-checking" class="busy <%_ if (!paper.pdf_check_id || paper.pdf_checks_failed >= 0) { %> hidden <%_ } %>">Checking...(refresh page to update; may take minutes)</span>
       <%_ if (paper.pdf_checks_failed) { _%>
       <p id="pdf-checks-failed" class="metadata-warning">
-        The PDF version of the paper has one or more high-severity issues that must be resolved before the paper can be finalized.
+        The PDF version of the paper has one or more high-severity issues that must be resolved before the paper can be finalized. Click on the <a target="_blank" href="/pdf-check/process/<%= paper.pdf_check_id %>"><%= paper.pdf_check_id %></a> link here or above to view the specific issues identified.
       </p>
       <%_ } _%>
     </div>
@@ -70,11 +70,11 @@
       <span id="currently-converting" class="busy <%_ if (!paper.converted_id || paper.conversion_low_severity >= 0) { %> hidden <%_ } %>">Converting...(refresh page to update; may take minutes)</span>
       <%_ if (paper.conversion_high_severity) { _%>
       <p id="conversion-high-severity" class="metadata-warning">
-        The HTML version of the converted paper has one or more high-severity issues that must be resolved before the paper can be finalized.
+        The HTML version of the converted paper has one or more high-severity issues that must be resolved before the paper can be finalized. Click on the <a target="_blank" href="/process/<%= paper.converted_id %>"><%= paper.converted_id %></a> link here or above to view the specific issues identified.
       </p>
       <%_ } else if (paper.conversion_medium_severity || paper.conversion_low_severity) { _%>
       <p id="conversion-other-severity">
-        Low- or medium-severity issues were detected in the HTML version of the converted paper. Please review the converted document and resolve these issues if possible.
+        Low- or medium-severity issues were detected in the HTML version of the converted paper. Please review the converted document and resolve these issues if possible. Click on the <a target="_blank" href="/process/<%= paper.converted_id %>"><%= paper.converted_id %></a> link here or above to view the specific issues identified.
       </p>
       <%_ } _%>
       <%_ if (paper.conversion_high_severity === 0) { _%>
