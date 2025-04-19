@@ -72,9 +72,9 @@
         <%_ settings.emailAuthors.slice(1).forEach((template, i) => { _%>
         <li>
           <a href="javascript:;" class="load-email-template"
-            data-cc-replyto="<%= btoa(template.ccReplyTo.join(',')) %>"
-            data-subject64="<%= btoa(template.subject) %>"
-            data-body64="<%= btoa(template.body) %>"><%= template.subject %></a>
+            data-cc-replyto="<%= btoa(encodeURIComponent(template.ccReplyTo.join(','))) %>"
+            data-subject64="<%= btoa(encodeURIComponent(template.subject)) %>"
+            data-body64="<%= btoa(encodeURIComponent(template.body)) %>"><%= template.subject %></a>
           (<%= new Date(template.serverUnix).toLocaleString() %>)
         </li>
         <%_ }) _%>

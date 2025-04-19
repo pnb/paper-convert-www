@@ -76,8 +76,10 @@ document.querySelectorAll('.collapsible-title').forEach((elem) => {
 
 document.querySelectorAll('a.load-email-template').forEach((elem) => {
   elem.onclick = () => {
-    document.getElementById('subject').value = atob(elem.dataset.subject64)
-    document.getElementById('body-text').value = atob(elem.dataset.body64)
+    document.getElementById('subject').value = decodeURIComponent(
+      atob(elem.dataset.subject64))
+    document.getElementById('body-text').value = decodeURIComponent(
+      atob(elem.dataset.body64))
     // Remove existing CC/Reply-To boxes
     document.querySelectorAll('.email-fields .remove-cc-replyto').forEach((elem) => {
       elem.previousElementSibling.remove() // <input>
@@ -85,10 +87,11 @@ document.querySelectorAll('a.load-email-template').forEach((elem) => {
       elem.remove() // <a>
     })
     // Add new ones as needed
-    atob(elem.dataset.ccReplyto).split(',').filter((x) => x).forEach((email) => {
-      addCCReplyTo()
-      document.querySelector('.email-fields input[id^="cc-replyto"]').value = email
-    })
+    decodeURIComponent(atob(elem.dataset.ccReplyto)).split(',').filter((x) => x)
+      .forEach((email) => {
+        addCCReplyTo()
+        document.querySelector('.email-fields input[id^="cc-replyto"]').value = email
+      })
   }
 })
 
