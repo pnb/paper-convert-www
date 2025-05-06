@@ -22,6 +22,11 @@
       </p>
       <p>
         <%= paper.conversion_certified ? '✅' : '❌' %> HTML conversion
+        <%_ if (paper.conversion_high_severity) { _%>
+          has issues that must be resolved
+        <%_ } else if (!paper.conversion_certified) { _%>
+          complete but needs your review and approval
+        <%_ } _%>
       </p>
       <p>
         <%= paper.titleMismatch ? '❌' : '✅' %> Titles match across PDF, HTML, and metadata entered on this page
