@@ -74,6 +74,9 @@ export class DocConverter {
     if (metadata.original_filename.includes('--mathml')) {
       cmd += ' --mathml' // Bit of a hack
     }
+    if (metadata.original_filename.includes('--texlive=2024')) {
+      cmd += ' --texlive=2024'
+    }
     const startTime = Date.now()
     let stdout = ''
     try {
