@@ -130,6 +130,11 @@ a.doi-link {
     width: 100%;
 }
 
+.paper-contents div.algorithm {
+    text-align: center;
+    margin: 1em 0 1em 0;
+}
+
 .paper-contents table {
     border-collapse: collapse;
     border-top: 2px solid #000;
