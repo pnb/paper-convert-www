@@ -256,7 +256,8 @@ document.getElementById('extract-html-command').onclick = async function () {
     const htmlIDs = await response.json()
     const command = 'tar xf ../pcwww-backup.tar.gz --strip-components=2 ' +
       htmlIDs.map((id) => 'paper-convert-www/papers/' + id).join(' ')
-    this.parentElement.querySelector('.results-output code').innerText = command
+    this.parentElement.querySelector('.results-output code').innerText = command +
+      '\nls -1 | wc -l  # Should be ' + htmlIDs.length + ' if started in an empty dir'
     this.parentElement.querySelector('.results-output').classList.remove('hidden')
   } else {
     alert('Error: ' + await response.text())
