@@ -99,6 +99,7 @@ div#import-settings input[type="submit"] {
 div.results-output {
     padding: 1em;
     border: 1px solid #000;
+    overflow-x: auto;
 }
 
 table.submitted-papers td.corresponding-email {

@@ -239,6 +239,30 @@ document.getElementById('start-pdf-export').onclick = async function () {
   }
 }
 
+// Generate extraction command for HTML final versions
+document.getElementById('extract-html-command').onclick = async function () {
+  this.disabled = true
+  const paperRows = getSelectedPaperRows()
+  const cameraIDs = paperRows.map((elem) => elem.querySelector('.id a').textContent)
+  const response = await fetch(window.location.pathname + '/html-ids', {
+    method: 'POST',
+    body: new URLSearchParams({
+      pw: this.parentElement.querySelector('input[name="pw"]').value,
+      cameraIDs: cameraIDs.join(',')
+    })
+  })
+  this.disabled = false
+  if (response.ok) {
+    const htmlIDs = await response.json()
+    const command = 'tar xf ../pcwww-backup.tar.gz --strip-components=2 ' +
+      htmlIDs.map((id) => 'paper-convert-www/papers/' + id).join(' ')
+    this.parentElement.querySelector('.results-output code').innerText = command
+    this.parentElement.querySelector('.results-output').classList.remove('hidden')
+  } else {
+    alert('Error: ' + await response.text())
+  }
+}
+
 // Set page limits
 document.getElementById('set-page-limits').onclick = async function () {
   this.disabled = true

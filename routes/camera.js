@@ -292,7 +292,7 @@ router.post('/manage/:venue/email', async (req, res) => {
       emails.push(...JSON.parse(
         fs.readFileSync(path.join(paperDir, 'emails.json'), 'utf8')))
     }
-    emails.push({...email, serverUnix: Date.now()})
+    emails.push({ ...email, serverUnix: Date.now() })
     fs.writeFileSync(path.join(paperDir, 'emails.json'), JSON.stringify(emails))
     return res.status(200).send('Sent email')
   }
@@ -401,6 +401,36 @@ router.post('/manage/:venue/export-pdf', async (req, res) => {
   // Save submission.csv to zip
   archive.append(csvStringify(metaCsvRows), { name: 'export-metadata.csv' })
   await archive.finalize()
+})
+
+// Get the HTML converted paper IDs for the given papers
+router.post('/manage/:venue/html-ids', async (req, res) => {
+  if (!hasPermission(req, res, 'admin')) {
+    return res.status(401).send('Incorrect password')
+  }
+  const venueDir = path.join(venuesDir, req.params.venue)
+  if (!fs.existsSync(venueDir)) {
+    return res.status(404).send('Venue not found')
+  }
+  if (!req.body.cameraIDs) {
+    return res.status(400).send('No camera IDs provided')
+  }
+  const cameraIDs = req.body.cameraIDs.split(',')
+  const htmlIDs = []
+  for (const cameraID of cameraIDs) {
+    const paperDir = path.join(venueDir, cameraID)
+    if (!fs.existsSync(paperDir)) {
+      return res.status(404).send('Paper ' + cameraID + ' not found')
+    }
+    // Load paper metadata.json to get HTML folder name
+    const paper = JSON.parse(
+      fs.readFileSync(path.join(paperDir, 'metadata.json'), 'utf8'))
+    if (!paper.converted_id) {
+      return res.status(404).send('Paper ' + cameraID + ' has no HTML')
+    }
+    htmlIDs.push(paper.converted_id)
+  }
+  return res.status(200).send(htmlIDs)
 })
 
 // Public domain hashing function from:
