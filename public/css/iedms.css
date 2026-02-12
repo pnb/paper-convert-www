@@ -152,6 +152,10 @@ a.doi-link {
     border-top: 1px solid #000;
 }
 
+.paper-contents table.hlines-every-row tr:not(:last-child) {
+    border-bottom: 1px solid #ccc;
+}
+
 .paper-contents table table {
     border: none;
     margin: 0 auto 0 auto;
