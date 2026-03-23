@@ -1,0 +1,5 @@
+#,track name,title,decision
+1,Full papers,Example full paper 1,accept
+2,Short papers,Another example: Short paper,accept
+5,Short papers,Another test short paper,accept
+44,Posters,Example rejected paper to delete,reject
